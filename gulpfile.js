@@ -126,6 +126,9 @@ gulp.task('dist', ['cleanSrc'], () => {
                     global_defs: {
                         DEBUG: false
                     }
+                },
+                output: {
+                    ascii_only: true
                 }
             }))
             .pipe(gulp.dest('./dist'));
@@ -141,6 +144,9 @@ gulp.task('cdist', () => {
                 global_defs: {
                     DEBUG: false
                 }
+            },
+            output: {
+                ascii_only: true
             }
         }))
         .pipe(gulp.dest('./dist'));
