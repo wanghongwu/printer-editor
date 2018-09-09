@@ -1,0 +1,36 @@
+@import "../mx-style/_vars";
+.container{
+  transition:margin-left 0.25s;
+  z-index: 90000;
+}
+
+.items{
+    background-color: #fff;
+    border:solid 1px @color-border;
+    border-radius: @border-radius;
+    cursor: default;
+    padding: 4px 0;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0
+}
+
+.items-li{
+    height:@menu-item-height;
+    line-height:@menu-item-height;
+    cursor: default;
+    border-radius: @border-radius;
+    padding: 0 12px;
+    margin: 0 4px;
+}
+.over{
+    color: #fff;
+    background-color: @color-brand;
+}
+.spliter{
+    height: 1px;
+    background: #eee;
+    margin:4px 0;
+}
+.item-disabled{
+    color:#ccc;
+    cursor:not-allowed;
+}

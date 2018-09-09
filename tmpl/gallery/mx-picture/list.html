@@ -1,0 +1,33 @@
+<div class="dialog-header sticky">
+    <b class="mr10">图片库</b>
+    <!-- <span class="ml20">搜索图片：</span><input class="input search" mx-keyup="@{start.search}()" value="<%=keyword%>" /> -->
+</div>
+<div class="dialog-body">
+    <label>
+        网络图片地址：
+    </label>
+    <input class="input pic-url" />
+    <!-- <div class="clearfix mb10">
+        {{each pics as g index}}
+        <div class="tab{{if index==active}} active{{/if}}" mx-click="@{active}({to:{{=index}}})">{{=g.title}}</div>
+        {{/each}}
+    </div>
+    <div class="clearfix pics">
+        {{if group.list.length}}
+        {{each group.list as pic}}
+            <div class="fl" title="{{=pic.title}}">
+                <div class="pic-container" mx-click="@{use}({src:'{{=pic.src}}'})">
+                    <div class="pic" style="background-image:url('{{=root}}{{=pic.src}}')"></div>
+                </div>
+                <div class="tc pic-title ellipsis">{{=pic.title}}</div>
+            </div>
+        {{/each}}
+        {{else if keyword}}
+            <div class="tc mt20 f16">暂无"{{=keyword}}"的图片</div>
+        {{/if}}
+    </div> -->
+</div>
+<div class="dialog-footer clearfix">
+    <button class="btn ml10 fr" mx-click="@{cancel}()">取消</button>
+    <button class="btn btn-brand fr" mx-click="@{enter}()">确定</button>
+</div>

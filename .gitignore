@@ -8,5 +8,4 @@ node_modules
 *.sublime-*
 src
 build
-tmpl
 types

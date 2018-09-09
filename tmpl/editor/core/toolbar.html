@@ -1,0 +1,54 @@
+<div class="items clearfix unselectable pr">
+    <div class="fl">
+        <i class="iconfont item{{if !hs.canUndo}} icon-disabled{{/if}}" title="撤销(Ctrl+Z)"{{if hs.canUndo}} mx-click="@{set.history}({type:'undo'})"{{/if}}>&#xe682;</i>
+        <i class="iconfont item mr20 flipx{{if !hs.canRedo}} icon-disabled{{/if}}" title="重做(Ctrl+Y)"{{if hs.canRedo}} mx-click="@{set.history}({type:'redo'})"{{/if}}>&#xe682;</i>
+        <i class="iconfont item" title="新建" mx-click="@{new}()">&#xe615;</i>
+        <!-- <i class="iconfont item" title="预览" mx-click="@{preview}()">&#xe67e;</i> -->
+        <i class="iconfont item mr20" mx-click="@{save}()" title="代码">&#xe611;</i>
+        {{if selectCount>1}}
+        <i class="iconfont item" mx-click="@{align}({to:'left'})" title="左对齐">&#xe70b;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'right'})" title="右对齐">&#xe70c;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'top'})" title="上对齐">&#xe70d;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'bottom'})" title="下对齐">&#xe70e;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'vcenter'})" title="垂直居中对齐">&#xe712;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'hcenter'})" title="水平居中对齐">&#xe711;</i>
+        {{/if}}
+    </div>
+    {{set width=page.width===''?'':toMM(page.width)}}
+    {{set height=page.height===''?'':toMM(page.height)}}
+    <div class="bg pt10{{if !showBg}} none{{/if}}" id="bg_{{=vId}}">
+        <div class="form-item clearfix">
+            <label class="form-label">纸张尺寸：</label>
+            <div class="form-content">
+                <mx-number class="input num" value="{{=width}}" mx-input="@{set.value}({key:'width'})" min="{{=CNC.PAGE_WIDTH_MIN}}" fixed="2" max="{{=CNC.PAGE_WIDTH_MAX}}"/>
+                <span class="ib gap">X</span>
+                <mx-number class="input num" value="{{=height}}" mx-input="@{set.value}({key:'height'})" min="{{=CNC.PAGE_HEIGHT_MIN}}" fixed="2" max="{{=CNC.PAGE_HEIGHT_MAX}}"/>
+            </div>
+        </div>
+        <div class="form-item clearfix">
+            <label class="form-label">是否分页：</label>
+            <div class="form-content">
+                <input @checked="{{=page.splitable}}" class="switch" type="checkbox" mx-change="@{set.value}({key:'splitable'})"/>
+            </div>
+        </div>
+        <div class="form-item clearfix">
+            <label class="form-label fl">常用纸张：</label>
+            <div class="form-content pages">
+                {{each CNC.PAGES as pg}}
+                    <div class="page{{if width==pg.width&&height==pg.height}} page-active{{/if}}"{{if width!=pg.width||height!=pg.height}} mx-click="@{set.page}({page:'{{@pg}}'})"{{/if}}>
+                        {{=pg.text}}
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="fr">
+        <div class="fl clearfix mr30">
+            <i class="iconfont item" mx-click="@{do.zoom}({out:true})" title="缩小">&#xe602;</i>
+            <span class="ib fl mr5 tc" style="width:40px;">{{=(scale*100).toFixed(0)}}%</span>
+            <i class="iconfont item" mx-click="@{do.zoom}()" title="放大">&#xe699;</i>
+        </div>
+        <span class="ib fl mr5">{{=Number(width).toFixed(2)}} x {{=Number(height).toFixed(2)}}</span>
+        <i class="iconfont item{{if showBg}} item-active{{/if}}" title="纸张设置" mx-click="@{set.stage}()" id="bgt_{{=vId}}">&#xe627;</i>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+.box{
+    width:230px;
+    height:100%;
+    background: #1b1b29;
+    color:rgb(191, 190, 190);
+    padding:10px 6px 30px;
+    transition: margin-left 0.15s;
+    position: relative;
+    z-index: 3000;
+}
+.box-collapse{
+    margin-left:-210px;
+}
+.collapse{
+    position: relative;
+    cursor: pointer;
+    height: 20px;
+    color:#fff;
+}
+.collapse-icon{
+    position: absolute;
+    right:10px;
+    top:-2px;
+    font-size:20px;
+    transition: all 0.15s;
+}
+.box-collapse .collapse-icon{
+    right: -4px;
+    transform: scaleX(-1);
+}
+.items{
+    height: calc(~"100% - 20px");
+    overflow: auto;
+}
+.item-container{
+    cursor: default;
+}
+.item{
+    border:solid 1px #464646;
+    width:60px;
+    height: 60px;
+    margin:4px;
+    border-radius: 2px;
+}
+.item-title{
+    text-align: center;
+}
+.drag-effect{
+    background: #474761;
+    position: absolute;
+    opacity: 0.5;
+    left:-1000px;
+    top:-1000px;
+    width:40px;
+    height: 40px;
+    border-radius: 6px;
+    z-index: 5000;
+}

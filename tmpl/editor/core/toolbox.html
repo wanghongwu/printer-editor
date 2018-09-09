@@ -1,0 +1,15 @@
+<div class="box unselectable{{if collapse}} box-collapse{{/if}}">
+    <div class="collapse">
+        <i class="iconfont collapse-icon" mx-click="@{toggle.collapse}()" title="{{if collapse}}展开工具栏{{else}}收起工具栏{{/if}}">&#xe616;</i>
+    </div>
+    <div id="toolbox_list" class="items">
+        {{each elements as element}}
+        <div class="fl item-container" title="{{=element.title}}" mx-mousedown="@{start.drag}({element:{{@element}}})">
+            <div class="item">
+                {{!element.icon}}
+            </div>
+            <div class="item-title">{{=element.title}}</div>
+        </div>
+        {{/each}}
+    </div>
+</div>

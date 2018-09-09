@@ -1,0 +1,10 @@
+<div class="logo"><i class="iconfont mr10">&#xe63c;</i>Printer Designer &trade;</div>
+<div class="body">
+    <mx-vframe src="./core/toolbox" id="toolbox_{{=vId}}" class="hp100 fl unselectable" />
+    <div class="canvas fl{{if anim}} canvas-anim{{/if}}{{if collapse}} canvas-toolbox-collapse{{/if}}" id="canvas_{{=vId}}">
+        <mx-vframe src="./core/toolbar" class="toolbar unselectable" />
+        <mx-vframe src="./core/axis?cnt={{=vId}}_stage" class="pr unselectable"/>
+        <mx-vframe src="./core/stage" id="{{=vId}}_stage" class="stage unselectable stage-deactive" />
+    </div>
+    <mx-vframe src="./core/property" id="property_{{=vId}}" class="hp100 fr"/>
+</div>

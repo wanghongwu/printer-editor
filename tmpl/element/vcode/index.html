@@ -1,0 +1,8 @@
+<div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;opacity:{{=alpha}};transform:rotate({{=rotate}}deg);z-index:{{=zIndex}}" class="pa">
+    {{set  url=codeMap[type+(showText?'_text':'')]}}
+    {{if url}}
+        <img style="width:100%;height:100%" src="{{=url}}">
+    {{else}}
+        暂不支持{{=type}}的预览
+    {{/if}}
+</div>

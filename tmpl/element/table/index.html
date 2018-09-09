@@ -1,0 +1,50 @@
+<div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;z-index:{{=zIndex}}" class="pa">
+    <div class="pa del" mx-click="@{delete.table}()">
+        <i class="iconfont">&#xe600;</i>
+    </div>
+    <table class="e-table{{if hideBorder}} hide-border{{/if}}">
+        {{set pureRowIndex=0,lastPureRowIndex=0}}
+        {{each rows as row ri}}
+            {{if row.tag=='tr'}}
+            <tr style="height:{{=row.height}}px">
+                {{let pureCellIndex=0;}}
+                {{let lastPureCellIndex=0;}}
+                {{each row.cells as cell ci}}
+                    {{if cell.tag=='td'}}
+                    <td class="cell{{if hideBorder}} hide-border{{/if}}" style="width:{{=cell.width}}px;height:{{=row.height}}px" mx-mousedown="@{select.cell}({row:{{=ri}},col:{{=ci}}})" mx-contextmenu="@{table.prevent}({row:{{=ri}},col:{{=ci}}})" id="{{=vId}}_c_{{=ri}}_{{=ci}}"{{if cell.rowspan&&cell.rowspan>1}} rowspan="{{=cell.rowspan}}"{{/if}}{{if cell.colspan&&cell.colspan>1}} colspan="{{=cell.colspan}}"{{/if}}>
+                        <div class="dashed none" id="{{=vId}}_dashed_{{=ri}}_{{=ci}}"></div>
+                        <div class="cell-content">
+                            {{if cell.children}}
+                                {{each cell.children as cc}}
+                                    {{set {ctor,props,id,type}=cc}}
+                                    {{if type!='#script'}}
+                                    <mx-vframe id="{{=id}}" src="element/{{=ctor.type}}/designer" *type="{{=type}}" *ctor="{{@ctor}}" *id="{{=id}}" *props="{{@props}}" mx-mousedown="@{table.mouse.down}({id:'{{=id}}',ctor:{{@ctor}},props:{{@props}},type:'{{=type}}'})" />
+                                    {{/if}}
+                                {{/each}}
+                            {{/if}}
+                        </div>
+
+                        {{if rowIndex==ri&&colIndex==ci}}
+                        <div class="focus">
+                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:{{=cell.width/2-size}}px;bottom:-{{=size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',ri:{{=ri}}})"></div>
+                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;right:-{{=size}}px;top:{{=row.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=ri}},ci:{{=ci}},pci:{{=pureCellIndex}}})"></div>
+                             {{if pureRowIndex>0}}
+                                <div style="width:{{=2*size}}px;height:{{=2*size}}px;top:{{=-size}}px;left:{{=cell.width/2-size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',ri:{{=lastPureRowIndex}}})"></div>
+                            {{/if}}
+                            {{if pureCellIndex>0}}
+                                <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:-{{=size}}px;top:{{=row.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=ri}},ci:{{=lastPureCellIndex}},pci:{{=pureCellIndex-1}}})"></div>
+                            {{/if}}
+                        </div>
+                        {{/if}}
+                    </td>
+                    {{lastPureCellIndex=ci;}}
+                    {{pureCellIndex++}}
+                    {{/if}}
+                {{/each}}
+            </tr>
+            {{lastPureRowIndex=ri;}}
+            {{pureRowIndex++}}
+            {{/if}}
+        {{/each}}
+    </table>
+</div>

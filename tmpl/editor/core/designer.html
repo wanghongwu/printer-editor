@@ -1,0 +1,34 @@
+<mx-vframe src="{{=elementPath}}" *ctor="{{@ctor}}" *id="{{=id}}" *type="{{=type}}" *props="{{@props}}" id="entity_{{=vId}}" force-update="true" />
+{{if ctor.type=='table'}}
+    <div style="width:24px;height:24px;left:{{=props.x-24}}px;top:{{=props.y-6}}px;z-index:{{=props.zIndex}};padding:4px;cursor:move;" class="pa">
+        <i class="iconfont">&#xe660;</i>
+    </div>
+{{else}}
+<div style="width:{{if props.useCNStyle}}92%{{else}}{{=props.width+2*space}}px{{/if}};height:{{if props.useCNStyle}}92%{{else}}{{=props.height+2*space}}px{{/if}};left:{{=props.x-space}}px;top:{{=props.y-space}}px;{{if props.rotate}}transform:rotate({{=props.rotate}}deg);{{/if}}background:#fff;opacity:0.01;z-index:{{=props.zIndex}};
+cursor:pointer;{{if (ctor.type=='htext'||ctor.type=='vtext')&&props.editable}}pointer-events:none;{{/if}}" class="pa"{{if ctor.type=='htext'||ctor.type=='vtext'}} mx-dblclick="@{text.editable}()"{{/if}}></div>
+{{/if}}
+{{if selected}}
+{{set color=props.locked?'red':'#5390ef'}}
+<div style="{{if props.rotate}}transform:rotate({{=props.rotate}}deg);{{/if}}left:{{=props.x-space}}px;top:{{=props.y-space}}px;width:{{if props.useCNStyle}}92%{{else}}{{=Math.round(props.width+2*space)}}px{{/if}};height:{{if props.useCNStyle}}92%{{else}}{{=props.height+2*space}}px{{/if}};border:dotted 1px {{=color}};pointer-events:none;z-index:{{=props.zIndex}}" class="pa">
+    {{if ctor.modifier.rotate&&!props.locked&&!props.useCNStyle}}
+    <div style="left:{{=props.width+space-1}}px;top:-{{=space}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;border-radius:{{=size}}px;cursor:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAACxMAAAsTAQCanBgAAAEIUExURUdwTOnp6QICAv7+/h0dHXJyco2NjQAAAAUFBQAAAKSkpP///////wQEBKqqqr+/v/Hx8f///6ioqAAAAP///6ysrD09Pf///+Li4tXV1be3t0xMTCYmJrKyssjIyPv7+2VlZYGBgfv7+5qams3Nzba2tv///yoqKkdHR5aWlgUFBfz8/PHx8f///////5OTk////7i4uO/v78TExOHh4a2trYiIiMDAwM/Pz0FBQf///2dnZ76+vv///93d3dra2q2trQAAADg4OBMTE3V1dQgICCYmJhwcHEdHR39/f0BAQF1dXTAwMLS0tI+Pj1VVVZaWlmVlZU9PT5ycnJiYmP39/Wlpaefn5+BeE2oAAABBdFJOUwDHBQkNd5QJFgH5p10b+vYeJLcQM6I8O/Lf30kowOaca4uOkEXPQjJQpihot4JyNH/4S9ferlW26mPfK85PkoTcnudyewAAAVlJREFUKM+FkeeWgjAQhQHpCirYe9e1be81AZFm3fb+b7JMotvOnrPzIwnfJcncG4b5p2L5aas1SaRhfZj4wtOi54YODtRxnskV4nueYYMZojVXs6crdsd7SQuQ74Ygb3xUjBGerkUcq4bYPHiyyc5jchUzdhCyqzlTkky5nQRhnQd+7yH0luXJP7clDIJN2nrwkXNHeepGd/F8hrZH8NVY4EWZdlG5FkSjW9IX0K+kCdUG5QoHA6/1B51owWmyLP2KQVHIJEl/hpQadVKxH6AezxB7hZdkkY1PEr2dcLnCZzDztahxy3HfHym/WCKkEqE7B0/LJr0wc2Uhi4ZogFlcyJH4R5Dn+oQIYgA7HJWtt+q1TRSi3aaHCh7ywkiaOSE51D7nqFB+XmertrV7KKyLe1uVV3E4FErLwPW3tm6UPw3JgmbyZmUgiGKz0f+egiwrjCJBccoX/QAYCzizwB7F9QAAAABJRU5ErkJggg==') 12 12, auto;pointer-events:all" class="pa" mx-mousedown="@{start.rotate}()"></div>
+    {{/if}}
+    {{if !props.useCNStyle}}
+    <div class="pa" style="width:5px;height:1px;background:{{=color}};left:{{=(props.width+2*space)/2-3}}px;top:{{=(props.height+2*space)/2-1}}px;"></div>
+    <div class="pa" style="width:1px;height:5px;background:{{=color}};left:{{=(props.width+2*space)/2-1}}px;top:{{=(props.height+2*space)/2-3}}px;"></div>
+    {{/if}}
+    {{if ctor.modifier.resize&&count==1}}
+    {{let r=((props.rotate||0)+360)%360}}
+    {{if ctor.modifier.resizeX&&!props.locked&&!props.widthLocked}}
+    <div style="left:{{=props.width+2*space-size-1}}px;top:{{=(props.height+2*space)/2-space-size}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ew{{else if r<=67.5||(r>202.5&&r<=247.5)}}nwse{{else if r<=112.5||(r>247.5&&r<=292.5)}}ns{{else if r<=157.5||(r>292.5&&r<=337.5)}}nesw{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'rm'})"></div>
+    {{/if}}
+    {{if ctor.modifier.resizeY&&!props.locked&&!props.heightLocked}}
+    <div style="left:{{=(props.width+2*space)/2-space-size}}px;top:{{=props.height+2*space-size-1}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ns{{else if r<=67.5||(r>202.5&&r<=247.5)}}nesw{{else if r<=112.5||(r>247.5&&r<=292.5)}}ew{{else if r<=157.5||(r>292.5&&r<=337.5)}}nwse{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'mb'})"></div>
+    {{/if}}
+    {{if ctor.modifier.resizeXY&&!props.locked&&!(props.widthLocked||props.heightLocked)}}
+    <div style="left:{{=props.width+2*space-size-1}}px;top:{{=props.height+2*space-size-1}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}nwse{{else if r<=67.5||(r>202.5&&r<=247.5)}}ns{{else if r<=112.5||(r>247.5&&r<=292.5)}}nesw{{else if r<=157.5||(r>292.5&&r<=337.5)}}ew{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'rb'})"></div>
+    {{/if}}
+    {{/if}}
+</div>
+{{/if}}
+

@@ -1,0 +1,51 @@
+.e-table{
+    border-collapse:collapse;
+    border:1px solid #000;
+    border-spacing: 0;
+}
+.cell{
+    border-collapse: collapse;
+    border: 1px solid #000;
+    position: relative;
+    padding: 0
+}
+.cell-content{
+    overflow: hidden;
+    position: relative;
+    width:100%;
+    height:100%;
+}
+.focus,
+.dashed{
+    border:1px solid #ff9999;
+    left:-1px;
+    top:-1px;
+    right:-1px;
+    bottom:-1px;
+    position:absolute;
+    pointer-events: none;
+}
+.handle{
+    background: #ff9999;
+    position: absolute;
+    z-index: 3;
+    pointer-events: all;
+}
+.handle-bottom{
+    cursor: ns-resize;
+}
+.handle-right{
+    cursor: ew-resize;
+}
+.del{
+    left:-20px;
+    top:20px;
+    color:#666;
+    cursor: pointer;
+}
+.hide-border{
+    border-style: dotted;
+}
+.dashed{
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.2) inset;
+}

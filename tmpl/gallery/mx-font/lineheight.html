@@ -1,0 +1,5 @@
+<mx-number class="number" @disabled="{{=disabled}}" @#readonly="{{=disabled}}" @min="{{=min}}" value="{{=value[0]}}" mx-input="@{update}({from:'number'})" empty="true" />
+<mx-dropdown class="dropdown" @disabled="{{=disabled}}" selected="{{=value[1]}}" mx-change="@{update}({from:'dropdown'})">
+    <mx-dropdown.item value="mm">mm</mx-dropdown.item>
+    <mx-dropdown.item value="%">%</mx-dropdown.item>
+</mx-dropdown>

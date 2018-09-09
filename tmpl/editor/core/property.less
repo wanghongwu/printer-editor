@@ -1,0 +1,65 @@
+.box{
+    width:245px;
+    height:100%;
+    background: #EDEEF3;
+    border-left:solid 1px #ccc;
+    position: relative;
+    z-index: 3000;
+}
+.box-panel{
+    height:calc(~"100% - 25px");
+    overflow-y: scroll;
+    padding:0 0 100px;
+}
+.group-title{
+    background: #ccc;
+    padding:0 10px;
+    height: 25px;
+    line-height: 25px;
+    background-image: -webkit-gradient(linear,0% 0%, 0% 100%, from(#eee), to(#ccc), color-stop(0.0,#eee));
+}
+.group-item{
+    line-height: 32px;
+}
+.group-item-spliter{
+    height: 1px;
+    line-height: 1px;
+    margin: 5px 0;
+    background: rgba(0,0,0,0.20);
+    background: -webkit-gradient(linear, left top, right top, from(rgba(165, 69, 243, 0.0)), color-stop(0.5, rgba(125, 118, 132, 0.33)), to(rgba(165, 69, 243, 0.0)));
+}
+.group-item-title{
+    width:80px;
+    text-align: right;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align:top;
+}
+.icon{
+    width:24px;
+    height:24px;
+    background: #474761;
+    cursor: move;
+    margin-top:4px;
+    border-radius: 4px;
+}
+
+.desc{
+    cursor: pointer;
+    width:180px;
+}
+.text{
+    width: 140px;
+    width: 140px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.del{
+    margin-top: 8px;
+    color:#848282;
+    visibility: hidden;
+}
+.desc:hover .del{
+    visibility: visible
+}
