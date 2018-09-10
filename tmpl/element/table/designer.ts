@@ -30,28 +30,32 @@ export default Designer.extend({
                 hideBorder: false,
                 rows: [{
                     tag: 'tr',
-                    height: CNC.TABLE_ROWS_HEIGHT,
                     cells: [{
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
                 }, {
                     tag: 'tr',
-                    height: CNC.TABLE_ROWS_HEIGHT,
                     cells: [{
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
                 }],
@@ -91,13 +95,13 @@ export default Designer.extend({
             tip: '分页打印',
             key: 'splitable',
             type: PropsDesc.BOOLEAN
-        }, {
+        }, /*{
             tip: '均分宽',
             type: PropsDesc.CELLCOLSHARE
         }, {
             tip: '均分高',
             type: PropsDesc.CELLROWSHARE
-        }, {
+        }, */{
             tip: '单元格操作',
             type: PropsDesc.CELLOPERATE,
             gtKey: 'rowIndex',

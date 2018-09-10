@@ -2,13 +2,14 @@ import Magix from 'magix';
 import Convert from '../util/converter';
 import CNC from './const';
 import Elements from '../element/index';
+import Table from '../util/table';
 import $ from '$';
 let State = Magix.State;
 let Has = Magix.has;
 let ToMap = Magix.toMap;
 let Decoder_OpenReg = /^<([a-z\d]+)((?:\s+[-A-Za-z\d_:]+(?:="[^"]*")?)*)\s*(\/?)>/,
     Decoder_AttrReg = /([-A-Za-z\d_:]+)(?:="([^"]*)")?/g,
-    Decoder_CloseReg = /^<\/[a-z\d]+>/;
+    Decoder_CloseReg = /^<\/([a-z\d]+)>/;
 let DecodeXML = xml => {
     let count = xml.length,
         current = 0,
@@ -98,7 +99,10 @@ let DecodeXML = xml => {
             } else if (html[1] == '/') {
                 match = html.match(Decoder_CloseReg);
                 if (match) {
-                    stack.pop();
+                    let l = stack.pop();
+                    if (match[1] != l['@{~v#node.tag}']) {
+                        throw new Error('closed tag "' + match[1] + '" umatch opened tag "' + l['@{~v#node.tag}'] + '"');
+                    }
                     currentParent = stack[stack.length - 1];
                     current += moveLength = match[0].length;
                     chars = 0;
@@ -791,11 +795,8 @@ let Decoders = {
             props: defaults
         };
         let children = node['@{~v#node.children}'];
-        let maxWidth = -1,
-            maxHeight = defaults.height;
         if (children) {
             defaults.rows = [];
-            let rowHeight = 0;
             for (let row of children) {
                 let record;
                 let tag = row['@{~v#node.tag}'];
@@ -806,13 +807,7 @@ let Decoders = {
                     };
                 } else {
                     let cells = [];
-                    let height = ToMM(CNC.TABLE_ROWS_HEIGHT);
                     let cols = row['@{~v#node.children}'];
-                    let rowWidth = 0;
-                    let xheight = Number(row['@{~v#node.attrs.map}'].height);
-                    if ((xheight || xheight === 0) && xheight >= 0) {
-                        height = xheight;
-                    }
                     if (cols) {
                         for (let cell of cols) {
                             let ct = cell['@{~v#node.tag}'];
@@ -822,19 +817,19 @@ let Decoders = {
                                     text: cell['@{~v#node.text}']
                                 });
                             } else {
-                                let width = ToMM(CNC.TABLE_CELLS_WIDTH);
+                                let width = -1, height = -1;
                                 let xwidth = Number(cell['@{~v#node.attrs.map}'].width);
                                 let rowspan = Number(cell['@{~v#node.attrs.map}'].rowspan) || 1;
                                 let colspan = Number(cell['@{~v#node.attrs.map}'].colspan) || 1;
-                                if ((xwidth || xwidth === 0) && xwidth >= 0) {
+                                if (xwidth >= 0) {
                                     width = xwidth;
                                 }
                                 let cheight = Number(cell['@{~v#node.attrs.map}'].height);
-                                if ((cheight || cheight === 0) && cheight >= 0) {
+                                if (cheight >= 0) {
                                     height = cheight;
                                 }
                                 width = ToPixel(width);
-                                rowWidth += width;
+                                height = ToPixel(height);
                                 let children = [];
                                 let walk = (nodes) => {
                                     if (nodes) {
@@ -855,6 +850,7 @@ let Decoders = {
                                 cells.push({
                                     tag: ct,
                                     width,
+                                    height,
                                     rowspan,
                                     colspan,
                                     children
@@ -862,25 +858,15 @@ let Decoders = {
                             }
                         }
                     }
-                    if (maxWidth < rowWidth) {
-                        maxWidth = rowWidth;
-                    }
-                    height = ToPixel(height);
-                    rowHeight += height;
                     record = {
                         tag,
-                        height,
                         cells
                     };
                 }
                 defaults.rows.push(record);
             }
-            maxHeight = rowHeight;
+            Table["@{update.cells.metas}"](defaults);
         }
-        if (maxWidth > -1) {
-            defaults.width = maxWidth + 1;
-        }
-        defaults.height = maxHeight + 1;
         RecordScripts(e, node, prt);
         stage.elements.push(e);
     },

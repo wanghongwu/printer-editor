@@ -5,7 +5,6 @@ import * as Dragdrop from '../../gallery/mx-dragdrop/index';
 import Table from '../../util/table';
 import CNC from '../../cainiao/const';
 import Keys from '../../editor/const/keys';
-import Transform from '../../util/transform';
 const KeysMap = {
     [Keys.L]: 'left',
     [Keys.R]: 'right',
@@ -89,38 +88,36 @@ export default View.extend<Editor.Dragdrop>({
         let { props, id } = this['@{data}'];
         if (props.locked) return;
         let rows = props.rows;
-        let { ri: rowIndex,
-            ci: colIndex,
-            pci: pureCellIndex,
-            type } = e.params;
+        let {
+            cell,
+            type,
+            ri: rowIndex,
+            ci: colIndex } = e.params;
+        if (!cell) {
+            cell = Table["@{get.cell.by.location}"](rows, rowIndex, colIndex);
+        }
         let beginX = e.pageX, beginY = e.pageY;
-        let row = rows[rowIndex];
-        let startHeight = row ? row.height : 0;
-        let startWidth = row ? (row.cells[colIndex] ? row.cells[colIndex].width : 0) : 0;
+        let startHeight = cell.height;
+        let startWidth = cell.width;
         let moved = false;
+        if (!cell.id) {
+            cell.id = Magix.guid('td_');
+        }
         this.dragdrop(e.eventTarget, (evt) => {
             let dx = evt.pageX - beginX;
             let dy = evt.pageY - beginY;
-            let update = false;
             if (type == 'row') {
-                let height = startHeight + dy;
-                if (row) {
-                    row.height = Math.max(0, height);
-                    update = true;
-                }
+                cell.height = Math.max(startHeight + dy, 0);
             } else if (type == 'col') {
-                let width = Math.max(0, startWidth + dx);
-                update = Table["@{set.col.width}"](rows, pureCellIndex, width);
+                cell.width = Math.max(0, startWidth + dx);
             }
-            if (update) {
-                moved = true;
-                Table["@{table.fix}"](props);
-                State.fire('@{property&element.property.change}', {
-                    data: props,
-                    eId: id
-                });
-                State.fire('@{property&element.property.update}');
-            }
+            moved = true;
+            Table["@{update.cells.metas}"](props, cell);
+            State.fire('@{property&element.property.change}', {
+                data: props,
+                eId: id
+            });
+            State.fire('@{property&element.property.update}');
         }, () => {
             if (moved) {
                 State.fire('@{history&save.snapshot}');
@@ -150,8 +147,8 @@ export default View.extend<Editor.Dragdrop>({
         let children = [];
         if (row && row.cells[colIndex]) {
             let cell = row.cells[colIndex];
-            height = row.height || CNC.TABLE_ROWS_HEIGHT;
-            width = cell.width || CNC.TABLE_CELLS_WIDTH;
+            height = cell.height;
+            width = cell.width;
             if (cell.children) {
                 children = cell.children;
             } else {
@@ -199,7 +196,6 @@ export default View.extend<Editor.Dragdrop>({
                 State.fire('@{history&save.snapshot}');
             } else if (v.id >= 8 && v.id <= 13) {
                 Table["@{operate.row.or.col}"](props, MenusMap[v.id]);
-                Table["@{table.fix}"](props);
                 State.fire('@{property&element.property.update}');
                 State.fire('@{property&element.property.change}', {
                     data: props,

@@ -2,7 +2,6 @@ import Magix, { State } from 'magix';
 import $ from '$';
 import * as Monitor from '../../gallery/mx-monitor/index';
 import Convert from '../../util/converter';
-import Serializer from '../../cainiao/serializer';
 import CNC from '../../cainiao/const';
 import DesignerHistory from '../core/history';
 Magix.applyStyle('@toolbar.less');
@@ -48,21 +47,11 @@ export default Magix.View.extend({
             elements,
             page: State.get('page')
         };
-        let xml = Serializer.encode(stage);
-        let old = JSON.stringify(stage.page);
         let me = this;
         me.mxDialog('@./code', {
             width: 1100,
-            enter(xml) {
-                let json;
-                try {
-                    json = Serializer.decode(xml);
-                } catch (e) {
-                    me.alert(e.message);
-                    return;
-                }
-                console.log(json);
-                if (old != JSON.stringify(json.page)) {
+            enter(json) {
+                if (json.pageChange) {
                     State.set({
                         page: json.page
                     });
@@ -78,7 +67,7 @@ export default Magix.View.extend({
                 State.fire('@{stage&select.elements.change}');
                 State.fire('@{history&save.snapshot}');
             },
-            xml
+            stage
         });
     },
     '@{show}'() {

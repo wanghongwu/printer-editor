@@ -25,7 +25,6 @@ export default Magix.View.extend({
             col = row.cells[0];
         }
         this.updater.set({
-            row,
             col,
             props: data.props,
             read: Convert["@{pixel.to.millimeter}"],
@@ -39,18 +38,16 @@ export default Magix.View.extend({
     '@{set}<input>'(e) {
         let { type } = e.params;
         let num = Convert["@{millimeter.to.pixel}"](e.value);
-        let { props, row } = this.updater.get();
+        let { props, col } = this.updater.get();
         if (type == 'row') {
-            row.height = num;
+            col.height = num;
         } else if (type == 'col') {
-            for (let r of props.rows) {
-                let c = r.cells[props.colIndex];
-                if (c) {
-                    c.width = num;
-                }
-            }
+            col.width = num;
         }
-        Table["@{table.fix}"](props);
+        if (!col.id) {
+            col.id = Magix.guid('td_');
+        }
+        Table["@{update.cells.metas}"](props, col);
         this['@{owner.node}'].trigger('change');
     }
 });

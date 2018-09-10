@@ -254,7 +254,14 @@ let Encoder = {
                     if (c.tag == '#script') {
                         table += `${s4}${c.text}`;
                     } else if (c.tag == 'td') {
-                        table += `${s4}<td width="${ToMM(c.width)}" height="${ToMM(r.height)}">`;
+                        table += `${s4}<td width="${ToMM(c.width)}" height="${ToMM(c.height)}"`;
+                        if (c.rowspan > 1) {
+                            table += ` rowspan="${c.rowspan}"`;
+                        }
+                        if (c.colspan > 1) {
+                            table += ` colspan="${c.colspan}"`;
+                        }
+                        table += `>`;
                         if (c.children && c.children.length) {
                             for (let cc of c.children) {
                                 let encoder = Encoder[cc.type];
