@@ -5,6 +5,22 @@ import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
 import DesignerHistory from '../core/history';
 Magix.applyStyle('@toolbar.less');
+const ApplyByJSON = json => {
+    if (json.pageChange) {
+        State.set({
+            page: json.page
+        });
+        State.fire('@{stage&ui.change}');
+    }
+    let e = State.get('@{stage&elements}');
+    e.length = 0;
+    e.push.apply(e, json.elements);
+    e = State.get('@{stage&select.elements}');
+    e.length = 0;
+    State.fire('@{stage&elements.change}');
+    State.fire('@{stage&select.elements.change}');
+    State.fire('@{history&save.snapshot}');
+};
 export default Magix.View.extend({
     tmpl: '@toolbar.html',
     init() {
@@ -51,23 +67,25 @@ export default Magix.View.extend({
         me.mxDialog('@./code', {
             width: 1100,
             enter(json) {
+                ApplyByJSON(json);
                 if (json.pageChange) {
-                    State.set({
-                        page: json.page
-                    });
-                    State.fire('@{stage&ui.change}');
                     me.render();
                 }
-                let e = State.get('@{stage&elements}');
-                e.length = 0;
-                e.push.apply(e, json.elements);
-                e = State.get('@{stage&select.elements}');
-                e.length = 0;
-                State.fire('@{stage&elements.change}');
-                State.fire('@{stage&select.elements.change}');
-                State.fire('@{history&save.snapshot}');
             },
             stage
+        });
+    },
+    '@{test.templates}<click>'() {
+        let me = this;
+        me.mxDialog('@./template', {
+            width: 600,
+            enter(json) {
+                ApplyByJSON(json);
+                if (json.pageChange) {
+                    me.render();
+                }
+            },
+            page: State.get('page')
         });
     },
     '@{show}'() {
@@ -146,8 +164,8 @@ export default Magix.View.extend({
                 e.length = 0;
                 State.fire('@{stage&elements.change}');
                 State.fire('@{stage&select.elements.change}');
+                State.fire('@{history&save.snapshot}');
             });
-            State.fire('@{history&save.snapshot}');
         }
     },
     '@{do.zoom}<click>'(e) {

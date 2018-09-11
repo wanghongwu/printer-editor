@@ -7,7 +7,6 @@ Magix.applyStyle('@code.less');
 export default Magix.View.extend({
     tmpl: '@code.html',
     init(data) {
-        console.log(data);
         this['@{stage}'] = data.stage;
         this['@{dialog.entity}'] = data.dialog;
         this['@{enter.fn}'] = data.enter;

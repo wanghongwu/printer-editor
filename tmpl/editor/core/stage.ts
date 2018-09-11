@@ -6,6 +6,7 @@ import Convert from '../../util/converter';
 import Keys from '../const/keys';
 import { StageSelectElements, StageElements, Clipboard } from './workaround';
 import DesignerHistory from './history';
+import Store from './store';
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -77,6 +78,7 @@ export default View.extend<Editor.Dragdrop>({
                 elements
             });
             me.render();
+            Store["@{save}"]();
         });
         State.on('@{stage&ui.change}', (e: Editor.StageScaleEvent) => {
             if (e.scale) {
@@ -139,6 +141,24 @@ export default View.extend<Editor.Dragdrop>({
         });
         State.on('@{toolbar&item.click}', e => {
             me['@{cmd.action}'](e);
+        });
+
+        State.on('@{stage&lock.scroll}', (e: Editor.ScrollLockEvent) => {
+            let bar = $('#stayBar');
+            let scroll = $('#app_stage');
+            if (e.locked) {
+                let width = scroll.prop('scrollWidth') + 100;
+                let height = scroll.prop('scrollHeight') + 100;
+                let page = State.get('page');
+                bar.css({
+                    height,
+                    width,
+                    marginTop: -(page.height + 100),
+                    display: 'block'
+                });
+            } else {
+                bar.hide();
+            }
         });
         me.updater.set({
             elements: State.get('@{stage&elements}')
@@ -207,7 +227,7 @@ export default View.extend<Editor.Dragdrop>({
                     me['@{last.ids}'] = ids;
                     StageSelectElements['@{set.all}'](elements);
                 }
-            }, 100), () => {
+            }, 50), () => {
                 if (moved) {
                     delete me['@{last.ids}'];
                     finished = true;

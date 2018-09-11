@@ -20,20 +20,27 @@ export default Magix.View.extend<{
             this.syncScroll();
         });
         this['@{scroll.node}'] = node;
+        let updater = this.updater;
+        let updateLines = () => {
+            updater.set({
+                xHelpers: State.get('@{stage&x.help.lines}'),
+                yHelpers: State.get('@{stage&y.help.lines}')
+            });
+        };
         let timer = 0;
         let update = () => {
             clearTimeout(timer);
             timer = setTimeout(() => {
+                updateLines();
                 this.rerender(true);
                 this.syncScroll();
             }, 30);
         };
-        this.updater.set({
+        updater.set({
             sLeft: 0,
-            sTop: 0,
-            xHelpers: [],
-            yHelpers: []
+            sTop: 0
         });
+        updateLines();
         State.on('@{stage&ui.change}', update);
         State.on('@{history&status.change}', update);
         this['@{owner.node}'] = $('#' + this.id);
@@ -172,6 +179,7 @@ export default Magix.View.extend<{
         this.updater.digest({
             xHelpers
         });
+        State.fire('@{history&save.snapshot}');
     },
     '@{add.y.help.line}<click>'(e) {
         let offset = this['@{owner.node}'].offset();
@@ -187,6 +195,7 @@ export default Magix.View.extend<{
         this.updater.digest({
             yHelpers
         });
+        State.fire('@{history&save.snapshot}');
     },
     '@{delete.help.line}<click>'(e) {
         let { type, id } = e.params;
@@ -203,6 +212,7 @@ export default Magix.View.extend<{
         updater.digest({
             [key]: list
         });
+        State.fire('@{history&save.snapshot}');
     },
     '@{drag.help.line}<mousedown>'(e) {
         if (e.target != e.eventTarget) {
@@ -220,8 +230,10 @@ export default Magix.View.extend<{
             }
         }
         if (item) {
-            let start = updater.get(type + 'Start');
+            let start = updater.get(type + 'Start'),
+                moved = false;
             this.dragdrop(e.target, (evt) => {
+                moved = true;
                 let oft;
                 if (type == 'x') {
                     oft = evt.pageX - e.pageX + current;
@@ -232,6 +244,10 @@ export default Magix.View.extend<{
                 updater.digest({
                     [key]: list
                 });
+            }, () => {
+                if (moved) {
+                    State.fire('@{history&save.snapshot}');
+                }
             });
         }
     },

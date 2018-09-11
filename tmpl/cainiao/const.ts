@@ -5,9 +5,9 @@ export default {
     XSI_NAME_SPACE: 'http://www.w3.org/2001/XMLSchema-instance',
     SCHEMA_LOCATION_NAME_SPACE: 'http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd',
     CLOUD_PRINT_NAME_SPACE: 'http://cloudprint.cainiao.com/print',
-    PAGE_WIDTH_MAX: 1000,//page最大宽度，单位是mm
+    PAGE_WIDTH_MAX: 1200,//page最大宽度，单位是mm
     PAGE_WIDTH_MIN: 1,//最小宽度，单位是mm
-    PAGE_HEIGHT_MAX: 1000,//最大高度，单位是mm
+    PAGE_HEIGHT_MAX: 1200,//最大高度，单位是mm
     PAGE_HEIGHT_MIN: 1,//最小高度，单位是mm
     PAGE_WIDTH_DEFAULT: 793.7,//默认宽，单位是px
     PAGE_HEIGHT_DEFAULT: 1122.51,//默认高，单位是px //以上单位不一致只是配置上的，方便程序读取
@@ -46,7 +46,11 @@ export default {
     TABLE_ROWS_HEIGHT: 20,//表格默认行高，单位px
     TABLE_CELLS_WIDTH: 200,//表格默认宽度，单位px
     HISTORY_MAX: 100,//历史记录最大数量
-    PAGES: [{//常用尺寸
+    PAGES: [{
+        text: 'A1',
+        width: 594,
+        height: 841
+    }, {//常用尺寸
         text: 'A2',
         width: 420,
         height: 594
@@ -67,6 +71,14 @@ export default {
         width: 105,
         height: 148
     }, {
+        text: 'A7',
+        width: 74,
+        height: 105
+    }, {
+        text: 'B1',
+        width: 707,
+        heihgt: 1000
+    }, {
         text: 'B2',
         width: 500,
         height: 707
@@ -84,8 +96,16 @@ export default {
         height: 250
     }, {
         text: 'B6',
-        width: 126,
+        width: 125,
         height: 176
+    }, {
+        text: 'B7',
+        width: 88,
+        height: 125
+    }, {
+        text: 'C1',
+        width: 648,
+        height: 917
     }, {
         text: 'C2',
         width: 458,
@@ -106,5 +126,9 @@ export default {
         text: 'C6',
         width: 114,
         height: 162
+    }, {
+        text: 'C7',
+        width: 81,
+        height: 114
     }]
 };

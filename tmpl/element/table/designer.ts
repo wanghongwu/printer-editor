@@ -95,13 +95,13 @@ export default Designer.extend({
             tip: '分页打印',
             key: 'splitable',
             type: PropsDesc.BOOLEAN
-        }, /*{
+        }, {
             tip: '均分宽',
             type: PropsDesc.CELLCOLSHARE
         }, {
             tip: '均分高',
             type: PropsDesc.CELLROWSHARE
-        }, */{
+        }, {
             tip: '单元格操作',
             type: PropsDesc.CELLOPERATE,
             gtKey: 'rowIndex',

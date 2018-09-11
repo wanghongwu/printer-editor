@@ -89,6 +89,9 @@ export default Magix.View.extend<Editor.Dragdrop>({
         let data = me.updater.get();
         let { props, ctor } = data;
         if (props.locked) return;
+        State.fire('@{stage&lock.scroll}', {
+            locked: 1
+        });
         let rotate = props.rotate || 0;
         let { key } = e.params;
         rotate = (rotate + 360) % 360;
@@ -196,6 +199,7 @@ export default Magix.View.extend<Editor.Dragdrop>({
             if (moved) {
                 State.fire('@{history&save.snapshot}');
             }
+            State.fire('@{stage&lock.scroll}');
         });
     },
     '@{start.rotate}<mousedown>'(e) {
@@ -212,6 +216,9 @@ export default Magix.View.extend<Editor.Dragdrop>({
         let rotate = props.rotate;
         let sdeg = Math.atan2(pos.y - c.y, pos.x - c.x) - rotate * Math.PI / 180,
             moved = false;
+        State.fire('@{stage&lock.scroll}', {
+            locked: 1
+        });
         me.dragdrop(e.eventTarget, (evt) => {
             let pos = Convert["@{real.to.nearest.coord}"](me['@{owner.node}'], {
                 x: evt.pageX,
@@ -229,6 +236,7 @@ export default Magix.View.extend<Editor.Dragdrop>({
             if (moved) {
                 State.fire('@{history&save.snapshot}');
             }
+            State.fire('@{stage&lock.scroll}');
         });
     },
     '@{text.editable}<dblclick>'(e) {

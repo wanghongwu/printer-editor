@@ -3,7 +3,9 @@ import ClickDesc from './const/click-desc';
 import * as Dialog from '../gallery/mx-dialog/index';
 import CNC from '../cainiao/const';
 import DesignerHistory from './core/history';
-//import Elements from '../element/index';
+import Store from './core/store';
+import Elements from '../element/index';
+const Assign = Magix.mix;
 Magix.applyStyle('@index.less');
 Magix.View.merge(Dialog);
 Magix.View.merge({
@@ -25,6 +27,30 @@ Magix.View.merge({
         };
     }
 });
+let ApplyStage = (json: Editor.SnapshotStatus) => {
+    let page = State.get('page');
+    let elements = State.get('@{stage&elements}');
+    let select = State.get('@{stage&select.elements}');
+    let { elements: lElements, map } = Elements.byJSON(json.elements);
+    Assign(page, json.page);
+    elements.length = 0;
+    elements.push.apply(elements, lElements);
+    select.length = 0;
+    let sMap = {};
+    for (let s of json.select) {
+        let e = map[s.id];
+        if (e) {
+            sMap[e.id] = 1;
+            select.push(e);
+        }
+    }
+    State.set({
+        '@{stage&scale}': json.scale,
+        '@{stage&select.elements.map}': sMap,
+        '@{stage&x.help.lines}': json.xLines,
+        '@{stage&y.help.lines}': json.yLines
+    });
+};
 export default Magix.View.extend({
     tmpl: '@index.html',
     init() {
@@ -39,17 +65,26 @@ export default Magix.View.extend({
                 'xmlns:editor': CNC.EDITOR_NAME_SPACE,
                 width: CNC.PAGE_WIDTH_DEFAULT * CNC.SCALE_DEFAULT,
                 height: CNC.PAGE_HEIGHT_DEFAULT * CNC.SCALE_DEFAULT,
-                splitable: false
+                splitable: true
             },
             '@{stage&scale}': CNC.SCALE_DEFAULT,
             '@{toolbox&drag.element}': null,//工具栏选中的元素
             '@{stage&elements}': [],//画布上展示的元素
             '@{property&hover.active.element}': null,//属性栏鼠标悬停
             '@{stage&select.elements}': [],//画布上选中的元素
-            '@{stage&select.elements.map}': {}//画面上选中元素的hashmap
+            '@{stage&select.elements.map}': {},//画面上选中元素的hashmap
+            '@{stage&x.help.lines}': [],
+            '@{stage&y.help.lines}': []
         };
-        DesignerHistory["@{set.default}"](stage);
         State.set(stage);
+        let s = Store["@{read}"]();
+        if (s && s.success) {
+            ApplyStage(s);
+        }
+        DesignerHistory["@{save.default}"]();
+        State.on('@{stage&apply.stage}', (e: Editor.ApplyStageEvent) => {
+            ApplyStage(e.json);
+        });
     },
     render() {
         this.updater.digest();

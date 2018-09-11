@@ -47,7 +47,7 @@ export default Magix.View.extend({
         if (!col.id) {
             col.id = Magix.guid('td_');
         }
-        Table["@{update.cells.metas}"](props, col);
+        Table["@{update.cells.metas}"](props, { col });
         this['@{owner.node}'].trigger('change');
     }
 });

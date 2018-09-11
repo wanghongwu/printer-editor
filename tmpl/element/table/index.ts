@@ -94,7 +94,7 @@ export default View.extend<Editor.Dragdrop>({
             ri: rowIndex,
             ci: colIndex } = e.params;
         if (!cell) {
-            cell = Table["@{get.cell.by.location}"](rows, rowIndex, colIndex);
+            cell = Table["@{get.cell.by.pure.location}"](rows, rowIndex, colIndex);
         }
         let beginX = e.pageX, beginY = e.pageY;
         let startHeight = cell.height;
@@ -103,6 +103,9 @@ export default View.extend<Editor.Dragdrop>({
         if (!cell.id) {
             cell.id = Magix.guid('td_');
         }
+        State.fire('@{stage&lock.scroll}', {
+            locked: 1
+        });
         this.dragdrop(e.eventTarget, (evt) => {
             let dx = evt.pageX - beginX;
             let dy = evt.pageY - beginY;
@@ -112,7 +115,7 @@ export default View.extend<Editor.Dragdrop>({
                 cell.width = Math.max(0, startWidth + dx);
             }
             moved = true;
-            Table["@{update.cells.metas}"](props, cell);
+            Table["@{update.cells.metas}"](props, { col: cell });
             State.fire('@{property&element.property.change}', {
                 data: props,
                 eId: id
@@ -122,6 +125,7 @@ export default View.extend<Editor.Dragdrop>({
             if (moved) {
                 State.fire('@{history&save.snapshot}');
             }
+            State.fire('@{stage&lock.scroll}');
         });
     },
     '@{table.prevent}<contextmenu>'(e: MouseEvent & {

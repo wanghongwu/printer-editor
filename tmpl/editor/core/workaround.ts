@@ -701,14 +701,20 @@ export let StageElements = {
         disabled[Contextmenu.allId] = !coll.length;
         disabled[Contextmenu.pasteId] = !copyList.length;
         if (elements.length === 1) {
+            let e = elements[0];
+            let locked = e.props.locked;
             if (tableId && elements[0].id == tableId) {
                 listKey = 4;
                 list = Contextmenu.tableCell;
+                disabled[Contextmenu.cellTopId] = locked;
+                disabled[Contextmenu.cellBottomId] = locked;
+                disabled[Contextmenu.cellLeftId] = locked;
+                disabled[Contextmenu.cellRightId] = locked;
+                disabled[Contextmenu.cellDeleteColId] = locked;
+                disabled[Contextmenu.cellDeleteRowId] = locked;
             } else {
                 listKey = 2;
                 list = Contextmenu.singleElement;
-                let e = elements[0];
-                let locked = e.props.locked;
                 let moveLocked = locked || e.props.useCNStyle;
                 let count = coll.length;
                 let atTop = count ? coll[count - 1].id == e.id : true;

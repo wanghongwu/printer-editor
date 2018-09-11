@@ -1,6 +1,7 @@
 import Magix, { View, State } from 'magix';
 import PropsDesc from '../const/props-desc';
 import Transform from '../../util/transform';
+import Table from '../../util/table';
 import $ from '$';
 Magix.applyStyle('@property.less');
 export default View.extend({
@@ -9,7 +10,7 @@ export default View.extend({
         let me = this;
         let update = me['@{throttle}'](() => {
             me.render();
-        }, 300);
+        }, 100);
         State.on('@{stage&select.elements.change}', update);
         State.on('@{property&element.property.update}', update);
     },
@@ -47,30 +48,17 @@ export default View.extend({
         let updater = this.updater;
         let data = updater.get('data');
         let eId = updater.get('eId');
-        let rows = data.rows;
-        let type = e.params.type;
-        if (type == 'col') {
-            for (let r of rows) {
-                let cells = r.cells;
-                if (cells) {
-                    let w = data.width / cells.length;
-                    for (let c of cells) {
-                        c.width = w;
-                    }
-                }
-            }
-        } else if (type == 'row') {
-            let h = data.height / rows.length;
-            for (let r of rows) {
-                r.height = h;
-            }
-        }
-        State.fire('@{property&element.property.change}', {
-            data,
-            eId
+        let u = Table["@{update.cells.metas}"](data, {
+            share: e.params.type
         });
-        this.render();
-        State.fire('@{history&save.snapshot}');
+        if (u) {
+            State.fire('@{property&element.property.change}', {
+                data,
+                eId
+            });
+            this.render();
+            State.fire('@{history&save.snapshot}');
+        }
     },
     '@{prop.change}<input,change>'(e) {
         let updater = this.updater;

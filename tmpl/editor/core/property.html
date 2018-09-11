@@ -44,9 +44,9 @@
             {{else if prop.type==desc.CELLFOCUS}}
                 <mx-cell.focus @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLCOLSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'col'})">单元格均分宽度</button>
+                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">单元格均分宽度</button>
             {{else if prop.type==desc.CELLROWSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'row'})">单元格均分高度</button>
+                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">单元格均分高度</button>
             {{/if}}
             {{/if}}
             {{/if}}

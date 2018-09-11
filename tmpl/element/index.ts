@@ -1,6 +1,7 @@
 /**
  * 元素列表
  */
+import Magix from 'magix';
 import HLine from './hline/designer';
 import VLine from './vline/designer';
 import HText from './htext/designer';
@@ -20,5 +21,45 @@ export default {
     list: List,
     byType(type) {
         return EMap[type];
+    },
+    byJSON(elements) {
+        let es = [],
+            map = {},
+            nId;
+        let walk = (items, coll) => {
+            for (let i of items) {
+                if (i.type == '#script') {
+                    coll.push(i);
+                } else {
+                    nId = Magix.guid('e_');
+                    if (i.id) {
+                        map[i.id] = i;
+                    }
+                    i.id = nId;
+                    i.ctor = this.byType(i.type);
+                    coll.push(i);
+                }
+                if (i.type == 'table') {
+                    for (let r of i.props.rows) {
+                        if (r.tag == 'tr') {
+                            for (let c of r.cells) {
+                                if (c.tag == 'td') {
+                                    if (c.children) {
+                                        let nc = [];
+                                        walk(c.children, nc);
+                                        c.children = nc;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        walk(elements, es);
+        return {
+            elements: es,
+            map
+        };
     }
 };

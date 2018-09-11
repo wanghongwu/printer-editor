@@ -4,7 +4,8 @@
         <i class="iconfont item mr20 flipx{{if !hs.canRedo}} icon-disabled{{/if}}" title="重做(Ctrl+Y)"{{if hs.canRedo}} mx-click="@{set.history}({type:'redo'})"{{/if}}>&#xe682;</i>
         <i class="iconfont item" title="新建" mx-click="@{new}()">&#xe615;</i>
         <!-- <i class="iconfont item" title="预览" mx-click="@{preview}()">&#xe67e;</i> -->
-        <i class="iconfont item mr20" mx-click="@{save}()" title="代码">&#xe611;</i>
+        <i class="iconfont item" mx-click="@{save}()" title="代码">&#xe611;</i>
+        <i class="iconfont item mr20" mx-click="@{test.templates}()" title="测试模板">&#xe601;</i>
         {{if selectCount>1}}
         <i class="iconfont item" mx-click="@{align}({to:'left'})" title="左对齐">&#xe70b;</i>
         <i class="iconfont item" mx-click="@{align}({to:'right'})" title="右对齐">&#xe70c;</i>
