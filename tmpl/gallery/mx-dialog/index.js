@@ -7,7 +7,6 @@ ver:2.0.3
 let Magix = require('magix');
 require('./alert');
 require('./confirm');
-require('./prompt');
 Magix.applyStyle('@index.less');
 let $ = require('$');
 let Win = $(window);
@@ -120,9 +119,6 @@ module.exports = Magix.View.extend({
         alert(content, enterCallback, title) {
             this.confirm(content, enterCallback, null, title, 'alert');
         },
-        prompt(content, enterCallback, cancelCallback, title) {
-            this.confirm(content, enterCallback, cancelCallback, title, 'prompt');
-        },
         confirm(content, enterCallback, cancelCallback, title, view) {
             this.mxDialog('@./' + (view || 'confirm'), {
                 body: content,
@@ -143,7 +139,7 @@ module.exports = Magix.View.extend({
             let dOptions = {
                 view: view
             };
-            seajs.use(view, me.wrapAsync(V => {
+            Magix.use(view, me.wrapAsync(V => {
                 let key = '$dlg_' + view;
                 if (me[key]) return;
                 me[key] = 1;

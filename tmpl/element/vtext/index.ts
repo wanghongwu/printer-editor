@@ -26,6 +26,15 @@ export default View.extend({
             },
             toHTML: Convert["@{pre.to.html}"]
         });
+        let update = (e) => {
+            this.updater.digest({
+                lang: e.lang
+            });
+        };
+        State.on('@{lang.change}', update);
+        this.on('destroy', () => {
+            State.off('@{lang.change}', update);
+        });
     },
     assign(data) {
         this['@{data}'] = data;

@@ -15,11 +15,11 @@ export default {
     SCALE_MAX: 5,//最大缩放级别
     SCALE_MIN: 0.5,//最小缩放级别
     SCALE_STEP: 0.25,//一次缩放比率
-    LINE_TYPES: [{ text: '实线', value: 'solid' },//线条类型
-    { text: '虚线', value: 'dashed' },
-    { text: '点线', value: 'dotted' }],
-    FONT_FAMILIES: [{ "value": 'SimSun', "text": '宋体' },//字体集合
-    { "value": 'SimHei', "text": '黑体' },
+    LINE_TYPES: [{ text: '@{element.line.solid}', value: 'solid' },//线条类型
+    { text: '@{element.line.dashed}', value: 'dashed' },
+    { text: '@{element.line.dotted}', value: 'dotted' }],
+    FONT_FAMILIES: [{ "value": 'SimSun', "text": '@{font.simsun}' },//字体集合
+    { "value": 'SimHei', "text": '@{font.simhei}' },
     { "value": "Arial", "text": "Arial" },
     { "value": "Times New Roman", "text": "Times New Roman" },
     { "value": "Tahoma", "text": "Tahoma" },
@@ -77,7 +77,7 @@ export default {
     }, {
         text: 'B1',
         width: 707,
-        heihgt: 1000
+        height: 1000
     }, {
         text: 'B2',
         width: 500,

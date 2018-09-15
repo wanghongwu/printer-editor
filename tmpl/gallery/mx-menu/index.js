@@ -122,9 +122,7 @@ module.exports = Magix.View.extend({
     }
 }, {
         show(view, e, ops) {
-            let node = e.eventTarget;
-            if (!node.id) node.id = Magix.guid();
-            let id = 'ctx_' + node.id + '_' + ops.listKey;
+            let id = 'ctx_' + ops.listKey;
             let vf = Magix.Vframe.get(id);
             if (vf) {
                 vf.invoke('assign', [ops]);

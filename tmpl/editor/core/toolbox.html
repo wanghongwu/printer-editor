@@ -1,15 +1,34 @@
 <div class="box unselectable{{if collapse}} box-collapse{{/if}}">
     <div class="collapse">
-        <i class="iconfont collapse-icon" mx-click="@{toggle.collapse}()" title="{{if collapse}}展开工具栏{{else}}收起工具栏{{/if}}">&#xe616;</i>
+        <i class="iconfont collapse-icon" mx-click="@{toggle.collapse}()" title="{{if collapse}}{{=i18n('@{toolbox.expand}')}}{{else}}{{=i18n('@{toolbox.shrink}')}}{{/if}}">&#xe616;</i>
     </div>
-    <div id="toolbox_list" class="items">
-        {{each elements as element}}
-        <div class="fl item-container" title="{{=element.title}}" mx-mousedown="@{start.drag}({element:{{@element}}})">
-            <div class="item">
+    <div id="toolbox_list" class="items{{if preList.length}} items-small{{/if}}">
+        {{each designers.list as element}}
+        <div class="fl item-container" title="{{=i18n(element.title)}}" mx-mousedown="@{start.drag}({element:{{@element}}})">
+            <div class="item{{if preList.length}} item-small{{/if}}">
                 {{!element.icon}}
             </div>
-            <div class="item-title">{{=element.title}}</div>
+            <div class="item-title{{if preList.length}} none{{/if}}">{{=i18n(element.title)}}</div>
         </div>
         {{/each}}
     </div>
+    {{if preList.length}}
+    <div class="spliter"></div>
+    <input class="input ml5 search-pre" placeholder="{{=i18n('@{search.pre.set.elements}')}}" mx-input="@{search}()" value="{{=keyword}}" />
+    <div class="pre-list pt10" id="toolbox_prelist">
+        {{each preList as l}}
+            {{if !keyword||l.name.indexOf(keyword)>=0}}
+            {{set e=designers.byType(l.type)}}
+            <div class="pre-item clearfix" mx-mousedown="@{start.drag}({element:{{@e}},props:{{@l.props}},pre:true,name:'{{=l.name}}'})">
+                <div class="pre-icon fl">
+                    {{!e.icon}}
+                </div>
+                <div class="pre-text fl ellipsis" title="{{=l.name}}">
+                    {{=l.name}}
+                </div>
+            </div>
+            {{/if}}
+        {{/each}}
+    </div>
+    {{/if}}
 </div>

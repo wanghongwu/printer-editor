@@ -1,6 +1,7 @@
 import Designer from '../../editor/core/designer';
 import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
+import I18n from '../../i18n/index';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -11,7 +12,7 @@ export default Designer.extend({
         Base.init.apply(me, arguments);
     }
 }, {
-        title: '图片',
+        title: '@{element.image}',
         type: 'image',
         modifier: {
             rotate: true,
@@ -23,9 +24,9 @@ export default Designer.extend({
         getProps(x, y) {
             return {
                 zIndex: 0,
-                width: 200,
-                height: 200,
-                tip: '图片',
+                width: 188.98,
+                height: 188.98,
+                tip: I18n('@{element.image}'),
                 rotate: 0,
                 src: '//img.alicdn.com/tfs/TB1E1OSryAnBKNjSZFvXXaTKXXa-200-200.png',
                 locked: false,
@@ -35,26 +36,26 @@ export default Designer.extend({
             };
         },
         props: [{
-            tip: 'X坐标',
+            tip: '@{element.x}',
             key: 'x',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: 'Y坐标',
+            tip: '@{element.y}',
             key: 'y',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '选择图片',
+            tip: '@{element.image.choose}',
             key: 'src',
             type: PropsDesc.IMAGE,
             updateSize: true
         }, {
-            tip: '宽',
+            tip: '@{element.width}',
             key: 'width',
             max: 2800,
             type: PropsDesc.NUMBER,
@@ -63,7 +64,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '高',
+            tip: '@{element.height}',
             key: 'height',
             type: PropsDesc.NUMBER,
             min: 1,
@@ -72,13 +73,13 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '旋转角度',
+            tip: '@{element.rotate}',
             key: 'rotate',
             type: PropsDesc.NUMBER,
             min: -360,
             max: 360
         }, {
-            tip: '透明度',
+            tip: '@{element.alpha}',
             key: 'alpha',
             type: PropsDesc.NUMBER,
             min: '0',
@@ -86,17 +87,17 @@ export default Designer.extend({
             fixed: 1,
             step: 0.1
         }, {
-            tip: '还原宽高',
+            tip: '@{element.image.size}',
             type: PropsDesc.ORIGINSIZE
         }, {
             type: PropsDesc.SPLITER
         }, {
-            tip: '编辑锁定',
+            tip: '@{element.lock}',
             type: PropsDesc.BOOLEAN,
             key: 'locked',
             role: 'free'
         }, {
-            tip: '组件树名称',
+            tip: '@{element.name}',
             key: 'tip',
             type: PropsDesc.INPUT,
             role: 'free'

@@ -24,7 +24,7 @@
 12. 支持拖动时吸附功能(如果实现该功能后会导致无法使用拖动功能靠近某元素边线)
 13. √ 编辑内容存本地浏览器，防止意外退出
 14. √ 重构`tojson`与`toxml`代码
-15. 表格在`xml`状态下行里面的单元格，与列里面对应的单元格有可能高或宽不一致，是否需要处理？
+15. √ 表格在`xml`状态下行里面的单元格，与列里面对应的单元格有可能高或宽不一致，动态计算取最优值
 16. √ 右键菜单根据编辑区状态，禁用或启用某些菜单项，方便开发人员识别编辑区内的状态
 17. √ 拉辅助线
 18. `Tab`键选中元素时滚动元素到可视区
@@ -39,6 +39,9 @@
 27. √ 支持可视化下的单元格尺寸调整
 28. 支持可视化下的单元格合并
 29. √ 序列与反序列逻辑在`code`模块完成
+30. √ 支持多语言
+31. 支持打印项
+32. 图片支持上传功能、粘贴上传及编辑区支持拖拽上传图片
 
 
 # bug
@@ -47,3 +50,116 @@
 3. √ 表格分页要再加一个layout
 4. √ 表格中的text可能没有layout
 5. √ 表格layout分页时不能添加高度
+
+
+# elements
+
+## hline 水平直线
+* type:string hline
+* props.width:number default 75.59px == 20mm
+* props.height:number default 1.33px == 1mm
+* props.type:string  default solid  [solid,dotted,dashed]
+* props.tip:string default 水平直线
+
+
+## vline 垂直直线
+* type:string vline
+* props.width:number default 1.33px == 1mm
+* props.height:number default 75.59px == 20mm
+* props.type:string  default solid  [solid,dotted,dashed]
+* props.tip:string default 垂直直线
+
+## rect 矩形
+* type:string rect
+* props.width:number default　98.27px == 26mm
+* props.height:number default 98.27px == 26mm
+* props.borderWidth:number default 1px
+* props.borderType:string  default solid  [solid,dotted,dashed]
+* props.fill:boolean default false
+* props.tip:string default 矩形
+
+## htext 横排文本
+* type:string htext
+* props.width:number default　94.49px == 25mm
+* props.height:number default 18.9px == 5mm
+* props.rotate:number default 0 [-360~360]
+* prpos.alpha:number default 1 [1~0]
+* props.fontFamily:string default SimHei [SimSun,SimHei,Arial,Times New Roman,Tahoma,webdings,Arial Black,Arial Narrow,Arial Unicode MS]
+* props.fontSize:number default 8
+* props.lineHeight:string[] default []
+* props.fontStyle:string[] default []
+* props.align:string[] default ['left','top']
+* props.letterSpacing:number default 0
+* props.fontWeight:string default normal [normal, bold, light]
+* props.text:string default ''
+* props.alias:string  default ''
+* props.direction:string default ltr [ltr,rtl]
+* props.color:string default '-1'
+* props.tip:string default 横排文本
+
+
+## vtext 竖排文本
+* type:string vtext
+* props.width:number default　22.68px == 6mm
+* props.height:number default 128.5px == 34mm
+* props.rotate:number default 0 [-360~360]
+* prpos.alpha:number default 1 [1~0]
+* props.fontFamily:string default SimHei [SimSun,SimHei,Arial,Times New Roman,Tahoma,webdings,Arial Black,Arial Narrow,Arial Unicode MS]
+* props.fontSize:number default 8
+* props.lineHeight:string[] default []
+* props.fontStyle:string[] default []
+* props.align:string[] default ['left','top']
+* props.letterSpacing:number default 0
+* props.fontWeight:string default normal [normal, bold, light]
+* props.text:string default ''
+* props.alias:string  default ''
+* props.direction:string default ltr [ltr,rtl]
+* props.color:string default '-1'
+* props.tip:string default 竖排文本
+
+## image 图片
+* type:string image
+* props.width:number default　188.98px == 50mm
+* props.height:number default 188.98px == 50mm
+* props.rotate:number default 0 [-360~360]
+* prpos.alpha:number default 1 [1~0]
+* props.src:string default //img.alicdn.com/tfs/TB1E1OSryAnBKNjSZFvXXaTKXXa-200-200.png
+* props.tip:string default 图片
+
+## hcode 横向条码
+* type:string hcode
+* props.width:number default　151.18px == 40mm
+* props.height:number default 90.71px == 24mm
+* props.rotate:number default 0 [-360~360]
+* prpos.alpha:number default 1 [1~0]
+* props.text:string default ''
+* props.showText:boolean  default false
+* props.type:string default code128 [code128,code93,code39,upca,upce,ean8,ean13,itf14,c25inter]
+* props.tip:string default 横向条码
+
+## vcode 纵向条码
+* type:string vcode
+* props.width:number default　90.71px == 24mm
+* props.height:number default 151.18px == 40mm
+* props.rotate:number default 0 [-360~360]
+* prpos.alpha:number default 1 [1~0]
+* props.text:string default ''
+* props.showText:boolean  default false
+* props.type:string default code128 [code128,code93,code39,upca,upce,ean8,ean13,itf14,c25inter]
+* props.tip:string default 纵向条码
+
+## qrcode 二维码
+* type:string qrcode
+* props.width:number default　113.39px == 30mm
+* props.height:number default 113.39px == 30mm
+* prpos.alpha:number default 1 [1~0]
+* props.text:string default ''
+* props.schema:number default 2 [2~6]
+* props.primary:string  default ''
+* props.type:string default qrcode [qrcode,pdf417,maxicode,datamatrix]
+* props.tip:string default 二维码
+
+## table　表格
+* type:string table
+* props.tip:string default 表格
+

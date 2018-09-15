@@ -1,8 +1,8 @@
 <ul class="unselectable group{{if disabled}} notallowed{{/if}}">
-    <li title="居左" class="fl group-item iconfont{{if value[0]=='left'}} active{{/if}}" mx-click="@{set}({i:0,v:'left'})">&#xe687;</li>
-    <li title="居中" class="fl group-item iconfont{{if value[0]=='center'}} active{{/if}}" mx-click="@{set}({i:0,v:'center'})">&#xe68a;</li>
-    <li title="居右" class="fl group-item iconfont{{if value[0]=='right'}} active{{/if}}" mx-click="@{set}({i:0,v:'right'})">&#xe686;</li>
-    <li title="居上" class="fl group-item iconfont{{if value[1]=='top'}} active{{/if}}" mx-click="@{set}({i:1,v:'top'})">&#xe614;</li>
-    <li title="居中" class="fl group-item iconfont{{if value[1]=='middle'}} active{{/if}}" mx-click="@{set}({i:1,v:'middle'})">&#xe613;</li>
-    <li title="居下" class="fl group-item iconfont{{if value[1]=='bottom'}} active{{/if}}" mx-click="@{set}({i:1,v:'bottom'})">&#xe612;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.left}')}}" class="fl group-item iconfont{{if value[0]=='left'}} active{{/if}}" mx-click="@{set}({i:0,v:'left'})">&#xe687;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.center}')}}" class="fl group-item iconfont{{if value[0]=='center'}} active{{/if}}" mx-click="@{set}({i:0,v:'center'})">&#xe68a;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.right}')}}" class="fl group-item iconfont{{if value[0]=='right'}} active{{/if}}" mx-click="@{set}({i:0,v:'right'})">&#xe686;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.top}')}}" class="fl group-item iconfont{{if value[1]=='top'}} active{{/if}}" mx-click="@{set}({i:1,v:'top'})">&#xe614;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.middle}')}}" class="fl group-item iconfont{{if value[1]=='middle'}} active{{/if}}" mx-click="@{set}({i:1,v:'middle'})">&#xe613;</li>
+    <li title="{{=i18n('@{gallery.mx-font.align.bottom}')}}" class="fl group-item iconfont{{if value[1]=='bottom'}} active{{/if}}" mx-click="@{set}({i:1,v:'bottom'})">&#xe612;</li>
 </ul>

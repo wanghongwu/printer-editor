@@ -68,6 +68,9 @@ let TextEncode = ({ props }, space, vertical) => {
     if (props.alias) {
         alias = ` editor:_printName_="${props.alias}"`;
     }
+    if (props.allowEdit === 0) {
+        alias += ' editor:component="true"';
+    }
     let text = `${s2}<text${alias} ${textStyle}>`;
     if (_children && _children.length) {
         for (let c of _children) {

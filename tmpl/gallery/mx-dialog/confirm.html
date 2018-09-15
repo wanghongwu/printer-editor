@@ -2,7 +2,7 @@
     <h4><%=title%></h4>
 </div>
 <div class="dialog-body" style="word-break:break-all;"><%=body%></div>
-<div class="dialog-footer">
-    <button type="button" mx-click="@{enter}()" class="btn btn-brand mr10">确定</button>
-    <button type="button" mx-click="@{cancel}()" class="btn">取消</button>
+<div class="dialog-footer clearfix">
+    <button type="button" mx-click="@{cancel}()" class="btn fr"><%=i18n('@{btn.cancel}')%></button>
+    <button type="button" mx-click="@{enter}()" class="btn btn-brand mr10 fr"><%=i18n('@{btn.enter}')%></button>
 </div>

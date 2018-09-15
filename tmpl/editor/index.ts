@@ -5,10 +5,10 @@ import CNC from '../cainiao/const';
 import DesignerHistory from './core/history';
 import Store from './core/store';
 import Elements from '../element/index';
+import I18n from '../i18n/index';
 const Assign = Magix.mix;
 Magix.applyStyle('@index.less');
-Magix.View.merge(Dialog);
-Magix.View.merge({
+Magix.View.merge(Dialog, {
     '@{throttle}'(fn, timespan) {
         timespan = timespan || 150;
         let last = Date.now();
@@ -31,24 +31,37 @@ let ApplyStage = (json: Editor.SnapshotStatus) => {
     let page = State.get('page');
     let elements = State.get('@{stage&elements}');
     let select = State.get('@{stage&select.elements}');
+    let xLines = State.get('@{stage&x.help.lines}');
+    let yLines = State.get('@{stage&y.help.lines}');
     let { elements: lElements, map } = Elements.byJSON(json.elements);
-    Assign(page, json.page);
+    if (json.page) {
+        Assign(page, json.page);
+    }
     elements.length = 0;
-    elements.push.apply(elements, lElements);
+    elements.push(...lElements);
     select.length = 0;
     let sMap = {};
-    for (let s of json.select) {
-        let e = map[s.id];
-        if (e) {
-            sMap[e.id] = 1;
-            select.push(e);
+    if (json.select) {
+        for (let s of json.select) {
+            let e = map[s.id];
+            if (e) {
+                sMap[e.id] = 1;
+                select.push(e);
+            }
         }
     }
+    xLines.length = 0;
+    if (json.xLines) {
+        xLines.push(...json.xLines);
+    }
+
+    yLines.length = 0;
+    if (json.yLines) {
+        yLines.push(...json.yLines);
+    }
     State.set({
-        '@{stage&scale}': json.scale,
-        '@{stage&select.elements.map}': sMap,
-        '@{stage&x.help.lines}': json.xLines,
-        '@{stage&y.help.lines}': json.yLines
+        '@{stage&scale}': json.scale || 1,
+        '@{stage&select.elements.map}': sMap
     });
 };
 export default Magix.View.extend({
@@ -87,7 +100,9 @@ export default Magix.View.extend({
         });
     },
     render() {
-        this.updater.digest();
+        this.updater.digest({
+            lang: Magix.config('lang')
+        });
     },
     '$doc<mousedown,mouseup>'(e) {
         let me = this;
@@ -112,8 +127,10 @@ export default Magix.View.extend({
         if (Magix.inside(e.target, document.body)) {
             let clickDesc = ClickDesc.OUTER;
             if (Magix.inside(e.target, 'app')) {
-                if (Magix.inside(e.target, 'toolbox_list')) {
-                    clickDesc = ClickDesc.TOOLBOX;
+                if (Magix.inside(e.target, 'toolbox_list') ||
+                    Magix.inside(e.target, 'toolbox_prelist') ||
+                    Magix.inside(e.target, 'header_btns')) {
+                    //clickDesc = ClickDesc.TOOLBOX;
                     //先不考虑工具栏的点击
                     return;
                 } else if (Magix.inside(e.target, 'canvas_' + me.id)) {
@@ -127,10 +144,36 @@ export default Magix.View.extend({
             }
         }
     },
+    '$doc<drop,dragover>'(e: JQueryEventConstructor) {
+        e.preventDefault();
+        if (e.type == 'dragover') {
+            State.fire('@{toolbox&drag.hover.element.change}', {
+                hoverNode: e.target
+            });
+        } else {
+            State.fire('@{toolbox&drag.hover.element.change}');
+        }
+    },
     '$doc<toolboxtoggle>'(e) {
         this.updater.digest({
             anim: true,
             collapse: e.collapse
         });
+    },
+    '@{change.lang}<click>'() {
+        let lang = Magix.config('lang');
+        if (lang == 'zh-cn') {
+            lang = 'en-us';
+        } else {
+            lang = 'zh-cn';
+        }
+        Magix.config({
+            lang
+        });
+        State.fire('@{lang.change}', { lang });
+        this.render();
+    },
+    '@{save}<click>'() {
+        this.alert(I18n('@{developing}'));
     }
 });

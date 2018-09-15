@@ -54,6 +54,6 @@
     <span class="bgcolor" id="bc_<%=id%>"></span>
     <input class="input color-value" readonly id="v_<%=id%>" />
     <%if(btns){%>
-    <button class="btn btn-brand" type="button" mx-click="@{enter}();">确定</button>
+    <button class="btn btn-brand" type="button" mx-click="@{enter}();"><%=i18n('@{btn.enter}')%></button>
     <%}%>
 </div>

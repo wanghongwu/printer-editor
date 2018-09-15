@@ -2,6 +2,7 @@ import Designer from '../../editor/core/designer';
 import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
+import I18n from '../../i18n/index';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -12,7 +13,7 @@ export default Designer.extend({
         Base.init.apply(me, arguments);
     }
 }, {
-        title: '纵向条码',
+        title: '@{element.code.v}',
         type: 'vcode',
         modifier: {
             resize: true,
@@ -33,25 +34,25 @@ export default Designer.extend({
                 rotate: 90,
                 showText: false,
                 type: 'code128',
-                tip: '纵向条码'
+                tip: I18n('@{element.code.v}')
             };
         },
         props: [{
-            tip: 'X坐标',
+            tip: '@{element.x}',
             key: 'x',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: 'Y坐标',
+            tip: '@{element.y}',
             key: 'y',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '条码宽度',
+            tip: '@{element.code.barwidth}',
             key: 'width',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -60,7 +61,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '条码高度',
+            tip: '@{element.code.barheight}',
             key: 'height',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -69,7 +70,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '透明度',
+            tip: '@{element.alpha}',
             type: PropsDesc.NUMBER,
             fixed: 1,
             step: 0.1,
@@ -77,29 +78,30 @@ export default Designer.extend({
             min: '0',
             key: 'alpha'
         }, {
-            tip: '内容',
+            tip: '@{element.code.content}',
             type: PropsDesc.TEXTAREA,
+            styleVTop: 1,
             key: 'text'
         }, {
-            tip: '码式',
+            tip: '@{element.code.category}',
             type: PropsDesc.DROPDOWN,
             textKey: 'text',
             valueKey: 'value',
             key: 'type',
             items: CNC.BARCODES
         }, {
-            tip: '显示文字',
+            tip: '@{element.code.showtext}',
             type: PropsDesc.BOOLEAN,
             key: 'showText'
         }, {
             type: PropsDesc.SPLITER
         }, {
-            tip: '编辑锁定',
+            tip: '@{element.lock}',
             key: 'locked',
             type: PropsDesc.BOOLEAN,
             role: 'free'
         }, {
-            tip: '组件树名称',
+            tip: '@{element.name}',
             key: 'tip',
             role: 'free',
             type: PropsDesc.INPUT

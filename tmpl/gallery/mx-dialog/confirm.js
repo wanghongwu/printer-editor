@@ -5,13 +5,14 @@ ver:2.0.3
     author:xinglie.lkf@taobao.com
  */
 var Magix = require('magix');
+import I18n from '../../i18n/index';
 module.exports = Magix.View.extend({
     tmpl: '@confirm.html:updateby[]',
     init(extra) {
         var me = this;
         me['@{dialog}'] = extra.dialog;
         me['@{string.body}'] = extra.body;
-        me['@{string.title}'] = extra.title || '提示';
+        me['@{string.title}'] = extra.title || I18n('@{dialog.tip}');
         me['@{fn.enter.callback}'] = extra.enterCallback;
         me['@{fn.calcel.callback}'] = extra.cancelCallback;
     },

@@ -4,19 +4,12 @@ import * as Monitor from '../../gallery/mx-monitor/index';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
 import DesignerHistory from '../core/history';
+import I18n from '../../i18n/index';
 Magix.applyStyle('@toolbar.less');
 const ApplyByJSON = json => {
-    if (json.pageChange) {
-        State.set({
-            page: json.page
-        });
-        State.fire('@{stage&ui.change}');
-    }
-    let e = State.get('@{stage&elements}');
-    e.length = 0;
-    e.push.apply(e, json.elements);
-    e = State.get('@{stage&select.elements}');
-    e.length = 0;
+    State.fire('@{stage&apply.stage}', {
+        json
+    });
     State.fire('@{stage&elements.change}');
     State.fire('@{stage&select.elements.change}');
     State.fire('@{history&save.snapshot}');
@@ -31,6 +24,20 @@ export default Magix.View.extend({
         }, 100);
         State.on('@{stage&select.elements.change}', update);
         State.on('@{history&status.change}', update);
+        State.on('@{lang.change}', update);
+        State.on('@{stage&new.page}', () => {
+            let e = State.get('@{stage&elements}');
+            if (e.length > 0) {
+                me.confirm(I18n('@{new.confirm}'), () => {
+                    ApplyByJSON({
+                        elements: [],
+                        select: [],
+                        xLines: [],
+                        yLines: []
+                    });
+                });
+            }
+        });
         Monitor['@{setup}']();
         me.on('destroy', () => {
             Monitor['@{remove}'](me);
@@ -156,17 +163,7 @@ export default Magix.View.extend({
         });
     },
     '@{new}<click>'() {
-        let e = State.get('@{stage&elements}');
-        if (e.length > 0) {
-            this.confirm('确认清空新建？', () => {
-                e.length = 0;
-                e = State.get('@{stage&select.elements}');
-                e.length = 0;
-                State.fire('@{stage&elements.change}');
-                State.fire('@{stage&select.elements.change}');
-                State.fire('@{history&save.snapshot}');
-            });
-        }
+        State.fire('@{stage&new.page}');
     },
     '@{do.zoom}<click>'(e) {
         let { out } = e.params;

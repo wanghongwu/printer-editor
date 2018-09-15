@@ -1,5 +1,6 @@
 let Magix = require('magix');
 let $ = require('$');
+import I18n from '../../i18n/index';
 'ref@./index.less';
 Magix.applyStyle('@index.less');
 module.exports = Magix.View.extend({
@@ -21,14 +22,14 @@ module.exports = Magix.View.extend({
         let img = new Image();
         let done = this['@{done.callback}'];
         img.onerror = () => {
-            this.alert('加载图片失败，请重试～～');
+            this.alert(I18n('@{property.load.img.error}'));
         };
         img.onload = () => {
             let w = img.width;
             let h = img.height;
             this['@{dialog}'].close();
             done({
-                src:url,
+                src: url,
                 width: w,
                 height: h
             });
@@ -42,7 +43,7 @@ module.exports = Magix.View.extend({
         let done = me['@{done.callback}'];
         let src = e.params.src;
         img.onerror = () => {
-            me.alert('加载图片失败，请重试～～');
+            me.alert(I18n('@{property.load.img.error}'));
         };
         img.onload = () => {
             let w = img.width;
@@ -55,5 +56,14 @@ module.exports = Magix.View.extend({
             });
         };
         img.src = root + src;
+    },
+    '@{paste.upload}<paste>'(e) {
+        console.log(e);
+    },
+    '@{drop.upload}<drop>'(e) {
+        console.log(e);
+    },
+    '@{select.upload}<change>'(e) {
+        console.log(e);
     }
 });

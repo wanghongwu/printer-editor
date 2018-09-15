@@ -7,6 +7,8 @@ import Keys from '../const/keys';
 import { StageSelectElements, StageElements, Clipboard } from './workaround';
 import DesignerHistory from './history';
 import Store from './store';
+import Uploader from './uploader';
+import ImageDesigner from '../../element/image/designer';
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -109,17 +111,24 @@ export default View.extend<Editor.Dragdrop>({
                     lastHover = $(td.dashed);
                     lastHover.removeClass('@scoped.style:none');
                 }
+            } else if (!node) {
+                if (lastHover) {
+                    lastHover.addClass('@scoped.style:none');
+                }
+                lastHover = null;
             }
         });
         State.on('@{toolbox&drag.element.drop}', (e: Editor.ToolboxStageDropEvent) => {
             if (Magix.inside(e.dropNode, 'stage_stage')) {
-                lastHover = null;
                 let td = StageElements["@{get.best.cell}"](e.dropNode);
                 let elements = StageElements["@{add.element}"](e, false, td);
                 if (elements) {
                     me.updater.digest({
                         elements
                     });
+                    if (!e.ignoreSnapshot) {
+                        State.fire('@{history&save.snapshot}');
+                    }
                 }
             }
         });
@@ -137,6 +146,7 @@ export default View.extend<Editor.Dragdrop>({
                 me.updater.digest({
                     elements
                 });
+                State.fire('@{history&save.snapshot}');
             }
         });
         State.on('@{toolbar&item.click}', e => {
@@ -310,7 +320,7 @@ export default View.extend<Editor.Dragdrop>({
                     State.fire('@{property&element.property.update}');
                     State.fire('@{history&save.snapshot}', {
                         key: '@{history&move.elements.by.keyboard}',
-                        time: 300
+                        time: 500
                     });
                 }
                 if (changed) {
@@ -326,11 +336,16 @@ export default View.extend<Editor.Dragdrop>({
             }
         }
         if ((e.ctrlKey || e.metaKey)) {
-            if (e.keyCode == Keys.V) {
+            if (e.keyCode == Keys.N) {
                 e.preventDefault();
-                let stage = StageElements["@{get.nearest.stage}"]();
-                Clipboard["@{paste.elements}"](stage);
-                State.fire('@{history&save.snapshot}');
+                State.fire('@{stage&new.page}');
+            } else if (e.keyCode == Keys.V) {
+                e.preventDefault();
+                if (Clipboard["@{has.elements}"]()) {
+                    let stage = StageElements["@{get.nearest.stage}"]();
+                    Clipboard["@{paste.elements}"](stage);
+                    State.fire('@{history&save.snapshot}');
+                }
             } else if (e.keyCode == Keys.A) {
                 e.preventDefault();
                 let stage = StageElements["@{get.nearest.stage}"]();
@@ -475,6 +490,83 @@ export default View.extend<Editor.Dragdrop>({
                 me.updater.digest({
                     elements
                 });
+                State.fire('@{history&save.snapshot}');
+            }
+        });
+    },
+    '@{drop.file}<drop>'(e: JQueryEventConstructor) {
+        let oe = e.originalEvent as DragEvent;
+        let files = oe.dataTransfer.files;
+        let ids = [], pFiles = [],
+            x = e.pageX,
+            y = e.pageY;
+        for (let i = 0; i < files.length; i++) {
+            let f = files[i];
+            if (f.type.indexOf('image/') === 0) {
+                let id = Magix.guid('file_');
+                ids.push(id);
+                pFiles.push(f);
+                State.set({
+                    '@{toolbox&drag.element}': ImageDesigner,
+                    '@{toolbox&drag.element.props}': {
+                        locked: true,
+                        barred: id,
+                        src: '//img.alicdn.com/tfs/TB1dIR5XpzqK1RjSZFzXXXjrpXa-400-240.gif',
+                        width: 400,
+                        height: 240
+                    }
+                });
+                State.fire('@{toolbox&drag.element.drop}', {
+                    dropNode: e.target,
+                    pageX: x,
+                    pageY: y,
+                    ignoreSnapshot: 1
+                });
+                x += 40;
+                y += 40;
+            }
+        }
+        if (pFiles.length) {
+            State.set({
+                '@{toolbox&drag.element}': null,
+                '@{toolbox&drag.element.props}': null
+            });
+            StageSelectElements["@{set}"]();
+        }
+        Uploader["@{upload.images}"](this, pFiles, (exts) => {
+            let elements = State.get('@{stage&elements}');
+            let removeElements = [];
+            let map = {}, added = 0;
+            for (let i = 0; i < ids.length; i++) {
+                if (exts[i]) {
+                    map[ids[i]] = exts[i];
+                }
+            }
+            StageElements["@{walk.elements}"](elements, (e, type) => {
+                if (type == 'element') {
+                    let uId = e.props.barred;
+                    if (uId) {
+                        if (map[uId]) {
+                            added = 1;
+                            Magix.mix(e.props, map[uId]);
+                            e.props.locked = false;
+                            e.props.barred = '';
+                        } else {
+                            removeElements.push(e);
+                        }
+                    }
+                }
+            });
+            if (removeElements.length) {
+                for (let r of removeElements) {
+                    StageElements["@{delete.element.by.id}"](r.id, true);
+                    StageSelectElements["@{remove}"](r);
+                }
+                this.updater.digest({
+                    elements
+                });
+            }
+            if (added) {
                 State.fire('@{history&save.snapshot}');
             }
         });

@@ -13,13 +13,13 @@
 }
 .collapse{
     position: relative;
-    cursor: pointer;
     height: 20px;
     color:#fff;
 }
 .collapse-icon{
     position: absolute;
-    right:10px;
+    cursor: pointer;
+    right:3px;
     top:-2px;
     font-size:20px;
     transition: all 0.15s;
@@ -31,6 +31,11 @@
 .items{
     height: calc(~"100% - 20px");
     overflow: auto;
+    transition: all 0.2s;
+}
+.items-small{
+    height: 80px;
+    overflow: hidden;
 }
 .item-container{
     cursor: default;
@@ -41,6 +46,15 @@
     height: 60px;
     margin:4px;
     border-radius: 2px;
+    transition: all 0.2s;
+}
+.item:hover{
+    border-color: #c2c2c2
+}
+.item-small{
+    width:34px;
+    height:34px;
+    margin:3px;
 }
 .item-title{
     text-align: center;
@@ -55,4 +69,34 @@
     height: 40px;
     border-radius: 6px;
     z-index: 5000;
+}
+.spliter{
+    height: 1px;
+    line-height: 1px;
+    margin: 5px 0;
+    background: rgba(255,255,255,0.20);
+    background: -webkit-gradient(linear, left top, right top, from(rgba(165, 69, 243, 0.0)), color-stop(0.5, rgba(125, 118, 132, 0.33)), to(rgba(165, 69, 243, 0.0)));
+}
+.search-pre{
+    width:190px;
+}
+.pre-list{
+    height: calc(~"100% - 116px");
+    overflow: auto;
+}
+.pre-item{
+    height:30px;
+    line-height: 30px;
+    padding:0 5px;
+}
+.pre-icon{
+    width: 25px;
+    height: 25px;
+    margin-top:2px;
+}
+.pre-text{
+    width:160px;
+}
+.pre-item:hover{
+    color:#fff;
 }

@@ -242,7 +242,9 @@ export default Magix.View.extend<Editor.Dragdrop>({
     '@{text.editable}<dblclick>'(e) {
         let updater = this.updater;
         let props = updater.get('props');
-        props.editable = true;
-        updater.digest({ props });
+        if (props.allowEdit) {
+            props.editable = true;
+            updater.digest({ props });
+        }
     }
 });

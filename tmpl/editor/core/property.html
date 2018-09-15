@@ -1,12 +1,12 @@
 <div class="box">
     <div class="group-title">
-        {{if hasElement}}属性{{else}}结构树{{/if}}
+        {{if hasElement}}{{=i18n('@{property}')}}{{else}}{{=i18n('@{property.component.tree}')}}{{/if}}
     </div>
     {{if hasElement}}
     <ul class="box-panel">
         <li class="group-item">
-            <span class="group-item-title">类型:</span>
-            {{=title}}
+            <span class="group-item-title">{{=i18n('@{property.type}')}}:</span>
+            {{=i18n(title)}}
         </li>
         {{each props as prop}}
         <li class="group-item{{if prop.type==desc.SPLITER}} group-item-spliter{{/if}}">
@@ -14,7 +14,7 @@
             {{if !(prop.ifKey||prop.gtKey)||
                 (prop.ifKey&&data[prop.ifKey]==prop.ifValue)||
                 (prop.gtKey&&data[prop.gtKey]>prop.gtValue)}}
-            <span class="group-item-title">{{=prop.tip}}:</span>
+            <span class="group-item-title{{if prop.styleVTop}} vtop{{/if}}">{{=i18n(prop.tip)}}:</span>
             {{if prop.type==desc.LABEL}}
                 {{=prop.read?prop.read(data[prop.key]):data[prop.key]}}
             {{else if prop.type==desc.INPUT}}
@@ -28,9 +28,9 @@
             {{else if prop.type==desc.IMAGE}}
                 <mx-picture class="ib" mx-change="@{image.change}({key:'{{=prop.key}}',updateSize:{{=prop.updateSize}}})" pic="{{=data[prop.key]}}" @disabled="{{=data.locked}}" />
             {{else if prop.type==desc.ORIGINSIZE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.origin.size}()">图片自身宽高</button>
+                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.origin.size}()">{{=i18n('@{property.image.size}')}}</button>
             {{else if prop.type==desc.BOOLEAN}}
-                <input type="checkbox" class="switch" mx-change="@{prop.change}({key:'{{=prop.key}}',bool:true,write:{{@prop.write}},refresh:{{@prop.refresh}}})" @checked="{{=data[prop.key]}}" @disabled="{{=data.locked&&!prop.role}}" />
+                <input type="checkbox" class="switch" mx-change="@{prop.change}({key:'{{=prop.key}}',bool:true,write:{{@prop.write}},refresh:{{@prop.refresh}}})" @checked="{{=data[prop.key]}}" @disabled="{{=data.locked&&!prop.role||data.barred}}" />
             {{else if prop.type==desc.LINEHEIGHT}}
                 <mx-font.lineheight @disabled="{{=data.locked}}" mx-input="@{prop.change}({key:'{{=prop.key}}',read:'value'})" @min="{{=prop.min}}" value="{{@data[prop.key]}}" class="ib"/>
             {{else if prop.type==desc.FONTSTYLE}}
@@ -44,9 +44,9 @@
             {{else if prop.type==desc.CELLFOCUS}}
                 <mx-cell.focus @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLCOLSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">单元格均分宽度</button>
+                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">{{=i18n('@{property.divide.width}')}}</button>
             {{else if prop.type==desc.CELLROWSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">单元格均分高度</button>
+                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">{{=i18n('@{property.divide.height}')}}</button>
             {{/if}}
             {{/if}}
             {{/if}}
@@ -62,8 +62,8 @@
                 {{!element.ctor.icon}}
             </div>
             <div class="fl clearfix desc">
-                <div class="fl text">
-                    {{=element.props.tip||(element.ctor.title+'_'+element.id)}}
+                <div class="fl text" title="{{=element.props.tip}}">
+                    {{=element.props.tip}}
                 </div>
                 <i class="iconfont fl del" mx-click="@{del}({i:{{=index}}})">&#xe600;</i>
             </div>

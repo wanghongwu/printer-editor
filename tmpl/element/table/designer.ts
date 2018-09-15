@@ -2,6 +2,7 @@ import Designer from '../../editor/core/designer';
 import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
+import I18n from '../../i18n/index';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -12,7 +13,7 @@ export default Designer.extend({
         Base.init.apply(me, arguments);
     }
 }, {
-        title: '表格',
+        title: '@{element.table}',
         type: 'table',
         modifier: {
         },
@@ -60,71 +61,72 @@ export default Designer.extend({
                     }]
                 }],
                 locked: false,
-                tip: '表格'
+                tip: I18n('@{element.table}')
             };
         },
         props: [{
-            tip: 'X坐标',
+            tip: '@{element.x}',
             key: 'x',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: 'Y坐标',
+            tip: '@{element.y}',
             key: 'y',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '表格宽',
+            tip: '@{element.table.width}',
             key: 'width',
             type: PropsDesc.LABEL,
             read: Convert["@{pixel.to.millimeter}"]
         }, {
-            tip: '表格高',
+            tip: '@{element.table.height}',
             key: 'height',
             type: PropsDesc.LABEL,
             read: Convert["@{pixel.to.millimeter}"]
         }, {
-            tip: '隐藏边框',
+            tip: '@{element.table.border}',
             key: 'hideBorder',
             type: PropsDesc.BOOLEAN
         }, {
-            tip: '分页打印',
+            tip: '@{element.table.paging}',
             key: 'splitable',
             type: PropsDesc.BOOLEAN
         }, {
-            tip: '均分宽',
+            tip: '@{element.table.dwidth}',
             type: PropsDesc.CELLCOLSHARE
         }, {
-            tip: '均分高',
+            tip: '@{element.table.dheight}',
             type: PropsDesc.CELLROWSHARE
         }, {
-            tip: '单元格操作',
+            tip: '@{element.table.opcell}',
             type: PropsDesc.CELLOPERATE,
             gtKey: 'rowIndex',
             gtValue: -1
         }, {
-            tip: '选取',
+            tip: '@{element.table.pic}',
             type: PropsDesc.CELLFOCUS,
             gtKey: 'rowIndex',
             gtValue: -1
         }, {
-            tip: '宽高',
+            tip: '@{element.table.cellsize}',
+            styleVTop: 1,
             type: PropsDesc.CELLSIZE,
             gtKey: 'rowIndex',
             gtValue: -1
         }, {
             type: PropsDesc.SPLITER
         }, {
-            tip: '编辑锁定',
+            tip: '@{element.lock}',
             key: 'locked',
             type: PropsDesc.BOOLEAN,
             role: 'free'
         }, {
-            tip: '组件树名称',
+            tip: '@{element.name}',
             key: 'tip',
             role: 'free',
             type: PropsDesc.INPUT

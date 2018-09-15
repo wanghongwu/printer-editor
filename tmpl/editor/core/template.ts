@@ -505,6 +505,8 @@ export default Magix.View.extend({
         let json;
         try {
             json = Serializer.decode(xml);
+            json.xLines = [];
+            json.yLines = [];
         } catch (e) {
             me.alert(e.message);
             return;

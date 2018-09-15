@@ -7,6 +7,7 @@ import CNC from '../../cainiao/const';
 import $ from '$';
 let ToMap = Magix.toMap;
 let Has = Magix.has;
+let Assign = Magix.mix;
 
 let IsLineCross = (line1, line2) => {
     let s1 = line1.start,
@@ -139,6 +140,10 @@ export let StageElements = {
             } = StageElements["@{get.best.collection}"](e, clicked, td);
             let props = element.getProps(xy.x, xy.y);
             props.zIndex = collection.length + 1;
+            let extProps = State.get('@{toolbox&drag.element.props}');
+            if (extProps) {
+                Assign(props, extProps);
+            }
             StageElements["@{scale.element}"](element, props, scale);
             let m = {
                 id: Magix.guid('e_'),
@@ -153,9 +158,40 @@ export let StageElements = {
             if (focus) {
                 StageSelectElements['@{set}'](m);
             }
-            State.fire('@{history&save.snapshot}');
             return elements;
         }
+    },
+    '@{walk.elements}'(elements, cb) {
+        let walk = es => {
+            for (let e of es) {
+                cb(e, 'element');
+                if (e.type == 'table') {
+                    let rowIndex = 0;
+                    for (let r of e.props.rows) {
+                        cb(r, 'row', {
+                            row: rowIndex
+                        });
+                        if (r.tag == 'tr') {
+                            let colIndex = 0;
+                            for (let d of r.cells) {
+                                cb(d, 'td', {
+                                    row: rowIndex,
+                                    col: colIndex
+                                });
+                                if (d.tag == 'td') {
+                                    if (d.children) {
+                                        walk(d.children);
+                                    }
+                                }
+                                colIndex++;
+                            }
+                        }
+                        rowIndex++;
+                    }
+                }
+            }
+        };
+        walk(elements);
     },
     '@{get.best.collection}'(e, clicked, td) {
         let current = StageSelectElements["@{all}"]();
@@ -592,10 +628,10 @@ export let StageElements = {
         if (element.type == 'table') {
             for (let r of props.rows) {
                 if (r.tag == 'tr') {
-                    r.height *= scale;
                     for (let c of r.cells) {
                         if (c.tag == 'td') {
                             c.width *= scale;
+                            c.height *= scale;
                             if (c.children) {
                                 StageElements["@{scale.elements}"](c.children, scale, withXY);
                             }
@@ -657,7 +693,8 @@ export let StageElements = {
                 elements.length = 0;
                 elements.push(element);
             }
-            let moved = false;
+            let moved = false,
+                elementMoved = false;
             view.dragdrop(event.eventTarget, evt => {
                 moved = true;
                 let offsetX = evt.pageX - event.pageX;
@@ -666,6 +703,7 @@ export let StageElements = {
                 for (let e of elements) {
                     if (!e.props.locked &&
                         !(e.props.xLocked || e.props.yLocked)) {
+                        elementMoved = true;
                         let s = startInfos[index++];
                         e.props.x = s.x + offsetX;
                         e.props.y = s.y + offsetY;
@@ -681,7 +719,7 @@ export let StageElements = {
             }, () => {
                 if (!moved) {
                     StageSelectElements['@{set}'](element);
-                } else {
+                } else if (elementMoved) {
                     State.fire('@{history&save.snapshot}');
                 }
             });
@@ -689,7 +727,8 @@ export let StageElements = {
     },
     '@{context.menu}'(view, event, tableId, coll, picked) {
         let elements = StageSelectElements['@{all}']();
-        let list = Contextmenu.stage as {
+        let lang = Magix.config('lang');
+        let list = Contextmenu.stage(lang) as {
             spliter?: boolean
             id?: number,
             text?: string
@@ -705,7 +744,7 @@ export let StageElements = {
             let locked = e.props.locked;
             if (tableId && elements[0].id == tableId) {
                 listKey = 4;
-                list = Contextmenu.tableCell;
+                list = Contextmenu.tableCell(lang);
                 disabled[Contextmenu.cellTopId] = locked;
                 disabled[Contextmenu.cellBottomId] = locked;
                 disabled[Contextmenu.cellLeftId] = locked;
@@ -714,7 +753,7 @@ export let StageElements = {
                 disabled[Contextmenu.cellDeleteRowId] = locked;
             } else {
                 listKey = 2;
-                list = Contextmenu.singleElement;
+                list = Contextmenu.singleElement(lang);
                 let moveLocked = locked || e.props.useCNStyle;
                 let count = coll.length;
                 let atTop = count ? coll[count - 1].id == e.id : true;
@@ -727,16 +766,16 @@ export let StageElements = {
             }
         } else if (elements.length > 1) {
             listKey = 3;
-            list = Contextmenu.multipleElement;
+            list = Contextmenu.multipleElement(lang);
         }
         Menu.show(view, event, {
             cnt: '#outer_cm',
             offset: '#stage_outer',
             scroller: '#app_stage',
-            width: 140,
+            width: 150,
             disabled,
             list,
-            listKey,
+            listKey: lang + listKey,
             picked
         });
     },
@@ -906,6 +945,10 @@ export let StageElements = {
 };
 
 export let Clipboard = {
+    '@{has.elements}'() {
+        let list = this['@{copy.list}'] || [];
+        return list.length;
+    },
     '@{get.copy.list}'() {
         let list = this['@{copy.list}'] || [];
         return list;
@@ -968,11 +1011,11 @@ export let Clipboard = {
                 }
                 let n = {};
                 let walk = (from, to) => {
-                    Magix.mix(to, from);
+                    Assign(to, from);
                     if (from.type != '#script') {
                         to.id = Magix.guid('e_');
                         to.props = {};
-                        Magix.mix(to.props, from.props);
+                        Assign(to.props, from.props);
                         if ((from.type == 'htext' ||
                             from.type == 'vtext')) {
                             if (to.props.useCNStyle && stage.collType == 'td') {

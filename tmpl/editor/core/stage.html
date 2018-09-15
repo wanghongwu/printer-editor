@@ -1,4 +1,4 @@
-<div class="outer pr" mx-mousedown="@{start.drag}()" id="stage_outer" tabindex="0" mx-keydown="@{stage.keydown}()" mx-focusout="@{stage.deactive}()" mx-focusin="@{stage.active}()">
+<div class="outer pr" mx-mousedown="@{start.drag}()" id="stage_outer" tabindex="0" mx-keydown="@{stage.keydown}()" mx-focusout="@{stage.deactive}()" mx-focusin="@{stage.active}()" mx-drop="@{drop.file}()">
     <div class="canvas" id="cx_{{=vId}}">
         <div class="pr main" style="width:{{=width}}px;height:{{=height}}px;" id="stage_stage" mx-contextmenu="@{prevent}()">
             {{each elements as element}}

@@ -1,4 +1,10 @@
-<div class="logo"><i class="iconfont mr10">&#xe63c;</i>Printer Designer &trade;</div>
+<div class="logo">
+    <i class="iconfont mr10">&#xe63c;</i>{{=i18n('@{site.title}')}}&trade;
+    <div class="fr mr20" id="header_btns">
+        <button class="header-btn mr20" mx-click="@{save}()">{{=i18n('@{btn.save}')}}</button>
+        <!-- <button class="header-btn" mx-click="@{change.lang}()">{{if lang=='en-us'}}中文{{else}}EN{{/if}}</button> -->
+    </div>
+</div>
 <div class="body">
     <mx-vframe src="./core/toolbox" id="toolbox_{{=vId}}" class="hp100 fl unselectable" />
     <div class="canvas fl{{if anim}} canvas-anim{{/if}}{{if collapse}} canvas-toolbox-collapse{{/if}}" id="canvas_{{=vId}}">

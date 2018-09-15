@@ -22,8 +22,31 @@ $(() => {
             util: Env.cdn + '/util'
         }
     });
-    seajs.use('magix', (Magix: Magix) => {
+    seajs.use(['magix', 'i18n/index'], (Magix: Magix, I18n) => {
+        let store = window.localStorage;
+        let lang = 'zh-cn';
+        if (store) {
+            lang = store.getItem('l.lang') || lang;
+        }
+        Magix.config({
+            lang
+        });
+        let i18n = I18n.default;
         Magix.applyStyle('@scoped.style');
+        Magix.View.merge({
+            ctor() {
+                this.updater.set({
+                    i18n
+                });
+            }
+        });
+        document.title = i18n('@{site.title}');
+        Magix.State.on('@{lang.change}', (e: Editor.LangChangeEvent) => {
+            document.title = i18n('@{site.title}');
+            if (store) {
+                store.setItem('l.lang', e.lang);
+            }
+        });
         Magix.boot({
             defaultPath: '/index',
             defaultView: 'editor/index',

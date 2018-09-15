@@ -1,12 +1,19 @@
 <div class="dialog-header sticky">
-    <b class="mr10">图片库</b>
+    <b class="mr10">{{=i18n('@{gallery.mx-picture.images.title}')}}</b>
     <!-- <span class="ml20">搜索图片：</span><input class="input search" mx-keyup="@{start.search}()" value="<%=keyword%>" /> -->
 </div>
 <div class="dialog-body">
     <label>
-        网络图片地址：
+        {{=i18n('@{gallery.mx-picture.images.url}')}}：
     </label>
     <input class="input pic-url" />
+    <!-- <div class="upload-zone" mx-paste="@{paste.upload}()" mx-drop="@{drop.upload}()" tabindex="0">
+        粘贴图片<i class="ib ml10 mr10">/</i>拖拽（多个）上传<i class="ib ml10 mr10">/</i>
+        <div class="ib btn btn-upload">
+            点击上传
+            <input class="file" accept="image/*" type="file" mx-change="@{select.upload}()"/>
+        </div>
+    </div> -->
     <!-- <div class="clearfix mb10">
         {{each pics as g index}}
         <div class="tab{{if index==active}} active{{/if}}" mx-click="@{active}({to:{{=index}}})">{{=g.title}}</div>
@@ -28,6 +35,6 @@
     </div> -->
 </div>
 <div class="dialog-footer clearfix">
-    <button class="btn ml10 fr" mx-click="@{cancel}()">取消</button>
-    <button class="btn btn-brand fr" mx-click="@{enter}()">确定</button>
+    <button class="btn ml10 fr" mx-click="@{cancel}()">{{=i18n('@{btn.cancel}')}}</button>
+    <button class="btn btn-brand fr" mx-click="@{enter}()">{{=i18n('@{btn.enter}')}}</button>
 </div>

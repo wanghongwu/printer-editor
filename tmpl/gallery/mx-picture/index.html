@@ -1,5 +1,5 @@
 <div>
-    <button @disabled="{{=disabled}}" type="button" class="btn editor-btn" mx-click="@{show.dlg}()">浏览图库</button>
+    <button @disabled="{{=disabled}}" type="button" class="btn editor-btn" mx-click="@{show.dlg}()">{{=i18n('@{gallery.mx-picture.browser.images}')}}</button>
     <div class="clearfix mt5">
         <div class="pic-thumb pr"{{if pic}} style="background-image:url('{{=pic}}')"{{/if}}>
             <!-- {{if pic}}

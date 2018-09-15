@@ -1,4 +1,4 @@
 <ul class="unselectable group{{if disabled}} notallowed{{/if}}">
-    <li title="斜体" class="fl group-item iconfont{{if value[0]}} active{{/if}}" mx-click="@{set}({key:'italic'})">&#xe65f;</li>
-    <li title="下划线" class="fl group-item iconfont{{if value[1]}} active{{/if}}" mx-click="@{set}({key:'underline'})">&#xe62e;</li>
+    <li title="{{=i18n('@{gallery.mx-font.style.italic}')}}" class="fl group-item iconfont{{if value[0]}} active{{/if}}" mx-click="@{set}({key:'italic'})">&#xe65f;</li>
+    <li title="{{=i18n('@{gallery.mx-font.style.underline}')}}" class="fl group-item iconfont{{if value[1]}} active{{/if}}" mx-click="@{set}({key:'underline'})">&#xe62e;</li>
 </ul>

@@ -33,19 +33,5 @@ module.exports = Magix.View.extend({
                 });
             }
         });
-    },
-    '@{clear.image}<click>'() {
-        let me = this;
-        me.updater.digest({
-            pic: ''
-        });
-        me['@{owner.node}'].trigger({
-            type: 'change',
-            pic: {
-                src: '',
-                width: 100,
-                height: 100
-            }
-        });
     }
 });

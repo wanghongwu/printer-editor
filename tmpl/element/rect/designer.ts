@@ -2,6 +2,7 @@ import Designer from '../../editor/core/designer';
 import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
+import I18n from '../../i18n/index';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -12,7 +13,7 @@ export default Designer.extend({
         Base.init.apply(me, arguments);
     }
 }, {
-        title: '矩形',
+        title: '@{element.rect}',
         type: 'rect',
         modifier: {
             resize: true,
@@ -25,32 +26,32 @@ export default Designer.extend({
                 zIndex: 0,
                 x: 0 + x,
                 y: 0 + y,
-                width: 200,
+                width: 98.27,
                 borderWidth: 1,
                 borderType: 'solid',
                 fill: false,
                 rotate: 0,
-                height: 80,
+                height: 98.27,
                 locked: false,
-                tip: '矩形'
+                tip: I18n('@{element.rect}')
             };
         },
         props: [{
-            tip: 'X坐标',
+            tip: '@{element.x}',
             key: 'x',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: 'Y坐标',
+            tip: '@{element.y}',
             key: 'y',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '矩形宽度',
+            tip: '@{element.rect.width}',
             key: 'width',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -59,7 +60,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '矩形高度',
+            tip: '@{element.rect.height}',
             key: 'height',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -68,30 +69,30 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '边框宽度',
+            tip: '@{element.rect.border.width}',
             key: 'borderWidth',
             type: PropsDesc.NUMBER,
             min: '0'
         }, {
-            tip: '边框样式',
+            tip: '@{element.rect.border}',
             key: 'borderType',
             type: PropsDesc.DROPDOWN,
             textKey: 'text',
             valueKey: 'value',
             items: CNC.LINE_TYPES
         }, {
-            tip: '是否填充',
+            tip: '@{element.rect.fill}',
             key: 'fill',
             type: PropsDesc.BOOLEAN
         }, {
             type: PropsDesc.SPLITER
         }, {
-            tip: '编辑锁定',
+            tip: '@{element.lock}',
             key: 'locked',
             type: PropsDesc.BOOLEAN,
             role: 'free'
         }, {
-            tip: '组件树名称',
+            tip: '@{element.name}',
             key: 'tip',
             role: 'free',
             type: PropsDesc.INPUT

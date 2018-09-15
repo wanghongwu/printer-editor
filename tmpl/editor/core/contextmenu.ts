@@ -1,66 +1,97 @@
+import Magix from 'magix';
+import I18n from '../../i18n/index';
 let MenuSpliter = {
     spliter: true
 };
 let MenuAll = {
     id: 0,
-    text: '全选(Ctrl+A)'
+    text: '@{menu.select.all}',
+    short: ' (Ctrl+A)'
 };
 let MenuCopy = {
     id: 1,
-    text: '复制(Ctrl+C)'
+    text: '@{menu.copy}',
+    short: ' (Ctrl+C)'
 };
 let MenuCut = {
     id: 14,
-    text: '剪切(Ctrl+X)'
+    text: '@{menu.cut}',
+    short: ' (Ctrl+X)'
 }
 let MenuPaste = {
     id: 2,
-    text: '粘贴(Ctrl+V)'
+    text: '@{menu.paste}',
+    short: ' (Ctrl+V)'
 };
 let MenuUp = {
     id: 5,
-    text: '上移一层'
+    text: '@{menu.move.up}'
 };
 let MenuDown = {
     id: 6,
-    text: '下移一层'
+    text: '@{menu.move.down}'
 };
 let MenuTop = {
     id: 3,
-    text: '移至顶层'
+    text: '@{menu.to.top}'
 };
 let MenuBottom = {
     id: 4,
-    text: '移至底层'
+    text: '@{menu.to.bottom}'
 };
 let MenuDelete = {
     id: 7,
-    text: '删除(Delete)'
+    text: '@{menu.delete}',
+    short: ' (Delete)'
 };
 let MenuCellTopAddRow = {
     id: 8,
-    text: '上方添加行'
+    text: '@{menu.add.rows.above}'
 }
 let MenuCellBottomAddRow = {
     id: 9,
-    text: '下方添加行'
+    text: '@{menu.add.rows.below}'
 };
 let MenuCellDeleteRow = {
     id: 10,
-    text: '删除当前行'
+    text: '@{menu.delete.current.rows}'
 };
 
 let MenuCellLeftAddCol = {
     id: 11,
-    text: '前面添加列'
+    text: '@{menu.add.cols.before}'
 };
 let MenuCellRightAddCol = {
     id: 12,
-    text: '后面添加列'
+    text: '@{menu.add.cols.after}'
 };
 let MenuCellDeleteCol = {
     id: 13,
-    text: '删除当前列'
+    text: '@{menu.delete.current.cols}'
+};
+let Cache = {};
+let TranslateMenu = menus => {
+    return (lang) => {
+        if (!menus['@{uid}']) {
+            menus['@{uid}'] = Magix.guid('_m');
+        }
+        let key = lang + menus['@{uid}'];
+        if (!Cache[key]) {
+            let a = [];
+            for (let m of menus) {
+                if (m.spliter) {
+                    a.push(m);
+                } else {
+                    a.push({
+                        id: m.id,
+                        text: I18n(m.text) + (m.short || '')
+                    });
+                }
+            }
+            Cache[key] = a;
+        }
+        return Cache[key];
+    };
 };
 export let Contextmenu = {
     allId: MenuAll.id,
@@ -76,8 +107,8 @@ export let Contextmenu = {
     cellRightId: MenuCellRightAddCol.id,
     cellDeleteColId: MenuCellDeleteCol.id,
     cellDeleteRowId: MenuCellDeleteRow.id,
-    singleElement: [MenuCopy, MenuCut, MenuDelete, MenuSpliter, MenuUp, MenuTop, MenuSpliter, MenuDown, MenuBottom],
-    multipleElement: [MenuCopy, MenuCut, MenuDelete],
-    stage: [MenuAll, MenuPaste],
-    tableCell: [MenuAll, MenuPaste, MenuSpliter, MenuCellTopAddRow, MenuCellBottomAddRow, MenuCellDeleteRow, MenuSpliter, MenuCellLeftAddCol, MenuCellRightAddCol, MenuCellDeleteCol]
+    singleElement: TranslateMenu([MenuCopy, MenuCut, MenuDelete, MenuSpliter, MenuUp, MenuTop, MenuSpliter, MenuDown, MenuBottom]),
+    multipleElement: TranslateMenu([MenuCopy, MenuCut, MenuDelete]),
+    stage: TranslateMenu([MenuAll, MenuPaste]),
+    tableCell: TranslateMenu([MenuAll, MenuPaste, MenuSpliter, MenuCellTopAddRow, MenuCellBottomAddRow, MenuCellDeleteRow, MenuSpliter, MenuCellLeftAddCol, MenuCellRightAddCol, MenuCellDeleteCol])
 }

@@ -357,10 +357,6 @@ let ValidKeys = {
         fontUnderline: {
             type: Types.BOOLEAN,
             parse: ToBool
-        },
-        'editor:_printName_': {
-            alias: 'alias',
-            type: Types.STRING
         }
     },
     image: {
@@ -664,6 +660,10 @@ let Decoders = {
             }
             if (attrsMap['editor:_printName_']) {
                 defaults.alias = attrsMap['editor:_printName_'];
+            }
+
+            if (attrsMap['editor:component'] == 'true') {
+                defaults.allowEdit = 0;
             }
             let fontStyle = ['', ''];
             if (defaults.fontItalic) {

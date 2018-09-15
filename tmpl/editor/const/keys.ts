@@ -9,6 +9,7 @@ export default {
     V: 86,
     A: 65,
     L: 76,
+    N: 78,
     U: 85,
     D: 68,
     R: 82,

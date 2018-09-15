@@ -2,6 +2,7 @@ import Designer from '../../editor/core/designer';
 import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
+import I18n from '../../i18n/index';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -12,7 +13,7 @@ export default Designer.extend({
         Base.init.apply(me, arguments);
     }
 }, {
-        title: '垂直直线',
+        title: '@{element.line.v}',
         type: 'vline',
         modifier: {
             resize: true,
@@ -28,25 +29,25 @@ export default Designer.extend({
                 type: 'solid',
                 height: 75.59,
                 locked: false,
-                tip: '垂直直线'
+                tip: I18n('@{element.line.v}')
             };
         },
         props: [{
-            tip: 'X坐标',
+            tip: '@{element.x}',
             key: 'x',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: 'Y坐标',
+            tip: '@{element.y}',
             key: 'y',
             type: PropsDesc.NUMBER,
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '线条高度',
+            tip: '@{element.line.width}',
             key: 'height',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -55,7 +56,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
         }, {
-            tip: '线条宽度',
+            tip: '@{element.line.height}',
             key: 'width',
             type: PropsDesc.NUMBER,
             min: 0.01,
@@ -64,7 +65,7 @@ export default Designer.extend({
             read: Convert["@{pixel.to.pt}"],
             write: Convert["@{pt.to.pixel}"]
         }, {
-            tip: '线条样式',
+            tip: '@{element.line.style}',
             key: 'type',
             type: PropsDesc.DROPDOWN,
             textKey: 'text',
@@ -73,12 +74,12 @@ export default Designer.extend({
         }, {
             type: PropsDesc.SPLITER
         }, {
-            tip: '编辑锁定',
+            tip: '@{element.lock}',
             key: 'locked',
             type: PropsDesc.BOOLEAN,
             role: 'free'
         }, {
-            tip: '组件树名称',
+            tip: '@{element.name}',
             key: 'tip',
             type: PropsDesc.INPUT,
             role: 'free'

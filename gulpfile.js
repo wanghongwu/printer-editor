@@ -113,6 +113,7 @@ gulp.task('dist', ['cleanSrc'], () => {
             './src/gallery/**',
             './src/cainiao/**',
             './src/util/**',
+            './src/i18n/**',
             './src/element/**',
             './src/editor/**'])
             .pipe(concat('editor.js'))

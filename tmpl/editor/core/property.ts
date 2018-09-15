@@ -2,6 +2,7 @@ import Magix, { View, State } from 'magix';
 import PropsDesc from '../const/props-desc';
 import Transform from '../../util/transform';
 import Table from '../../util/table';
+import I18n from '../../i18n/index';
 import $ from '$';
 Magix.applyStyle('@property.less');
 export default View.extend({
@@ -13,6 +14,7 @@ export default View.extend({
         }, 100);
         State.on('@{stage&select.elements.change}', update);
         State.on('@{property&element.property.update}', update);
+        State.on('@{lang.change}', update);
     },
     render() {
         let elements = State.get('@{stage&select.elements}');
@@ -96,7 +98,10 @@ export default View.extend({
             data,
             eId
         });
-        State.fire('@{history&save.snapshot}');
+        State.fire('@{history&save.snapshot}', {
+            key,
+            time: 500
+        });
     },
     '@{image.change}<change>'(e) {
         let updater = this.updater;
@@ -127,7 +132,7 @@ export default View.extend({
         let me = this;
         let old = Transform["@{get.rect.xy}"](data, data.rotate);
         img.onerror = () => {
-            me.alert('获取图片尺寸失败，请重试～～');
+            me.alert(I18n('@{property.load.img.error}'));
         };
         img.onload = () => {
             data.width = img.width * scale;

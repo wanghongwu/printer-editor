@@ -9,11 +9,11 @@ export default {
             xLines: State.get('@{stage&x.help.lines}'),
             yLines: State.get('@{stage&y.help.lines}')
         });
-        localStorage.setItem('@{store&editor.status}', stage);
+        localStorage.setItem('l.state', stage);
     },
     '@{read}'(): Editor.SnapshotStatus {
         let stage = {} as Editor.SnapshotStatus;
-        let str = localStorage.getItem('@{store&editor.status}');
+        let str = localStorage.getItem('l.state');
         if (str) {
             try {
                 stage = JSON.parse(str);
@@ -25,6 +25,6 @@ export default {
         return stage;
     },
     '@{clear}'() {
-        localStorage.removeItem('@{store&editor.status}');
+        localStorage.removeItem('l.state');
     }
 }
