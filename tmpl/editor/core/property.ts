@@ -43,8 +43,10 @@ export default View.extend({
             data,
             eId
         });
-        this.render();
-        State.fire('@{history&save.snapshot}');
+        if (!e.params.ui) {
+            this.render();
+            State.fire('@{history&save.snapshot}');
+        }
     },
     '@{set.cell.share}<click>'(e) {
         let updater = this.updater;

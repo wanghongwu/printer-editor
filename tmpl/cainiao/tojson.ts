@@ -184,7 +184,7 @@ let ToNum = f => {
     return isNaN(f) ? 0 : f;
 };
 let ToDeg = f => ToNum(f) % 360;
-let ToMM = Convert["@{pixel.to.millimeter}"];
+//let ToMM = Convert["@{pixel.to.millimeter}"];
 let Types = {
     STRING: 1,
     NUMBER: 2,
@@ -254,9 +254,6 @@ let ValidKeys = {
             alias: 'type',
             enums: ToMap(CNC.LINE_TYPES, 'value'),
             back: CNC.LINE_TYPES[0].value
-        },
-        'editor:_deg_': {
-            type: Types.NUMBER
         }
     },
     rect: {
@@ -525,12 +522,17 @@ let DecodeNodeAttrs = (node, validRules, host) => {
     for (let a of node['@{~v#node.attrs}']) {
         ReadByRule('page', validRules, a['@{~v#node.attrs.key}'], a['@{~v#node.attrs.value}'], host);
     }
-    let style = node['@{~v#node.attrs.map}'].style;
+    let map = node['@{~v#node.attrs.map}'];
+    let style = map.style;
     if (style) {
         let ss = StyleDecoder(style);
         for (let s in ss) {
             ReadByRule('layout', validRules, s, ss[s], host);
         }
+    }
+    let tip = map['editor:tip'];
+    if (tip) {
+        host.tip = tip;
     }
 };
 let Decoders = {
@@ -630,8 +632,16 @@ let Decoders = {
             let scale = State.get('@{stage&scale}');
             defaults.width *= scale;
             defaults.height *= scale;
+            let tip = attrsMap['editor:tip'];
+            if (tip) {
+                defaults.tip = tip;
+            }
             if (prt['@{~v#node.tag}'] == 'layout') {
                 DecodeNodeAttrs(prt, keys, defaults);
+                let pprt = map[prt['@{~v#node.pId}']];
+                if (pprt && pprt['@{~v#node.tag}'] == 'td') {
+                    defaults.supportCNStyle = true;
+                }
             } else {
                 ctor.writeAdapter(true, defaults);
                 defaults.useCNStyle = true;
@@ -654,6 +664,8 @@ let Decoders = {
             }
             if (!$.isArray(defaults.align)) {
                 defaults.align = [defaults.align, defaults.valign || 'top'];
+            } else if (defaults.valign && $.isArray(defaults.align)) {
+                defaults.align[1] = defaults.valign;
             }
             if (defaults.backgroundColor && defaults.fontColor) {
                 defaults.color = 1;
@@ -733,6 +745,10 @@ let Decoders = {
             let scale = State.get('stage&scale');
             defaults.width *= scale;
             defaults.height *= scale;
+            let tip = nodeAttrsMap['editor:tip'];
+            if (tip) {
+                defaults.tip = tip;
+            }
             let keys = ValidKeys.barcode;
             DecodeNodeAttrs(prt, keys, defaults);
             for (let a of node['@{~v#node.attrs}']) {

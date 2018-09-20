@@ -19,3 +19,23 @@
         <img class="img" src="{{=cdn}}TB13fs.uHArBKNjSZFLXXc_dVXa-200-200.svg"/>
     </li>
 </ul>
+<ul class="unselectable group{{if disabled}} notallowed{{/if}}" style="display:block">
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.merge.left}')}}" mx-click="@{cell}({type:'ml'})">
+        <i class="iconfont r180">&#xe603;</i>
+    </li>
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.merge.right}')}}" mx-click="@{cell}({type:'mr'})">
+        <i class="iconfont">&#xe603;</i>
+    </li>
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.merge.up}')}}" mx-click="@{cell}({type:'mu'})">
+        <i class="iconfont r270">&#xe603;</i>
+    </li>
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.merge.down}')}}" mx-click="@{cell}({type:'md'})">
+        <i class="iconfont r90">&#xe603;</i>
+    </li>
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.h.split}')}}" mx-click="@{cell}({type:'sh'})">
+        <i class="iconfont">&#xe672;</i>
+    </li>
+    <li class="fl group-item" title="{{=i18n('@{menu.cell.v.split}')}}" mx-click="@{cell}({type:'sv'})">
+        <i class="iconfont r90">&#xe672;</i>
+    </li>
+</ul>

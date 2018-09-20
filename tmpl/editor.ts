@@ -19,7 +19,8 @@ $(() => {
             element: Env.cdn + '/element',
             editor: Env.cdn + '/editor',
             gallery: Env.cdn + '/gallery',
-            util: Env.cdn + '/util'
+            util: Env.cdn + '/util',
+            i18n: Env.cdn + '/i18n'
         }
     });
     seajs.use(['magix', 'i18n/index'], (Magix: Magix, I18n) => {

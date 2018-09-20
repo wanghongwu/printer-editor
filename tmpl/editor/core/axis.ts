@@ -43,6 +43,7 @@ export default Magix.View.extend<{
         updateLines();
         State.on('@{stage&ui.change}', update);
         State.on('@{history&status.change}', update);
+        State.on('@{lang.change}', update);
         this['@{owner.node}'] = $('#' + this.id);
     },
     rerender(draw) {

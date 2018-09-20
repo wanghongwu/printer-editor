@@ -103,13 +103,14 @@ export default Designer.extend({
             tip: '@{element.table.dheight}',
             type: PropsDesc.CELLROWSHARE
         }, {
-            tip: '@{element.table.opcell}',
-            type: PropsDesc.CELLOPERATE,
+            tip: '@{element.table.pic}',
+            type: PropsDesc.CELLFOCUS,
             gtKey: 'rowIndex',
             gtValue: -1
         }, {
-            tip: '@{element.table.pic}',
-            type: PropsDesc.CELLFOCUS,
+            tip: '@{element.table.opcell}',
+            styleVTop: 1,
+            type: PropsDesc.CELLOPERATE,
             gtKey: 'rowIndex',
             gtValue: -1
         }, {

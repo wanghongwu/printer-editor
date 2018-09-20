@@ -1,10 +1,11 @@
-import Magix, { View, State } from 'magix';
+import Magix, { View, State, Vframe } from 'magix';
 import $ from '$';
 import { StageSelectElements, StageElements, Clipboard } from '../../editor/core/workaround';
 import * as Dragdrop from '../../gallery/mx-dragdrop/index';
 import Table from '../../util/table';
 import CNC from '../../cainiao/const';
 import Keys from '../../editor/const/keys';
+import Convert from '../../util/converter';
 const KeysMap = {
     [Keys.L]: 'left',
     [Keys.R]: 'right',
@@ -20,6 +21,10 @@ const MenusMap = {
     11: 'cb',
     12: 'ca',
     13: 'c'
+};
+const MenuCellsMap = {
+    15: 'sh',
+    16: 'sv'
 };
 Magix.applyStyle('@index.less');
 export default View.extend<Editor.Dragdrop>({
@@ -55,7 +60,12 @@ export default View.extend<Editor.Dragdrop>({
     },
     assign(data) {
         this['@{data}'] = data;
-        this.updater.set(data.props);
+        let unchanged = {} as { rows?: number };
+        if (data.onlyMove) {
+            console.log('only move');
+            unchanged.rows = 1;
+        }
+        this.updater.set(data.props, unchanged);
         this.updater.set({
             size: CNC.RESIZER_SIZE,
             scale: State.get('@{stage&scale}')
@@ -74,13 +84,79 @@ export default View.extend<Editor.Dragdrop>({
         if (e.from == 'element_table') return;
         e.from = 'element_table';
         let { row, col } = e.params;
-        let data = this['@{data}'];
+        let me = this;
+        let data = me['@{data}'];
         data.props.rowIndex = row;
         data.props.colIndex = col;
-        this.assign(data);
-        this.render();
+        me.assign(data);
+        me.render();
         State.fire('@{property&element.property.update}');
         StageSelectElements["@{set}"](data);
+        let modifier = Vframe.get('m_app_stage');
+        let beginXY = Convert["@{real.to.outer.coord}"]({
+            x: e.pageX,
+            y: e.pageY
+        });
+        let target = $(e.eventTarget);
+        let nearXY = Convert["@{real.to.nearest.coord}"](target, {
+            x: e.pageX,
+            y: e.pageY,
+            find: 0
+        });
+        let moved = false;
+        let finished = false;
+        let cell = data.props.rows[row].cells[col];
+        if (!cell.children) {
+            cell.children = [];
+        }
+        let elementLocations = StageElements["@{get.elements.location}"](cell);
+        //console.log(elementLocations);
+        me.dragdrop(e.eventTarget, me['@{throttle}'](evt => {
+            if (finished) return;
+            moved = true;
+            let currentXY = Convert["@{real.to.outer.coord}"]({
+                x: evt.pageX,
+                y: evt.pageY
+            });
+            modifier.invoke('@{drag.rect}', [beginXY, currentXY]);
+            let cNearXY = Convert["@{real.to.nearest.coord}"](target, {
+                x: evt.pageX,
+                y: evt.pageY,
+                find: 0
+            });
+            let width = Math.abs(beginXY.x - currentXY.x);
+            let height = Math.abs(beginXY.y - currentXY.y);
+            let left = Math.min(nearXY.x, cNearXY.x);
+            let top = Math.min(nearXY.y, cNearXY.y);
+            let rect = {
+                x: left,
+                y: top,
+                width,
+                height
+            };
+            let elements = StageElements["@{get.intersect.elements}"](elementLocations, rect, {});
+            let ids = JSON.stringify(elements, ['id']);
+            if (ids != me['@{last.ids}']) {
+                me['@{last.ids}'] = ids;
+                if (elements.length) {
+                    StageSelectElements['@{set.all}'](elements);
+                } else {
+                    data.props.rowIndex = row;
+                    data.props.colIndex = col;
+                    me.assign(data);
+                    setTimeout(me.wrapAsync(() => {
+                        me.render();
+                    }), 0);
+                    StageSelectElements["@{set}"](data);
+                }
+            }
+        }, 50), () => {
+            if (moved) {
+                delete me['@{last.ids}'];
+                finished = true;
+                modifier.invoke('@{drag.end}');
+            }
+        });
     },
     '@{start.resize}<mousedown>'(e) {
         if (e.from == 'element_table') return;
@@ -206,7 +282,15 @@ export default View.extend<Editor.Dragdrop>({
                     eId: id
                 });
                 State.fire('@{history&save.snapshot}');
-            }
+            } /*else if (v.id >= 15 && v.id <= 18) {
+                Table["@{operate.cell}"](props, MenuCellsMap[v.id]);
+                State.fire('@{property&element.property.update}');
+                State.fire('@{property&element.property.change}', {
+                    data: props,
+                    eId: id
+                });
+                State.fire('@{history&save.snapshot}');
+            }*/
         });
     },
     '@{delete.table}<click>'() {

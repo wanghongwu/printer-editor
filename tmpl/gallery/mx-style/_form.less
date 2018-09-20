@@ -51,7 +51,7 @@
     cursor:not-allowed;
     border-color:@color-border;
 }
-.checkbox,
+/*.checkbox,
 .radio{
     width: @font-size;
     height: @font-size;
@@ -118,7 +118,7 @@
 .checkbox:indeterminate:disabled:after{
     background-color: rgba(0,0,0,.25);
 }
-
+*/
 @switch-height: floor(@input-height / 3 * 2);
 .switch{
     width: @switch-height * 2;
@@ -171,20 +171,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.form-required:before{
+/*.form-required:before{
     display: inline-block;
     margin-right: 4px;
     content: "*";
     font-family: SimSun;
     line-height: 1;
     color: #f04134;
-}
+}*/
 .form-content{
     display: inline-block;
     position: relative;
     min-height: @input-height;
     line-height: @input-height;
 }
-.form-footer{
-    margin-left: @font-size * 10 + 15;
-}
+// .form-footer{
+//     margin-left: @font-size * 10 + 15;
+// }

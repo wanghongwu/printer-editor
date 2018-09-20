@@ -1,18 +1,33 @@
 <div class="items clearfix unselectable pr">
     <div class="fl">
         <i class="iconfont item{{if !hs.canUndo}} icon-disabled{{/if}}" title="{{=i18n('@{menu.undo}')}}(Ctrl+Z)"{{if hs.canUndo}} mx-click="@{set.history}({type:'undo'})"{{/if}}>&#xe682;</i>
-        <i class="iconfont item mr20 flipx{{if !hs.canRedo}} icon-disabled{{/if}}" title="{{=i18n('@{menu.redo}')}}(Ctrl+Y)"{{if hs.canRedo}} mx-click="@{set.history}({type:'redo'})"{{/if}}>&#xe682;</i>
+        <i class="iconfont item flipx{{if !hs.canRedo}} icon-disabled{{/if}}" title="{{=i18n('@{menu.redo}')}}(Ctrl+Y)"{{if hs.canRedo}} mx-click="@{set.history}({type:'redo'})"{{/if}}>&#xe682;</i>
+        <i class="spliter"></i>
         <i class="iconfont item" title="{{=i18n('@{menu.new}')}}" mx-click="@{new}()">&#xe615;</i>
-        <!-- <i class="iconfont item" title="预览" mx-click="@{preview}()">&#xe67e;</i> -->
         <i class="iconfont item" mx-click="@{save}()" title="{{=i18n('@{xml.code}')}}">&#xe611;</i>
-        <i class="iconfont item mr20" mx-click="@{test.templates}()" title="{{=i18n('@{template.title}')}}">&#xe601;</i>
+        <i class="iconfont item" mx-click="@{test.templates}()" title="{{=i18n('@{template.title}')}}">&#xe601;</i>
+        {{if canCenter()}}
+        <i class="spliter"></i>
+        <i class="iconfont item" mx-click="@{align}({action:'put',to:'vc'})" title="{{=i18n('@{align.stage.v.c}')}}">&#xe679;</i>
+        <i class="iconfont item r90" mx-click="@{align}({action:'put',to:'hc'})" title="{{=i18n('@{align.stage.h.c}')}}">&#xe679;</i>
+        {{/if}}
+        {{if canAvg()}}
+        <i class="iconfont item r90" mx-click="@{align}({action:'avg',to:'av'})" title="{{=i18n('@{avg.v.c}')}}">&#xe604;</i>
+        <i class="iconfont item" mx-click="@{align}({action:'avg',to:'ah'})" title="{{=i18n('@{avg.h.c}')}}">&#xe604;</i>
+        {{/if}}
         {{if selectCount>1}}
+        <i class="spliter"></i>
         <i class="iconfont item" mx-click="@{align}({to:'left'})" title="{{=i18n('@{align.left}')}}">&#xe70b;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'hcenter'})" title="{{=i18n('@{align.h.c}')}}">&#xe711;</i>
         <i class="iconfont item" mx-click="@{align}({to:'right'})" title="{{=i18n('@{align.right}')}}">&#xe70c;</i>
         <i class="iconfont item" mx-click="@{align}({to:'top'})" title="{{=i18n('@{align.top}')}}">&#xe70d;</i>
-        <i class="iconfont item" mx-click="@{align}({to:'bottom'})" title="{{=i18n('@{align.bottom}')}}">&#xe70e;</i>
         <i class="iconfont item" mx-click="@{align}({to:'vcenter'})" title="{{=i18n('@{align.v.c}')}}">&#xe712;</i>
-        <i class="iconfont item" mx-click="@{align}({to:'hcenter'})" title="{{=i18n('@{align.h.c}')}}">&#xe711;</i>
+        <i class="iconfont item" mx-click="@{align}({to:'bottom'})" title="{{=i18n('@{align.bottom}')}}">&#xe70e;</i>
+        <i class="spliter"></i>
+        <i class="iconfont item" mx-click="@{align}({action:'same',to:'maw'})" title="{{=i18n('@{same.max.width}')}}">&#xe789;</i>
+        <i class="iconfont item" mx-click="@{align}({action:'same',to:'miw'})" title="{{=i18n('@{same.min.width}')}}">&#xe788;</i>
+        <i class="iconfont item r90" mx-click="@{align}({action:'same',to:'mah'})" title="{{=i18n('@{same.max.height}')}}">&#xe789;</i>
+        <i class="iconfont item r90" mx-click="@{align}({action:'same',to:'mih'})" title="{{=i18n('@{same.min.height}')}}">&#xe788;</i>
         {{/if}}
     </div>
     {{set width=page.width===''?'':toMM(page.width)}}

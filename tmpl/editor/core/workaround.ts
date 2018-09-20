@@ -3,7 +3,7 @@ import Convert from '../../util/converter';
 import Transform from '../../util/transform';
 import * as Menu from '../../gallery/mx-menu/index';
 import { Contextmenu } from './contextmenu';
-import CNC from '../../cainiao/const';
+//import CNC from '../../cainiao/const';
 import $ from '$';
 let ToMap = Magix.toMap;
 let Has = Magix.has;
@@ -66,6 +66,7 @@ export let StageSelectElements = {
                     '@{stage&select.elements.map}': ToMap(selectElements, 'id')
                 });
                 State.fire('@{stage&select.elements.change}');
+                State.fire('@{history&save.snapshot}');
                 // if (selectElements.length == 1) {
                 //     ScrollElementIntoView(selectElements[0].id);
                 // }
@@ -87,6 +88,7 @@ export let StageSelectElements = {
                 '@{stage&select.elements.map}': ToMap(selectElements, 'id')
             });
             State.fire('@{stage&select.elements.change}');
+            State.fire('@{history&save.snapshot}');
         }
     },
     '@{remove}'(element) {
@@ -105,6 +107,7 @@ export let StageSelectElements = {
                 '@{stage&select.elements.map}': ToMap(selectElements, 'id')
             });
             State.fire('@{stage&select.elements.change}');
+            State.fire('@{history&save.snapshot}');
         }
     },
     '@{set.all}'(elements) {
@@ -115,6 +118,7 @@ export let StageSelectElements = {
             '@{stage&select.elements.map}': ToMap(selectElements, 'id')
         });
         State.fire('@{stage&select.elements.change}');
+        State.fire('@{history&save.snapshot}');
     },
     '@{count}'() {
         let selectElements = State.get('@{stage&select.elements}');
@@ -159,6 +163,68 @@ export let StageElements = {
                 StageSelectElements['@{set}'](m);
             }
             return elements;
+        }
+    },
+    '@{get.select.elements.stage}'() {
+        let selectElementsMap = State.get('@{stage&select.elements.map}');
+        let stagesAdded = {},
+            stages = [];
+        let walk = (es,
+            tb?: { id: string },
+            rowIndex?: number,
+            colIndex?: number) => {
+            for (let e of es) {
+                if (Has(selectElementsMap, e.id)) {
+                    let sId = tb ? [tb.id, rowIndex, colIndex].join('-') : 'stage';
+                    if (!stagesAdded[sId]) {
+                        stages.push(stagesAdded[sId] = {
+                            type: tb ? 'td' : 'stage',
+                            table: tb,
+                            row: rowIndex,
+                            col: colIndex,
+                            elements: []
+                        });
+                    }
+                    stagesAdded[sId].elements.push(e);
+                }
+                if (e.type == 'table') {
+                    let ri = 0;
+                    for (let r of e.props.rows) {
+                        if (r.tag == 'tr') {
+                            let ci = 0;
+                            for (let d of r.cells) {
+                                if (d.tag == 'td') {
+                                    if (d.children) {
+                                        walk(d.children, e, ri, ci);
+                                    }
+                                }
+                                ci++;
+                            }
+                        }
+                        ri++;
+                    }
+                }
+            }
+        };
+        let elements = State.get('@{stage&elements}');
+        walk(elements);
+        return stages;
+    },
+    '@{focus.select.element.td}'() {
+        let stages = this['@{get.select.elements.stage}']();
+        if (stages.length === 1) {
+            let f = stages[0];
+            if (f.type == 'td') {
+                let table = f.table;
+                table.props.rowIndex = f.row;
+                table.props.colIndex = f.col;
+                State.fire('@{property&element.property.change}', {
+                    eId: table.id,
+                    data: table.props
+                });
+                //State.fire('@{property&element.property.update}');
+                StageSelectElements["@{set}"](table);
+            }
         }
     },
     '@{walk.elements}'(elements, cb) {
@@ -273,54 +339,42 @@ export let StageElements = {
         return td;
     },
     '@{get.nearest.stage}'() {
-        let elements = State.get('@{stage&elements}'),
-            selectElements = StageSelectElements['@{all}'](),
-            td = null,
-            c = selectElements.length,
+        let selectElements = StageSelectElements['@{all}'](),
+            c = selectElements.length;
+        if (c === 1) {
+            let first = selectElements[0];
+            let { rows, rowIndex, colIndex } = first.props;
+            if (rowIndex > -1 && colIndex > -1) {
+                let cell = rows[rowIndex].cells[colIndex];
+                return {
+                    coll: cell.children,
+                    type: 'td',
+                    width: cell.width,
+                    height: cell.height
+                };
+            }
+        }
+        let stages = this['@{get.select.elements.stage}'](),
+            elements = State.get('@{stage&elements}'),
             stage = {
                 coll: elements,
                 type: 'stage',
                 width: Number.MAX_SAFE_INTEGER,
                 height: Number.MAX_SAFE_INTEGER
             };
-        if (c == 1) {
-            let walk = es => {
-                for (let e of es) {
-                    if (e.type == 'table') {
-                        let { rows, rowIndex, colIndex } = e.props;
-                        if (rowIndex > -1 && colIndex > -1) {
-                            let r = rows[rowIndex];
-                            if (r && r.cells[colIndex]) {
-                                let c = r.cells[colIndex];
-                                if (c) {
-                                    if (!c.children) {
-                                        c.children = [];
-                                    }
-                                    td = {
-                                        coll: c.children,
-                                        collType: 'td',
-                                        width: c.width || CNC.TABLE_CELLS_WIDTH,
-                                        height: r.height || CNC.TABLE_ROWS_HEIGHT
-                                    };
-                                    break;
-                                }
-                            }
-                        }
-                        for (let r of rows) {
-                            if (r.cells) {
-                                for (let c of r.cells) {
-                                    if (c.children) {
-                                        walk(c.children);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            walk(elements);
+        if (stages.length === 1) {
+            let first = stages[0];
+            if (first.type == 'td') {
+                let cell = first.table.props.rows[first.row].cells[first.col];
+                stage = {
+                    coll: cell.children,
+                    type: 'td',
+                    width: cell.width,
+                    height: cell.height
+                };
+            }
         }
-        return td || stage;
+        return stage;
     },
     '@{multi.select}'(e, element) {
         if (e.shiftKey || e.ctrlKey || e.metaKey) {
@@ -401,20 +455,28 @@ export let StageElements = {
             StageSelectElements['@{set}'](element);
         }
     },
-    '@{get.elements.location}'() {
-        let elements = State.get('@{stage&elements}');
+    '@{get.elements.location}'(cell?: { children: { props: object, type: string }[], width: number, height: number }) {
+        let elements = cell && cell.children || State.get('@{stage&elements}');
         let locations = [],
             props, rotate;
         for (let e of elements) {
             props = e.props;
             if (e.type == '#script' ||
-                props.locked ||
-                props.xLocked ||
-                props.yLocked) {
+                props.locked) {
                 continue;
             }
             rotate = props.rotate || 0;
-            let tsed = Transform["@{rotate.rect}"](props, rotate);
+            let rect = {
+                x: props.x,
+                y: props.y,
+                width: props.width,
+                height: props.height
+            };
+            if (props.useCNStyle && cell) {
+                rect.width = cell.width * 0.92;
+                rect.height = cell.height * 0.92;
+            }
+            let tsed = Transform["@{rotate.rect}"](rect, rotate);
             let lt = tsed.point[0];
             let rt = tsed.point[2];
             let lb = tsed.point[6];
@@ -709,7 +771,7 @@ export let StageElements = {
                         e.props.y = s.y + offsetY;
                         let vf = Vframe.get(e.id);
                         if (vf) {
-                            if (vf.invoke('assign', e)) {
+                            if (vf.invoke('assign', [e, { move: true }])) {
                                 vf.invoke('render');
                             }
                         }
@@ -736,6 +798,7 @@ export let StageElements = {
         let listKey = 1;
         let disabled = {};
         let copyList = Clipboard["@{get.copy.list}"]();
+        //console.log(copyList);
         coll = Transform["@{get.sorted.elements}"](coll);
         disabled[Contextmenu.allId] = !coll.length;
         disabled[Contextmenu.pasteId] = !copyList.length;
@@ -943,7 +1006,9 @@ export let StageElements = {
         return selected;
     }
 };
-
+let Clone=(from,to)=>{
+return $.extend(true,to,from);
+};
 export let Clipboard = {
     '@{has.elements}'() {
         let list = this['@{copy.list}'] || [];
@@ -958,12 +1023,7 @@ export let Clipboard = {
         let list = [];
         let elements = StageSelectElements['@{all}']();
         for (let m of elements) {
-            list.push({
-                ...m,
-                props: {
-                    ...m.props
-                }
-            });
+            list.push(m);
         }
         me['@{copy.list}'] = list;
     },
@@ -982,33 +1042,56 @@ export let Clipboard = {
         let elements = stage.coll;
         if (list) {
             let selected = [];
-            let index = 0, diffX, diffY;
-            for (let m of list) {
-                let props = m.props;
-                if (xy) {
-                    if (index === 0) {
+            let index = 0, diffX = 0, diffY = 0;
+            let hasSameXY = props => {
+                for (let c of elements) {
+                    if (c.props.x == props.x && c.props.y == props.y) {
+                        return 1;
+                    }
+                }
+                return 0;
+            };
+            let setXY = props => {
+                if (index === 0) {
+                    if (xy) {
                         diffX = props.x - xy.x;
                         diffY = props.y - xy.y;
                         props.x = xy.x;
                         props.y = xy.y;
                     } else {
-                        props.x -= diffX;
-                        props.y -= diffY;
+                        let oldX = props.x;
+                        let oldY = props.y;
+                        while (hasSameXY(props)) {
+                            props.x += 20;
+                            props.y += 20;
+                        }
+                        if (props.x > stage.width) {
+                            props.x = stage.width - props.width / 2;
+                        } else if ((props.x + props.width) < 0) {
+                            props.x = -props.width / 2;
+                        }
+                        if (props.y > stage.height) {
+                            props.y = stage.height - props.height / 2;
+                        } else if ((props.y + props.height) < 0) {
+                            props.y = -props.height / 2
+                        }
+                        while (hasSameXY(props)) {
+                            props.x -= 4;
+                            props.y -= 4;
+                        }
+                        diffX = oldX - props.x;
+                        diffY = oldY - props.y;
                     }
-                    index++;
                 } else {
-                    props.x += 20;
-                    props.y += 20;
+                    props.x -= diffX;
+                    props.y -= diffY;
                 }
-                if (props.x > stage.width ||
-                    props.y > stage.height) {
-                    props.x = stage.width - props.width / 2;
-                    props.y = stage.height - props.height / 2;
-                } else if ((props.x + props.width) < 0 ||
-                    (props.y + props.height) < 0) {
-                    props.x = -props.width / 2;
-                    props.y = -props.height / 2
-                }
+            };
+            for (let m of list) {
+                let nm = Clone(m,{});
+                let props = nm.props;
+                setXY(props);
+                index++;
                 let n = {};
                 let walk = (from, to) => {
                     Assign(to, from);
@@ -1018,20 +1101,22 @@ export let Clipboard = {
                         Assign(to.props, from.props);
                         if ((from.type == 'htext' ||
                             from.type == 'vtext')) {
-                            if (to.props.useCNStyle && stage.collType == 'td') {
+                            if (to.props.useCNStyle && stage.type == 'td') {
                                 to.props.x = 0.76;
                                 to.props.y = 0.76;
                             } else {
                                 to.props.zIndex = elements.length + 1;
                                 to.props.locked = false;
-                                to.props.xLocked = false;
-                                to.props.yLocked = false;
-                                to.props.widthLocked = false;
-                                to.props.heightLocked = false;
-                                to.props.useCNStyle = false;
-                                to.props.width = to.props._width || (from.type == 'htext' ? 94.49 : 22.68);
-                                to.props.height = to.props._height || (from.type == 'htext' ? 18.9 : 128.5);
-                                to.props.supportCNStyle = stage.collType == 'td';
+                                to.props.supportCNStyle = stage.type == 'td';
+                                if (to.props.useCNStyle) {
+                                    to.props.xLocked = false;
+                                    to.props.yLocked = false;
+                                    to.props.widthLocked = false;
+                                    to.props.heightLocked = false;
+                                    to.props.useCNStyle = false;
+                                    to.props.width = to.props._width || (from.type == 'htext' ? 94.49 : 22.68);
+                                    to.props.height = to.props._height || (from.type == 'htext' ? 18.9 : 128.5);
+                                }
                             }
                         }
                     }
@@ -1060,7 +1145,7 @@ export let Clipboard = {
                         }
                     }
                 };
-                walk(m, n);
+                walk(nm, n);
                 elements.push(n);
                 selected.push(n);
                 if (me['@{is.cut}']) {

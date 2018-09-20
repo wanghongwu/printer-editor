@@ -10,7 +10,6 @@
     border: 1px solid #e6e6e6;
     border-radius: 4px;
   }
-  
   /* PADDING */
   
   .CodeMirror-lines {
@@ -347,3 +346,12 @@
   
   /* Help users use markselection to safely style text background */
   span.CodeMirror-selectedtext { background: none; }
+
+
+  .CodeMirror:hover{
+    border-color: #ccc;
+  }
+  .CodeMirror-focus,
+  .CodeMirror-focus:hover{
+    border-color:#06f;
+  }

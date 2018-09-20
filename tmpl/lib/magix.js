@@ -5,9 +5,9 @@
 /*
 author:kooboy_li@163.com
 loader:cmd
-enables:style,viewInit,router,viewMerge,tipRouter,updater,autoEndUpdate,linkage,state,updaterDOM,viewProtoMixins
+enables:style,viewInit,viewMerge,updater,autoEndUpdate,linkage,state,updaterDOM,viewProtoMixins
 
-optionals:base,updaterVDOM,updaterQuick,updaterAsync,updaterTouchAttr,service,serviceCombine,servicePush,tipLockUrlRouter,edgeRouter,forceEdgeRouter,urlRewriteRouter,updateTitleRouter,cnum,ceach,vframeHost,layerVframe,collectView,share,defaultView,viewInitAsync,resource,configIni,nodeAttachVframe,keepHTML,eventEnterLeave,naked,viewChildren,dispatcherRecast
+optionals:base,updaterVDOM,updaterQuick,updaterAsync,updaterTouchAttr,service,serviceCombine,servicePush,router,tipRouter,tipLockUrlRouter,edgeRouter,forceEdgeRouter,urlRewriteRouter,updateTitleRouter,cnum,ceach,vframeHost,layerVframe,collectView,share,defaultView,viewInitAsync,resource,configIni,nodeAttachVframe,keepHTML,naked,viewChildren,dispatcherRecast
 */
 define('magix', ['$'], function (require) {
     if (typeof DEBUG == 'undefined')
@@ -61,12 +61,12 @@ define('magix', ['$'], function (require) {
     };
     var G_GetById = function (id) { return typeof id == Magix_StrObject ? id : G_DOCUMENT.getElementById(id); };
     var G_IsPrimitive = function (args) { return !args || typeof args != Magix_StrObject; };
-    var G_Set = function (newData, oldData, keys) {
+    var G_Set = function (newData, oldData, keys, unchanged) {
         var changed = 0, now, old, p;
         for (p in newData) {
             now = newData[p];
             old = oldData[p];
-            if (!G_IsPrimitive(now) || old !== now) {
+            if ((!G_IsPrimitive(now) || old !== now) && !G_Has(unchanged, p)) {
                 keys[p] = 1;
                 changed = 1;
             }
@@ -118,6 +118,9 @@ define('magix', ['$'], function (require) {
         if (css && !View_ApplyStyle[key]) {
             View_ApplyStyle[key] = 1;
             if (DEBUG) {
+                if (key.indexOf('$throw_') === 0) {
+                    throw new Error(css);
+                }
                 Header.append("<style id=\"" + key + "\">" + css);
             }
             else {
@@ -326,61 +329,56 @@ define('magix', ['$'], function (require) {
             $(node).on(type, scope, cb);
         }
     };
-    if (DEBUG) {
-        var Safeguard;
-        if (window.Proxy) {
-            var ProxiesPool_1 = new Map();
-            Safeguard = function (data, getter, setter) {
-                if (G_IsPrimitive(data)) {
-                    return data;
+    var Safeguard = function (data) { return data; };
+    if (DEBUG && window.Proxy) {
+        var ProxiesPool_1 = new Map();
+        Safeguard = function (data, getter, setter) {
+            if (G_IsPrimitive(data)) {
+                return data;
+            }
+            var build = function (prefix, o) {
+                var key = getter + '\x01' + setter;
+                var cached = ProxiesPool_1.get(o);
+                if (cached && cached.key == key) {
+                    return cached.entity;
                 }
-                var build = function (prefix, o) {
-                    var key = getter + '\x01' + setter;
-                    var cached = ProxiesPool_1.get(o);
-                    if (cached && cached.key == key) {
-                        return cached.entity;
-                    }
-                    if (o['\x1e_sf_\x1e']) {
-                        return o;
-                    }
-                    var entity = new Proxy(o, {
-                        set: function (target, property, value) {
-                            if (!setter && !prefix) {
-                                throw new Error('avoid writeback,key: ' + prefix + property + ' value:' + value + ' more info: https://github.com/thx/magix/issues/38');
-                            }
-                            target[property] = value;
-                            if (setter) {
-                                setter(prefix + property, value);
-                            }
-                            return true;
-                        },
-                        get: function (target, property) {
-                            if (property == '\x1e_sf_\x1e') {
-                                return true;
-                            }
-                            var out = target[property];
-                            if (!prefix && getter) {
-                                getter(property);
-                            }
-                            if (G_Has(target, property) &&
-                                (G_IsArray(out) || G_IsObject(out))) {
-                                return build(prefix + property + '.', out);
-                            }
-                            return out;
+                if (o['\x1e_sf_\x1e']) {
+                    return o;
+                }
+                var entity = new Proxy(o, {
+                    set: function (target, property, value) {
+                        if (!setter && !prefix) {
+                            throw new Error('avoid writeback,key: ' + prefix + property + ' value:' + value + ' more info: https://github.com/thx/magix/issues/38');
                         }
-                    });
-                    ProxiesPool_1.set(o, {
-                        key: key,
-                        entity: entity
-                    });
-                    return entity;
-                };
-                return build('', data);
+                        target[property] = value;
+                        if (setter) {
+                            setter(prefix + property, value);
+                        }
+                        return true;
+                    },
+                    get: function (target, property) {
+                        if (property == '\x1e_sf_\x1e') {
+                            return true;
+                        }
+                        var out = target[property];
+                        if (!prefix && getter) {
+                            getter(property);
+                        }
+                        if (G_Has(target, property) &&
+                            (G_IsArray(out) || G_IsObject(out))) {
+                            return build(prefix + property + '.', out);
+                        }
+                        return out;
+                    }
+                });
+                ProxiesPool_1.set(o, {
+                    key: key,
+                    entity: entity
+                });
+                return entity;
             };
-        }
-        else {
-            Safeguard = function (data) { return data; };
-        }
+            return build('', data);
+        };
     }
     var Magix_PathToObjCache = new G_Cache();
     var Magix_Booted = 0;
@@ -604,12 +602,10 @@ define('magix', ['$'], function (require) {
          *
          */
         boot: function (cfg) {
-            G_Assign(Magix_Cfg, cfg); //先放到配置信息中，供ini文件中使用
+            G_Assign(Magix_Cfg, cfg);
             G_Require(Magix_Cfg.exts, function () {
-                Router.on(G_CHANGED, Dispatcher_NotifyChange);
+                Vframe_Root().mountView(Magix_Cfg.defaultView);
                 State.on(G_CHANGED, Dispatcher_NotifyChange);
-                Magix_Booted = 1;
-                Router_Bind();
             });
         },
         /**
@@ -847,7 +843,8 @@ define('magix', ['$'], function (require) {
         guid: G_Id,
         use: G_Require,
         Cache: G_Cache,
-        nodeId: IdIt
+        nodeId: IdIt,
+        guard: Safeguard
     };
     /**
      * 多播事件对象
@@ -950,7 +947,6 @@ define('magix', ['$'], function (require) {
     var State_AppDataKeyRef = {};
     var State_ChangedKeys = {};
     var State_DataIsChanged = 0;
-    var State_DataWhereSet = {};
     var State_IsObserveChanged = function (view, keys, r) {
         var oKeys = view['$os'], ok;
         if (oKeys) {
@@ -985,31 +981,46 @@ define('magix', ['$'], function (require) {
                 if (!v) {
                     delete State_AppDataKeyRef[key];
                     delete State_AppData[key];
-                    if (DEBUG) {
-                        delete State_DataWhereSet[key];
-                    }
                 }
             }
         }
     };
     if (DEBUG) {
-        setTimeout(function () {
-            Router.on('changed', function () {
-                setTimeout(function () {
-                    var keys = [];
-                    var cls = [];
-                    for (var p in State_DataWhereSet) {
-                        if (!State_AppDataKeyRef[p]) {
-                            cls.push(p);
-                            keys.push('key:"' + p + '" set by page:"' + State_DataWhereSet[p] + '"');
-                        }
-                    }
-                    if (keys.length) {
-                        console.warn('beware! Remember to clean ' + keys + ' in {Magix.State}   Clean use view.mixins like mixins:[Magix.State.clean("' + cls + '")]');
-                    }
-                }, 200);
+        var Started_1 = 0;
+        var NotifyList_1 = [];
+        var NotifyTimer_1 = 0;
+        var Notify_1 = function () {
+            var locker = {};
+            for (var _i = 0, NotifyList_2 = NotifyList_1; _i < NotifyList_2.length; _i++) {
+                var n = NotifyList_2[_i];
+                if (!locker[n.msg]) {
+                    console.warn(n.msg);
+                    locker[n.msg] = 1;
+                }
+            }
+            NotifyList_1.length = 0;
+            Started_1 = 0;
+        };
+        var ClearNotify = function (key) {
+            for (var i = NotifyList_1.length; i--;) {
+                var n = NotifyList_1[i];
+                if (n.key == key) {
+                    NotifyList_1.splice(i, 1);
+                }
+            }
+        };
+        var DelayNotify = function (key, msg) {
+            clearTimeout(NotifyTimer_1);
+            Started_1 = 0;
+            NotifyList_1.push({
+                key: key,
+                msg: msg
             });
-        }, 0);
+            if (!Started_1) {
+                Started_1 = 1;
+                NotifyTimer_1 = setTimeout(Notify_1, 500);
+            }
+        };
     }
     /**
      * 可观察的内存数据对象
@@ -1033,25 +1044,10 @@ define('magix', ['$'], function (require) {
         get: function (key) {
             var r = key ? State_AppData[key] : State_AppData;
             if (DEBUG) {
-                if (key && Magix_Booted) {
-                    var loc = Router.parse();
-                    if (G_Has(State_DataWhereSet, key) && State_DataWhereSet[key] != loc.path) {
-                        console.warn('beware! You get state:"{Magix.State}.' + key + '" where it set by page:' + State_DataWhereSet[key]);
-                    }
-                }
                 r = Safeguard(r, function (dataKey) {
-                    if (Magix_Booted) {
-                        var loc = Router.parse();
-                        if (G_Has(State_DataWhereSet, dataKey) && State_DataWhereSet[dataKey] != loc.path) {
-                            console.warn('beware! You get state:"{Magix.State}.' + dataKey + '" where it set by page:' + State_DataWhereSet[dataKey]);
-                        }
-                    }
                 }, function (path, value) {
                     var sub = key ? key : path;
-                    console.warn('beware! You direct set "{Magix.State}.' + sub + '" a new value  You should call Magix.State.set() and Magix.State.digest() to notify other views {Magix.State} changed');
-                    // if (G_IsPrimitive(value) && !/\./.test(sub)) {
-                    //     console.warn('beware! Never set a primitive value ' + JSON.stringify(value) + ' to "{Magix.State}.' + sub + '" This may will not trigger "changed" event');
-                    // }
+                    DelayNotify(sub, 'beware! You direct modify "{Magix.State}.' + sub + '"  You should call Magix.State.set() and Magix.State.digest() to notify other views {Magix.State} changed');
                 });
             }
             return r;
@@ -1060,25 +1056,24 @@ define('magix', ['$'], function (require) {
          * 设置数据
          * @param {Object} data 数据对象
          */
-        set: function (data) {
-            State_DataIsChanged = G_Set(data, State_AppData, State_ChangedKeys) || State_DataIsChanged;
-            if (DEBUG && Magix_Booted) {
-                var loc = Router.parse();
-                for (var p in data) {
-                    State_DataWhereSet[p] = loc.path;
-                }
-            }
+        set: function (data, unchanged) {
+            State_DataIsChanged = G_Set(data, State_AppData, State_ChangedKeys, unchanged) || State_DataIsChanged;
             return this;
         },
         /**
          * 检测数据变化，如果有变化则派发changed事件
          * @param  {Object} data 数据对象
          */
-        digest: function (data) {
+        digest: function (data, unchanged) {
             if (data) {
-                State.set(data);
+                State.set(data, unchanged);
             }
             if (State_DataIsChanged) {
+                if (DEBUG) {
+                    for (var p in State_ChangedKeys) {
+                        ClearNotify(p);
+                    }
+                }
                 State_DataIsChanged = 0;
                 this.fire(G_CHANGED, {
                     keys: State_ChangedKeys
@@ -1133,291 +1128,6 @@ define('magix', ['$'], function (require) {
      */
     );
     Magix.State = State;
-    //let G_IsFunction = $.isFunction;
-    var Router_VIEW = 'view';
-    var Router_HrefCache = new G_Cache();
-    var Router_ChgdCache = new G_Cache();
-    var Router_WinLoc = G_WINDOW.location;
-    var Router_LastChanged;
-    var Router_Silent = 0;
-    var Router_LLoc = {
-        query: {},
-        params: {},
-        href: G_EMPTY
-    };
-    var Router_TrimHashReg = /(?:^.*\/\/[^\/]+|#.*$)/gi;
-    var Router_TrimQueryReg = /^[^#]*#?!?/;
-    function GetParam(key, defaultValue) {
-        return this[G_PARAMS][key] || defaultValue !== G_Undefined && defaultValue || G_EMPTY;
-    }
-    var Router_Edge = 0;
-    var Router_Hashbang = G_HashKey + '!';
-    var Router_UpdateHash = function (path, replace) {
-        path = Router_Hashbang + path;
-        if (replace) {
-            Router_WinLoc.replace(path);
-        }
-        else {
-            Router_WinLoc.hash = path;
-        }
-    };
-    var Router_Update = function (path, params, loc, replace, silent, lQuery) {
-        path = G_ToUri(path, params, lQuery);
-        if (path != loc.srcHash) {
-            Router_Silent = silent;
-            Router_UpdateHash(path, replace);
-        }
-    };
-    var Router_Bind = function () {
-        var lastHash = Router_Parse().srcHash;
-        var newHash, suspend;
-        G_DOMEventLibBind(G_WINDOW, 'hashchange', function (e, loc, resolve) {
-            if (suspend) {
-                return;
-            }
-            loc = Router_Parse();
-            newHash = loc.srcHash;
-            if (newHash != lastHash) {
-                resolve = function () {
-                    e.p = 1;
-                    lastHash = newHash;
-                    suspend = G_EMPTY;
-                    Router_UpdateHash(newHash);
-                    Router_Diff();
-                };
-                e = {
-                    reject: function () {
-                        e.p = 1;
-                        suspend = G_EMPTY;
-                        Router_UpdateHash(lastHash);
-                    },
-                    resolve: resolve,
-                    prevent: function () {
-                        suspend = 1;
-                    }
-                };
-                Router.fire(G_CHANGE, e);
-                if (!suspend && !e.p) {
-                    resolve();
-                }
-            }
-        });
-        G_DOMEventLibBind(G_WINDOW, 'beforeunload', function (e, te, msg) {
-            e = e || G_WINDOW.event;
-            te = {};
-            Router.fire(G_PAGE_UNLOAD, te);
-            if ((msg = te.msg)) {
-                //chrome use e.returnValue and ie use return value
-                if (e)
-                    e.returnValue = msg;
-                return msg;
-            }
-        });
-        Router_Diff();
-    };
-    var Router_PNR_Routers, Router_PNR_UnmatchView, /*Router_PNR_IsFun,*/ Router_PNR_DefaultView, Router_PNR_DefaultPath;
-    var Router_AttachViewAndPath = function (loc, view) {
-        if (!Router_PNR_Routers) {
-            Router_PNR_Routers = Magix_Cfg.routes || {};
-            Router_PNR_UnmatchView = Magix_Cfg.unmatchView;
-            Router_PNR_DefaultView = Magix_Cfg.defaultView;
-            Router_PNR_DefaultPath = Magix_Cfg.defaultPath || '/';
-            //Router_PNR_IsFun = G_IsFunction(Router_PNR_Routers);
-            //if (!Router_PNR_IsFun && !Router_PNR_Routers[Router_PNR_DefaultPath]) {
-            //    Router_PNR_Routers[Router_PNR_DefaultPath] = Router_PNR_DefaultView;
-            //}
-        }
-        if (!loc[Router_VIEW]) {
-            var path = loc.hash[G_PATH] || (Router_Edge && loc.query[G_PATH]) || Router_PNR_DefaultPath;
-            //if (Router_PNR_IsFun) {
-            //    view = Router_PNR_Routers.call(Magix_Cfg, path, loc);
-            //} else {
-            view = Router_PNR_Routers[path] || Router_PNR_UnmatchView || Router_PNR_DefaultView;
-            //}
-            loc[G_PATH] = path;
-            loc[Router_VIEW] = view;
-        }
-    };
-    var Router_GetChged = function (oldLocation, newLocation) {
-        var oKey = oldLocation.href;
-        var nKey = newLocation.href;
-        var tKey = oKey + G_SPLITER + nKey;
-        var result = Router_ChgdCache.get(tKey);
-        if (!result) {
-            var hasChanged_1, rps_1;
-            result = {
-                params: rps_1 = {},
-                //isParam: Router_IsParam,
-                //location: newLocation,
-                force: !oKey //是否强制触发的changed，对于首次加载会强制触发一次
-            };
-            var oldParams_1 = oldLocation[G_PARAMS], newParams_1 = newLocation[G_PARAMS], tArr = G_Keys(oldParams_1).concat(G_Keys(newParams_1)), key = void 0;
-            var setDiff = function (key) {
-                var from = oldParams_1[key], to = newParams_1[key];
-                if (from != to) {
-                    rps_1[key] = {
-                        from: from,
-                        to: to
-                    };
-                    hasChanged_1 = 1;
-                }
-            };
-            for (var _i = 0, tArr_1 = tArr; _i < tArr_1.length; _i++) {
-                key = tArr_1[_i];
-                setDiff(key);
-            }
-            oldParams_1 = oldLocation;
-            newParams_1 = newLocation;
-            rps_1 = result;
-            setDiff(G_PATH);
-            setDiff(Router_VIEW);
-            Router_ChgdCache.set(tKey, result = {
-                a: hasChanged_1,
-                b: result
-            });
-        }
-        return result;
-    };
-    var Router_Parse = function (href) {
-        href = href || Router_WinLoc.href;
-        var result = Router_HrefCache.get(href), srcQuery, srcHash, query, hash, params;
-        if (!result) {
-            srcQuery = href.replace(Router_TrimHashReg, G_EMPTY);
-            srcHash = href.replace(Router_TrimQueryReg, G_EMPTY);
-            query = G_ParseUri(srcQuery);
-            hash = G_ParseUri(srcHash);
-            params = G_Assign({}, query[G_PARAMS], hash[G_PARAMS]);
-            result = {
-                get: GetParam,
-                href: href,
-                srcQuery: srcQuery,
-                srcHash: srcHash,
-                query: query,
-                hash: hash,
-                params: params
-            };
-            if (Magix_Booted) {
-                Router_AttachViewAndPath(result);
-                Router_HrefCache.set(href, result);
-            }
-            if (DEBUG) {
-                result.params = Safeguard(result.params);
-                result = Safeguard(result);
-            }
-        }
-        return result;
-    };
-    var Router_Diff = function () {
-        var location = Router_Parse();
-        var changed = Router_GetChged(Router_LLoc, Router_LLoc = location);
-        if (!Router_Silent && changed.a) {
-            Router.fire(G_CHANGED, Router_LastChanged = changed.b);
-        }
-        Router_Silent = 0;
-        if (DEBUG) {
-            Router_LastChanged = Safeguard(Router_LastChanged);
-        }
-        return Router_LastChanged;
-    };
-    //let PathTrimFileParamsReg=/(\/)?[^\/]*[=#]$/;//).replace(,'$1').replace(,EMPTY);
-    //let PathTrimSearch=/\?.*$/;
-    /**
-     * 路由对象，操作URL
-     * @name Router
-     * @namespace
-     * @borrows Event.on as on
-     * @borrows Event.fire as fire
-     * @borrows Event.off as off
-     * @beta
-     * @module router
-     */
-    var Router = G_Assign({ 
-        /**
-         * @lends Router
-         */
-        /**
-         * 解析href的query和hash，默认href为location.href
-         * @param {String} [href] href
-         * @return {Object} 解析的对象
-         */
-        parse: Router_Parse, 
-        /**
-         * 根据location.href路由并派发相应的事件,同时返回当前href与上一个href差异对象
-         * @example
-         * let diff = Magix.Router.diff();
-         * if(diff.params.page || diff.params.rows){
-         *     console.log('page or rows changed');
-         * }
-         */
-        diff: Router_Diff, 
-        /**
-         * 导航到新的地址
-         * @param  {Object|String} pn path或参数字符串或参数对象
-         * @param {String|Object} [params] 参数对象
-         * @param {Boolean} [replace] 是否替换当前历史记录
-         * @example
-         * let R = Magix.Router;
-         * R.to('/list?page=2&rows=20');//改变path和相关的参数，地址栏上的其它参数会进行丢弃，不会保留
-         * R.to('page=2&rows=20');//只修改参数，地址栏上的其它参数会保留
-         * R.to({//通过对象修改参数，地址栏上的其它参数会保留
-         *     page:2,
-         *     rows:20
-         * });
-         * R.to('/list',{//改变path和相关参数，丢弃地址栏上原有的其它参数
-         *     page:2,
-         *     rows:20
-         * });
-         *
-         * //凡是带path的修改地址栏，都会把原来地址栏中的参数丢弃
-         * 传递对象，内部对value会进行encodeURIComponent操作，传递字符串需要开发者自己处理。
-         * R.to({
-         *  page:2,
-         *  rows:20
-         * },null,true);//使用location.replace操作hash
-         * R.to({
-         *  page:2,
-         *  rows:20
-         * },null,null,true);//静默更新url但不派发事件
-         */
-        to: function (pn, params, replace, silent) {
-            if (!params && G_IsObject(pn)) {
-                params = pn;
-                pn = G_EMPTY;
-            }
-            var temp = G_ParseUri(pn);
-            var tParams = temp[G_PARAMS];
-            var tPath = temp[G_PATH];
-            var lPath = Router_LLoc[G_PATH]; //历史路径
-            var lParams = Router_LLoc[G_PARAMS];
-            var lQuery = Router_LLoc.query[G_PARAMS];
-            G_Assign(tParams, params); //把路径中解析出来的参数与用户传递的参数进行合并
-            if (tPath) { //设置路径带参数的形式，如:/abc?q=b&c=e或不带参数 /abc
-                //tPath = G_Path(lPath, tPath);
-                if (!Router_Edge) { //pushState不用处理
-                    for (lPath in lQuery) { //未出现在query中的参数设置为空
-                        if (!G_Has(tParams, lPath))
-                            tParams[lPath] = G_EMPTY;
-                    }
-                }
-            }
-            else if (lParams) { //只有参数，如:a=b&c=d
-                tPath = lPath; //使用历史路径
-                tParams = G_Assign({}, lParams, tParams); //复制原来的参数，合并新的参数
-            }
-            Router_Update(tPath, tParams, Router_LLoc, replace, silent, lQuery);
-        } }, MEvent
-    /**
-     * 当location.href有改变化后触发
-     * @name Router.changed
-     * @event
-     * @param {Object} e 事件对象
-     * @param {Object} e.path  如果path发生改变时，记录从(from)什么值变成(to)什么值的对象
-     * @param {Object} e.view 如果view发生改变时，记录从(from)什么值变成(to)什么值的对象
-     * @param {Object} e.params 如果参数发生改变时，记录从(from)什么值变成(to)什么值的对象
-     * @param {Boolean} e.force 标识是否是第一次强制触发的changed，对于首次加载完Magix，会强制触发一次changed
-     */
-    );
-    Magix.Router = Router;
     var Dispatcher_UpdateTag = 0;
     /**
      * 通知当前vframe，地址栏发生变化
@@ -1428,7 +1138,7 @@ define('magix', ['$'], function (require) {
         if (vframe && vframe['$a'] != Dispatcher_UpdateTag &&
             (view = vframe['$v']) &&
             view['$a'] > 1) { //存在view时才进行广播，对于加载中的可在加载完成后通过调用view.location拿到对应的G_WINDOW.location.href对象，对于销毁的也不需要广播
-            isChanged = stateKeys ? State_IsObserveChanged(view, stateKeys) : View_IsObserveChanged(view);
+            isChanged = State_IsObserveChanged(view, stateKeys);
             /**
              * 事件对象
              * @type {Object}
@@ -1472,13 +1182,8 @@ define('magix', ['$'], function (require) {
      */
     var Dispatcher_NotifyChange = function (e, vf, view) {
         vf = Vframe_Root();
-        if ((view = e[Router_VIEW])) {
-            vf.mountView(view.to);
-        }
-        else {
-            Dispatcher_UpdateTag = G_COUNTER++;
-            Dispatcher_Update(vf, e.keys);
-        }
+        Dispatcher_UpdateTag = G_COUNTER++;
+        Dispatcher_Update(vf, e.keys);
     };
     var Vframe_RootVframe;
     var Vframe_GlobalAlter;
@@ -2371,7 +2076,7 @@ define('magix', ['$'], function (require) {
         var oldAttributes = oldNode.attributes, newAttributes = newNode.attributes;
         for (i = oldAttributes.length; i--;) {
             a = oldAttributes[i].name;
-            if (!G_Has(newAttributes,a)) {
+            if (!newNode.hasAttribute(a)) {
                 if (a == 'id') {
                     if (!keepId) {
                         ref.d.push([oldNode, G_EMPTY]);
@@ -2388,8 +2093,7 @@ define('magix', ['$'], function (require) {
             a = newAttributes[i];
             key = a.name;
             value = a[G_VALUE];
-            let b=oldAttributes[key];
-            if (!b||b[G_VALUE] != value) {
+            if (oldNode.getAttribute(key) != value) {
                 if (key == 'id') {
                     ref.d.push([oldNode, value]);
                 }
@@ -2399,24 +2103,6 @@ define('magix', ['$'], function (require) {
                 }
             }
         }
-    };
-    var I_AttrDiff = function (oldNode, newNode) {
-        var oldAttributes = oldNode.attributes, newAttributes = newNode.attributes, diff = false, i = newAttributes.length, a,b, name;
-        if (oldAttributes.length == i) {
-            for (; i--;) {
-                a = newAttributes[i];
-                name = a.name;
-                b=oldAttributes[name];
-                if (!b||a[G_VALUE] != b[G_VALUE]) {
-                    diff = true;
-                    break;
-                }
-            }
-        }
-        else {
-            diff = true;
-        }
-        return diff;
     };
     var I_SpecialDiff = function (oldNode, newNode) {
         var nodeName = oldNode.nodeName, i;
@@ -2532,12 +2218,11 @@ define('magix', ['$'], function (require) {
         while (extra-- > 0) {
             tempOld = oldParent.lastChild;
             I_UnmountVframs(vframe, tempOld);
-
-        if (DEBUG) {
-            if (!tempOld.parentNode) {
-                console.error('Avoid remove node on view.destroy in digesting');
+            if (DEBUG) {
+                if (!tempOld.parentNode) {
+                    console.error('Avoid remove node on view.destroy in digesting');
+                }
             }
-        }
             oldParent.removeChild(tempOld);
             ref.c = 1;
         }
@@ -2570,7 +2255,7 @@ define('magix', ['$'], function (require) {
                     // If we have the same nodename then we can directly update the attributes.
                     var newMxView = newNode.getAttribute(G_MX_VIEW), newHTML = newNode.innerHTML;
                     var newStaticAttrKey = newNode.getAttribute(G_Tag_Attr_Key);
-                    var updateAttribute = I_AttrDiff(oldNode, newNode), updateChildren = void 0, unmountOld = void 0, oldVf = Vframe_Vframes[oldNode.id], assign = void 0, view = void 0, uri = newMxView && G_ParseUri(newMxView), params = void 0, htmlChanged = void 0, paramsChanged = void 0;
+                    var updateAttribute = !newStaticAttrKey || newStaticAttrKey != oldNode.getAttribute(G_Tag_Attr_Key), updateChildren = void 0, unmountOld = void 0, oldVf = Vframe_Vframes[oldNode.id], assign = void 0, view = void 0, uri = newMxView && G_ParseUri(newMxView), params = void 0, htmlChanged = void 0, paramsChanged = void 0;
                     if (newMxView && oldVf &&
                         (!newNode.id || newNode.id == oldNode.id) &&
                         oldVf['$j'] == uri[G_PATH] &&
@@ -2835,9 +2520,9 @@ define('magix', ['$'], function (require) {
          *     console.log(this.updater.get('a'));
          * }
          */
-        set: function (obj) {
+        set: function (obj, unchanged) {
             var me = this;
-            me['$c'] = G_Set(obj, me['$d'], me['$k']) || me['$c'];
+            me['$c'] = G_Set(obj, me['$d'], me['$k'], unchanged) || me['$c'];
             return me;
         },
         /**
@@ -2850,8 +2535,8 @@ define('magix', ['$'], function (require) {
          *     }).digest();
          * }
          */
-        digest: function (data, resolve) {
-            var me = this.set(data), digesting = me['$e'];
+        digest: function (data, unchanged, resolve) {
+            var me = this.set(data, unchanged), digesting = me['$e'];
             /*
                 view:
                 <div>
@@ -2867,7 +2552,9 @@ define('magix', ['$'], function (require) {
     
                 如果在digest的过程中，多次调用自身的digest，则后续的进行排队。前面的执行完成后，排队中的一次执行完毕
             */
-            digesting.push(resolve);
+            if (resolve) {
+                digesting.push(resolve);
+            }
             if (!digesting.i) {
                 Updater_Digest(me, digesting);
             }
@@ -2945,7 +2632,7 @@ define('magix', ['$'], function (require) {
             return G_ParseExpr(origin, this['$a']);
         }
     });
-    var View_EvtMethodReg = /^(\$?)([^<]*)<([^>]+)>$/;
+    var View_EvtMethodReg = /^(\$?)([^<]*)<([^>]+)>(?:&(.+))?$/;
     var processMixinsSameEvent = function (exist, additional, temp) {
         if (exist['a']) {
             temp = exist;
@@ -2977,16 +2664,17 @@ define('magix', ['$'], function (require) {
         };
     };
     var View_DelegateEvents = function (me, destroy) {
-        var e, eo = me["$eo"], so = me["$so"], el = me["$el"], id = me.id; //eventsObject
-        for (e in eo) {
-            Body_DOMEventBind(e, so[e], destroy);
+        var e, eventsObject = me["$eo"], selectorObject = me["$so"], eventsList = me["$el"], id = me.id; //eventsObject
+        for (e in eventsObject) {
+            Body_DOMEventBind(e, selectorObject[e], destroy);
         }
-        for (var _i = 0, el_1 = el; _i < el_1.length; _i++) {
-            e = el_1[_i];
+        for (var _i = 0, eventsList_1 = eventsList; _i < eventsList_1.length; _i++) {
+            e = eventsList_1[_i];
             G_DOMEventLibBind(e.e, e.n, G_DOMGlobalProcessor, destroy, {
                 i: id,
                 v: me,
                 f: e.f,
+                m: e.m,
                 e: e.e
             });
         }
@@ -3068,7 +2756,7 @@ define('magix', ['$'], function (require) {
     var View_Prepare = function (oView) {
         if (!oView[G_SPLITER]) { //只处理一次
             oView[G_SPLITER] = [];
-            var prop = oView[G_PROTOTYPE], currentFn = void 0, matches = void 0, selectorOrCallback = void 0, events = void 0, eventsObject = {}, eventsList = [], selectorObject = {}, node = void 0, isSelector = void 0, p = void 0, item = void 0, mask = void 0;
+            var prop = oView[G_PROTOTYPE], currentFn = void 0, matches = void 0, selectorOrCallback = void 0, events = void 0, eventsObject = {}, eventsList = [], selectorObject = {}, node = void 0, isSelector = void 0, p = void 0, item = void 0, mask = void 0, mod = void 0, modifiers = void 0;
             matches = prop.mixins;
             if (matches) {
                 View_MergeMixins(matches, prop, oView[G_SPLITER]);
@@ -3077,10 +2765,18 @@ define('magix', ['$'], function (require) {
                 currentFn = prop[p];
                 matches = p.match(View_EvtMethodReg);
                 if (matches) {
-                    isSelector = matches[1], selectorOrCallback = matches[2], events = matches[3];
+                    isSelector = matches[1], selectorOrCallback = matches[2], events = matches[3], modifiers = matches[4];
+                    mod = {};
+                    if (modifiers) {
+                        modifiers = modifiers.split(G_COMMA);
+                        for (var _i = 0, modifiers_1 = modifiers; _i < modifiers_1.length; _i++) {
+                            item = modifiers_1[_i];
+                            mod[item] = true;
+                        }
+                    }
                     events = events.split(G_COMMA);
-                    for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
-                        item = events_1[_i];
+                    for (var _a = 0, events_1 = events; _a < events_1.length; _a++) {
+                        item = events_1[_a];
                         node = View_Globals[selectorOrCallback];
                         mask = 1;
                         if (isSelector) {
@@ -3088,7 +2784,8 @@ define('magix', ['$'], function (require) {
                                 eventsList.push({
                                     f: currentFn,
                                     e: node,
-                                    n: item
+                                    n: item,
+                                    m: mod
                                 });
                                 continue;
                             }
@@ -3128,28 +2825,6 @@ define('magix', ['$'], function (require) {
             prop['$f'] = prop.assign;
         }
         return oView[G_SPLITER];
-    };
-    var View_IsObserveChanged = function (view) {
-        var loc = view['$l'];
-        var res, i, params;
-        if (loc.f) {
-            if (loc.p) {
-                res = Router_LastChanged[G_PATH];
-            }
-            if (!res && loc.k) {
-                params = Router_LastChanged[G_PARAMS];
-                for (var _i = 0, _a = loc.k; _i < _a.length; _i++) {
-                    i = _a[_i];
-                    res = G_Has(params, i);
-                    if (res)
-                        break;
-                }
-            }
-            // if (res && loc.c) {
-            //     loc.c.call(view);
-            // }
-        }
-        return res;
     };
     /**
      * View类
@@ -3191,9 +2866,6 @@ define('magix', ['$'], function (require) {
         me = this;
         me.owner = owner;
         me.id = id;
-        me['$l'] = {
-            k: []
-        };
         me['$a'] = 1; //标识view是否刷新过，对于托管的函数资源，在回调这个函数时，不但要确保view没有销毁，而且要确保view没有刷新过，如果刷新过则不回调
         me.updater = me['$d'] = new Updater(me.id);
         id = View._;
@@ -3370,107 +3042,11 @@ define('magix', ['$'], function (require) {
             };
         },
         /**
-         * 监视地址栏中的参数或path，有变动时，才调用当前view的render方法。通常情况下location有变化不会引起当前view的render被调用，所以你需要指定地址栏中哪些参数有变化时才引起render调用，使得view只关注与自已需要刷新有关的参数
-         * @param {Array|String|Object} params  数组字符串
-         * @param {Boolean} [isObservePath] 是否监视path
-         * @beta
-         * @module router
-         * @example
-         * return View.extend({
-         *      init:function(){
-         *          this.observeLocation('page,rows');//关注地址栏中的page rows2个参数的变化，当其中的任意一个改变时，才引起当前view的render被调用
-         *          this.observeLocation(null,true);//关注path的变化
-         *          //也可以写成下面的形式
-         *          //this.observeLocation('page,rows',true);
-         *          //也可以是对象的形式
-         *          this.observeLocation({
-         *              path: true,
-         *              params:['page','rows']
-         *          });
-         *      },
-         *      render:function(){
-         *          let loc=Magix.Router.parse();
-         *          console.log(loc);//获取地址解析出的对象
-         *          let diff=Magix.Router.diff();
-         *          console.log(diff);//获取当前地址与上一个地址差异对象
-         *      }
-         * });
-         */
-        observeLocation: function (params, isObservePath) {
-            var me = this, loc;
-            loc = me['$l'];
-            loc.f = 1;
-            if (G_IsObject(params)) {
-                isObservePath = params[G_PATH];
-                params = params[G_PARAMS];
-            }
-            //if (isObservePath) {
-            loc.p = isObservePath;
-            //}
-            if (params) {
-                loc.k = (params + G_EMPTY).split(G_COMMA);
-            }
-        },
-        /**
          * 监视Magix.State中的数据变化
          * @param  {String|Array} keys 数据对象的key
          */
         observeState: function (keys) {
             this['$os'] = (keys + G_EMPTY).split(G_COMMA);
-        },
-        /**
-         * 离开提示
-         * @param  {String} msg 提示消息
-         * @param  {Function} fn 是否提示的回调
-         * @beta
-         * @module tipRouter
-         * @example
-         * let Magix = require('magix');
-         * module.exports = Magix.View.extend({
-         *     init:function(){
-         *         this.leaveTip('页面数据未保存，确认离开吗？',function(){
-         *             return true;//true提示，false，不提示
-         *         });
-         *     }
-         * });
-         */
-        leaveTip: function (msg, fn) {
-            var me = this;
-            var changeListener = function (e) {
-                var a = 'a', // a for router change
-                b = 'b'; // b for viewunload change
-                if (e.type != G_CHANGE) {
-                    a = 'b';
-                    b = 'a';
-                }
-                if (changeListener[a]) {
-                    e.prevent();
-                    e.reject();
-                }
-                else if (fn()) {
-                    e.prevent();
-                    changeListener[b] = 1;
-                    me.leaveConfirm(function () {
-                        changeListener[b] = 0;
-                        e.resolve();
-                    }, function () {
-                        changeListener[b] = 0;
-                        e.reject();
-                    }, msg);
-                }
-            };
-            var unloadListener = function (e) {
-                if (fn()) {
-                    e.msg = msg;
-                }
-            };
-            Router.on(G_CHANGE, changeListener);
-            Router.on(G_PAGE_UNLOAD, unloadListener);
-            me.on('unload', changeListener);
-            me.on('destroy', function () {
-                Router.off(G_CHANGE, changeListener);
-                Router.off(G_PAGE_UNLOAD, unloadListener);
-            });
         },
         /**
          * 设置view的html内容

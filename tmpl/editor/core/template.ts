@@ -477,6 +477,523 @@ const Templates = [{
             </layout>
         </layout>
     </page>`
+}, {
+    id: 6,
+    name: '审批书',
+    code: `<?xml version="1.0" encoding="UTF-8"?>
+    <page xmlns="http://cloudprint.cainiao.com/print"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd"
+        xmlns:editor="http://cloudprint.cainiao.com/schema/editor"
+        width="210" height="297">
+        <layout editor:_for_="1537406978561"
+            width="174.36"
+            height="17.46"
+            left="17.72"
+            top="25.67"
+            style="zIndex:1">
+            <table style="borderWidth:0;cellBorderWidth:0;" editor:tip="表格">
+                <tr>
+                    <td width="105.04" height="8.73">
+                        <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                            editor:tip="横向文本">
+                            <![CDATA[承包单位__________________]]>
+                        </text>
+                    </td>
+                    <td width="69.32" height="8.73">
+                        <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                            editor:tip="横向文本">
+                            <![CDATA[合同号__________________]]>
+                        </text>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="105.04" height="8.73">
+                        <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                            editor:tip="横向文本">
+                            <![CDATA[监理单位__________________]]>
+                        </text>
+                    </td>
+                    <td width="69.32" height="8.73">
+                        <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                            editor:tip="横向文本">
+                            <![CDATA[编　号__________________]]>
+                        </text>
+                    </td>
+                </tr>
+            </table>
+        </layout>
+        <layout editor:_for_="1537406978562"
+            width="53.05"
+            height="8.44"
+            left="78.32"
+            top="9"
+            style="zIndex:2">
+            <text style="fontFamily:SimHei;fontSize:17;align:center;valign:middle;"
+                editor:tip="横向文本">
+                <![CDATA[审批书]]>
+            </text>
+        </layout>
+        <layout orientation="vertical">
+            <layout editor:_for_="1537406978562"
+                width="174.63"
+                left="17.46"
+                top="48.95"
+                style="zIndex:3">
+                <table editor:tip="表格">
+                    <tr>
+                        <td width="174.63" height="12.7" colspan="3">
+                            <text style="fontFamily:SimHei;fontSize:9;"
+                                editor:tip="横向文本">
+                                <![CDATA[　　
+            　　_____年__月__日，以第________号文件，进行___________项目]]>
+                            </text>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="174.63" height="14.29" colspan="3">
+                            <layout editor:_for_="1537406978562"
+                                width="25"
+                                height="5"
+                                left="2.39"
+                                top="1.33"
+                                style="zIndex:1">
+                                <text style="fontFamily:SimHei;fontSize:10;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[项目名称：]]>
+                                </text>
+                            </layout>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="38.8" height="44.98"></td>
+                        <td width="94.02" height="44.98">
+                            <layout editor:_for_="1537406978562"
+                                width="3.78"
+                                height="3.78"
+                                left="3.71"
+                                top="29.64"
+                                style="zIndex:1">
+                                <rect style="borderWidth:2;"
+                                    editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537406978562"
+                                width="21.03"
+                                height="3.94"
+                                left="12.17"
+                                top="29.64"
+                                style="zIndex:2">
+                                <text style="fontFamily:SimHei;fontSize:10;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[项目需求3]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537406978562"
+                                width="25"
+                                height="5"
+                                left="11.64"
+                                top="9"
+                                style="zIndex:3">
+                                <text style="fontFamily:SimHei;fontSize:10;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[项目需求1]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537406978562"
+                                width="17.33"
+                                height="5"
+                                left="12.17"
+                                top="19.05"
+                                style="zIndex:4">
+                                <text style="fontFamily:SimHei;fontSize:10;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[项目需求2]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537406978562"
+                                width="3.78"
+                                height="3.78"
+                                left="3.71"
+                                top="19.58"
+                                style="zIndex:1">
+                                <rect style="borderWidth:2;"
+                                    editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537406978562"
+                                width="3.78"
+                                height="3.78"
+                                left="3.71"
+                                top="9.53"
+                                style="zIndex:1">
+                                <rect style="borderWidth:2;"
+                                    editor:tip="矩形"></rect>
+                            </layout>
+                        </td>
+                        <td width="41.81" height="44.98"></td>
+                    </tr>
+                    <tr>
+                        <td width="132.82" height="75.41" colspan="2"></td>
+                        <td width="41.81" height="75.41"></td>
+                    </tr>
+                    <tr>
+                        <td width="38.8" height="68"></td>
+                        <td width="94.02" height="68"></td>
+                        <td width="41.81" height="68"></td>
+                    </tr>
+                </table>
+            </layout>
+        </layout>
+    </page>`
+},{
+    id:7,
+    name:'申请表',
+    code:`<?xml version="1.0" encoding="UTF-8"?>
+    <page xmlns="http://cloudprint.cainiao.com/print"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd"
+        xmlns:editor="http://cloudprint.cainiao.com/schema/editor"
+        width="210" height="110">
+        <layout editor:_for_="1537430291275"
+            width="93"
+            height="8.44"
+            left="56.92"
+            top="10.9"
+            style="zIndex:1">
+            <text style="fontFamily:SimHei;fontSize:18;align:center;valign:middle;"
+                editor:tip="横向文本">
+                <![CDATA[高等学校学生及家庭情况调查表]]>
+            </text>
+        </layout>
+        <layout editor:_for_="1537430291275"
+            width="185.87"
+            height="8.44"
+            left="11.02"
+            top="23.46"
+            style="zIndex:2">
+            <text style="fontFamily:SimHei;fontSize:14;align:center;valign:middle;"
+                editor:tip="横向文本">
+                <![CDATA[学校:______________院(系):___________专业:______________年级______]]>
+            </text>
+        </layout>
+        <layout orientation="vertical">
+            <layout editor:_for_="1537430291295"
+                width="196.85"
+                left="6.57"
+                top="36.03"
+                style="zIndex:3">
+                <table editor:tip="表格">
+                    <tr>
+                        <td width="11.11" height="44.25" rowspan="4">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;orientation:vertical;"
+                                editor:tip="纵向文本">
+                                <![CDATA[学生本人基础情况]]>
+                            </text>
+                        </td>
+                        <td width="20.9" height="7.03">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[姓名]]>
+                            </text>
+                        </td>
+                        <td width="35.72" height="7.03"></td>
+                        <td width="19.31" height="7.03">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[性别]]>
+                            </text>
+                        </td>
+                        <td width="15.61" height="7.03"></td>
+                        <td width="32.28" height="7.03">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[出生年月]]>
+                            </text>
+                        </td>
+                        <td width="23.55" height="7.03"></td>
+                        <td width="19.02" height="7.03">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[民族]]>
+                            </text>
+                        </td>
+                        <td width="19.34" height="7.03"></td>
+                    </tr>
+                    <tr>
+                        <td width="20.9" height="13.11">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[身份证
+号　码]]>
+                            </text>
+                        </td>
+                        <td width="55.03" height="13.11" colspan="2"></td>
+                        <td width="15.61" height="13.11">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[政治
+面貌]]>
+                            </text>
+                        </td>
+                        <td width="32.28" height="13.11"></td>
+                        <td width="23.55" height="13.11">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[入学前
+户　口]]>
+                            </text>
+                        </td>
+                        <td width="38.36" height="13.11" colspan="2">
+                            <layout editor:_for_="1537430291278"
+                                width="4"
+                                height="4"
+                                left="3.37"
+                                top="4.59"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291278"
+                                width="9.39"
+                                height="5"
+                                left="8.67"
+                                top="4.06"
+                                style="zIndex:2">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[城镇]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537430291278"
+                                width="4"
+                                height="4"
+                                left="20.04"
+                                top="4.59"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291278"
+                                width="9.39"
+                                height="5"
+                                left="25.6"
+                                top="4.06"
+                                style="zIndex:4">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[农村]]>
+                                </text>
+                            </layout>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20.9" height="12.85">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[家　庭
+人中数]]>
+                            </text>
+                        </td>
+                        <td width="35.72" height="12.85"></td>
+                        <td width="19.31" height="12.85"></td>
+                        <td width="15.61" height="12.85">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[毕业
+学院]]>
+                            </text>
+                        </td>
+                        <td width="32.28" height="12.85"></td>
+                        <td width="23.55" height="12.85">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[个人
+特长]]>
+                            </text>
+                        </td>
+                        <td width="19.02" height="12.85"></td>
+                        <td width="19.34" height="12.85"></td>
+                    </tr>
+                    <tr>
+                        <td width="20.9" height="11.26">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[孤残]]>
+                            </text>
+                        </td>
+                        <td width="35.72" height="11.26">
+                            <layout editor:_for_="1537430291279"
+                                width="4"
+                                height="4"
+                                left="5.76"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291279"
+                                width="5.16"
+                                height="5"
+                                left="11.05"
+                                top="3.13"
+                                style="zIndex:2">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[是]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537430291279"
+                                width="4"
+                                height="4"
+                                left="19.51"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291293"
+                                width="4.89"
+                                height="5"
+                                left="25.07"
+                                top="3.13"
+                                style="zIndex:4">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[否]]>
+                                </text>
+                            </layout>
+                        </td>
+                        <td width="19.31" height="11.26">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[单亲]]>
+                            </text>
+                        </td>
+                        <td width="47.89" height="11.26" colspan="2">
+                            <layout editor:_for_="1537430291293"
+                                width="4"
+                                height="4"
+                                left="5.76"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291293"
+                                width="5.16"
+                                height="5"
+                                left="11.05"
+                                top="3.13"
+                                style="zIndex:2">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[是]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537430291294"
+                                width="4"
+                                height="4"
+                                left="19.51"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291294"
+                                width="4.89"
+                                height="5"
+                                left="25.07"
+                                top="3.13"
+                                style="zIndex:4">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[否]]>
+                                </text>
+                            </layout>
+                        </td>
+                        <td width="23.55" height="11.26">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[烈士或优抚
+对象子女]]>
+                            </text>
+                        </td>
+                        <td width="38.36" height="11.26" colspan="2">
+                            <layout editor:_for_="1537430291294"
+                                width="4"
+                                height="4"
+                                left="5.76"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291294"
+                                width="5.16"
+                                height="5"
+                                left="11.05"
+                                top="3.13"
+                                style="zIndex:2">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[是]]>
+                                </text>
+                            </layout>
+                            <layout editor:_for_="1537430291294"
+                                width="4"
+                                height="4"
+                                left="19.51"
+                                top="3.66"
+                                style="zIndex:1">
+                                <rect editor:tip="矩形"></rect>
+                            </layout>
+                            <layout editor:_for_="1537430291295"
+                                width="4.89"
+                                height="5"
+                                left="25.07"
+                                top="3.13"
+                                style="zIndex:4">
+                                <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                    editor:tip="横向文本">
+                                    <![CDATA[否]]>
+                                </text>
+                            </layout>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="11.11" height="18.82" rowspan="2">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[家庭
+通信
+信息]]>
+                            </text>
+                        </td>
+                        <td width="56.62" height="9.41" colspan="2">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[详细通讯地址]]>
+                            </text>
+                        </td>
+                        <td width="129.12" height="9.41" colspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td width="56.62" height="9.41" colspan="2">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[邮政编码]]>
+                            </text>
+                        </td>
+                        <td width="34.92" height="9.41" colspan="2"></td>
+                        <td width="32.28" height="9.41">
+                            <text style="fontFamily:SimHei;fontSize:12;align:center;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[联系电话]]>
+                            </text>
+                        </td>
+                        <td width="61.92" height="9.41" colspan="3">
+                            <text style="fontFamily:SimHei;fontSize:10;valign:middle;"
+                                editor:tip="横向文本">
+                                <![CDATA[　　　　　　（区号）－　　　　]]>
+                            </text>
+                        </td>
+                    </tr>
+                </table>
+            </layout>
+        </layout>
+    </page>`
 }];
 Magix.applyStyle('@template.less');
 export default Magix.View.extend({

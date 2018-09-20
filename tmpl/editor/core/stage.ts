@@ -9,6 +9,7 @@ import DesignerHistory from './history';
 import Store from './store';
 import Uploader from './uploader';
 import ImageDesigner from '../../element/image/designer';
+import Table from '../../util/table';
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -260,12 +261,16 @@ export default View.extend<Editor.Dragdrop>({
             !e.altKey &&
             !e.ctrlKey) {
             console.log(e.keyCode);
-            if (e.keyCode == Keys.L ||
+            if (e.keyCode == Keys.F) {
+                e.preventDefault();
+                StageElements["@{focus.select.element.td}"]();
+            } else if (e.keyCode == Keys.L ||
                 e.keyCode == Keys.R ||
                 e.keyCode == Keys.U ||
                 e.keyCode == Keys.D ||
                 e.keyCode == Keys.T ||
                 e.keyCode == Keys.B) {
+                e.preventDefault();
                 State.fire('@{stage&move.table.focus}', {
                     key: e.keyCode
                 });
@@ -417,38 +422,401 @@ export default View.extend<Editor.Dragdrop>({
             maxBottom -= pos.top;
             minVCenter -= pos.top;
             minHCenter -= pos.left;
-
+            let changed = 0;
             for (let m of elements) {
                 let n = $('#' + m.id + ' [mx-view]>*')[0];
                 let bound = n.getBoundingClientRect();
+                let lChanged = 0;
                 if (e.to == 'right') {
                     let diff = maxRight - (bound.right - pos.left);
-                    m.props.x += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.x += diff;
+                    }
                 } else if (e.to == 'left') {
                     let diff = minLeft - (bound.left - pos.left);
-                    m.props.x += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.x += diff;
+                    }
                 } else if (e.to == 'top') {
                     let diff = minTop - (bound.top - pos.top);
-                    m.props.y += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.y += diff;
+                    }
                 } else if (e.to == 'bottom') {
                     let diff = maxBottom - (bound.bottom - pos.top);
-                    m.props.y += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.y += diff;
+                    }
                 } else if (e.to == 'vcenter') {
                     let diff = minVCenter - (bound.top - pos.top + (bound.bottom - bound.top) / 2);
-                    m.props.y += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.y += diff;
+                    }
                 } else if (e.to == 'hcenter') {
                     let diff = minHCenter - (bound.left - pos.left + (bound.right - bound.left) / 2);
-                    m.props.x += diff | 0;
+                    diff |= 0;
+                    if (diff != 0) {
+                        changed = 1;
+                        lChanged = 1;
+                        m.props.x += diff;
+                    }
                 }
-                let vf = Vframe.get(m.id);
-                if (vf) {
-                    if (vf.invoke('assign', m)) {
-                        vf.invoke('render');
+                if (lChanged) {
+                    let vf = Vframe.get(m.id);
+                    if (vf) {
+                        if (vf.invoke('assign', m)) {
+                            vf.invoke('render');
+                        }
                     }
                 }
             }
-            State.fire('@{property&element.property.update}');
-            State.fire('@{history&save.snapshot}');
+            if (changed) {
+                State.fire('@{property&element.property.update}');
+                State.fire('@{history&save.snapshot}');
+            }
+        } else if (e.action == 'put') {
+            let stages = StageElements["@{get.select.elements.stage}"]();
+            let page = State.get('page'), changed = 0;
+            for (let stage of stages) {
+                let width = 0, height = 0,
+                    elements = stage.elements;
+                if (stage.type == 'stage') {
+                    width = page.width;
+                    height = page.height;
+                } else {
+                    let cell = stage.table.props.rows[stage.row].cells[stage.col];
+                    width = cell.width;
+                    height = cell.height;
+                }
+                let cx = width / 2, cy = height / 2;
+                if (e.shift) {
+                    for (let m of elements) {
+                        let props = m.props,
+                            lChanged = 0;
+                        if (e.to == 'hc') {
+                            let ecx = props.width / 2;
+                            let dx = cx - ecx;
+                            if (dx != props.x) {
+                                props.x = dx;
+                                changed = 1;
+                                lChanged = 1;
+                            }
+                        } else {
+                            let ecy = props.height / 2;
+                            let dy = cy - ecy;
+                            if (dy != props.y) {
+                                props.y = dy;
+                                changed = 1;
+                                lChanged = 1;
+                            }
+                        }
+                        if (lChanged) {
+                            let vf = Vframe.get(m.id);
+                            if (vf) {
+                                if (vf.invoke('assign', m)) {
+                                    vf.invoke('render');
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    let minX = Number.MAX_SAFE_INTEGER,
+                        minY = Number.MAX_SAFE_INTEGER,
+                        maxX = -Number.MAX_SAFE_INTEGER,
+                        maxY = -Number.MAX_SAFE_INTEGER;
+                    for (let m of elements) {
+                        let props = m.props;
+                        if (props.x < minX) {
+                            minX = props.x;
+                        }
+                        if (props.x + props.width > maxX) {
+                            maxX = props.x + props.width;
+                        }
+                        if (props.y < minY) {
+                            minY = props.y;
+                        }
+                        if (props.y + props.height > maxY) {
+                            maxY = props.y + props.height;
+                        }
+                    }
+                    let dx = cx - (minX + (maxX - minX) / 2);
+                    let dy = cy - (minY + (maxY - minY) / 2);
+                    for (let m of elements) {
+                        let props = m.props,
+                            lChanged = 0;
+                        if (e.to == 'hc') {
+                            let sx = props.x + dx;
+                            if (props.x != sx) {
+                                lChanged = 1;
+                                changed = 1;
+                                props.x = sx;
+                            }
+                        } else {
+                            let sy = props.y + dy;
+                            if (props.y != sy) {
+                                lChanged = 1;
+                                changed = 1;
+                                props.y = sy;
+                            }
+                        }
+                        if (lChanged) {
+                            let vf = Vframe.get(m.id);
+                            if (vf) {
+                                if (vf.invoke('assign', m)) {
+                                    vf.invoke('render');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (changed) {
+                State.fire('@{property&element.property.update}');
+                State.fire('@{history&save.snapshot}');
+            }
+        } else if (e.action == 'avg') {
+            let stages = StageElements["@{get.select.elements.stage}"]();
+            if (stages.length == 1) {
+                let stage = stages[0],
+                    elements = stage.elements,
+                    changed = 0;
+                if (elements.length > 2 || e.ctrl) {
+                    let maxCX = -Number.MAX_SAFE_INTEGER,
+                        minCX = Number.MAX_SAFE_INTEGER,
+                        maxCY = -Number.MAX_SAFE_INTEGER,
+                        minCY = Number.MAX_SAFE_INTEGER,
+                        tempArray = [];
+                    for (let m of elements) {
+                        let props = m.props;
+                        let mx = props.x + props.width / 2;
+                        let my = props.y + props.height / 2;
+                        if (mx > maxCX) {
+                            maxCX = mx;
+                        }
+                        if (mx < minCX) {
+                            minCX = mx;
+                        }
+                        if (my > maxCY) {
+                            maxCY = my;
+                        }
+                        if (my < minCY) {
+                            minCY = my;
+                        }
+                        tempArray.push({
+                            m,
+                            mx,
+                            my
+                        });
+                    }
+                    if (e.to == 'av') {
+                        tempArray = tempArray.sort((a, b) => a.my - b.my);
+                    } else {
+                        tempArray = tempArray.sort((a, b) => a.mx - b.mx);
+                    }
+
+                    let ySpace = -1,
+                        xSpace = -1,
+                        startIndex = 0,
+                        endIndex = tempArray.length,
+                        count = endIndex + 1,
+                        prev = null;
+                    if (e.ctrl) {
+                        if (stage.type == 'stage') {
+                            let page = State.get('page');
+                            xSpace = page.width;
+                            ySpace = page.height;
+                        } else {
+                            let cell = stage.table.props.rows[stage.row].cells[stage.col];
+                            xSpace = cell.width;
+                            ySpace = cell.height;
+                        }
+                        prev = {
+                            props: {
+                                x: 0,
+                                y: 0,
+                                width: 0,
+                                height: 0
+                            }
+                        };
+                    } else {
+                        let first = tempArray[0];
+                        let last = tempArray[tempArray.length - 1];
+                        let fProps = first.m.props;
+                        let lProps = last.m.props;
+                        ySpace = lProps.y - fProps.y - fProps.height;
+                        xSpace = lProps.x - fProps.x - fProps.width;
+                        startIndex += 1;
+                        endIndex -= 1;
+                        count -= 2;
+                        prev = first.m;
+                    }
+                    if (e.shift) {
+                        if (e.ctrl) {
+                            minCX = 0;
+                            maxCX = xSpace;
+                            minCY = 0;
+                            maxCY = ySpace;
+                        }
+                        let avgY = (maxCY - minCY) / count;
+                        let avgX = (maxCX - minCX) / count;
+                        for (let i = startIndex; i < endIndex; i++) {
+                            let m = tempArray[i].m,
+                                lChanged = 0;
+                            if (e.to == 'av') {
+                                let centerY = prev.props.y + prev.props.height / 2;
+                                centerY += avgY;
+                                centerY -= m.props.height / 2;
+                                if (m.props.y != centerY) {
+                                    changed = 1;
+                                    lChanged = 1;
+                                    m.props.y = centerY;
+                                }
+                            } else {
+                                let diff = prev.props.x + avgX;
+                                if (m.props.x != diff) {
+                                    changed = 1;
+                                    lChanged = 1;
+                                    m.props.x = diff;
+                                }
+                            }
+                            if (lChanged) {
+                                let vf = Vframe.get(m.id);
+                                if (vf) {
+                                    if (vf.invoke('assign', m)) {
+                                        vf.invoke('render');
+                                    }
+                                }
+                            }
+                            prev = m;
+                        }
+                    } else {
+                        let innerHeight = 0,
+                            innerWidth = 0;
+                        for (let i = startIndex; i < endIndex; i++) {
+                            let props = tempArray[i].m.props;
+                            innerHeight += props.height;
+                            innerWidth += props.width;
+                        }
+                        let yGap = (ySpace - innerHeight) / count;
+                        let xGap = (xSpace - innerWidth) / count;
+                        for (let i = startIndex; i < endIndex; i++) {
+                            let m = tempArray[i].m,
+                                lChanged = 0;
+                            if (e.to == 'av') {
+                                let oy = prev.props.y + prev.props.height + yGap;
+                                if (m.props.y != oy) {
+                                    changed = 1;
+                                    lChanged = 1;
+                                    m.props.y = oy;
+                                }
+                            } else {
+                                let ox = prev.props.x + prev.props.width + xGap;
+                                if (m.props.x != ox) {
+                                    changed = 1;
+                                    lChanged = 1;
+                                    m.props.x = ox;
+                                }
+                            }
+                            if (lChanged) {
+                                let vf = Vframe.get(m.id);
+                                if (vf) {
+                                    if (vf.invoke('assign', m)) {
+                                        vf.invoke('render');
+                                    }
+                                }
+                            }
+                            prev = m;
+                        }
+                    }
+                    if (changed) {
+                        State.fire('@{property&element.property.update}');
+                        State.fire('@{history&save.snapshot}');
+                    }
+                }
+            }
+        } else if (e.action == 'same') {
+            let elements = StageSelectElements['@{all}']();
+            let maxWidth = -Number.MAX_SAFE_INTEGER,
+                maxHeight = -Number.MAX_SAFE_INTEGER,
+                minWidth = Number.MAX_SAFE_INTEGER,
+                minHeight = Number.MAX_SAFE_INTEGER;
+            for (let m of elements) {
+                let props = m.props;
+                if (props.width > maxWidth) {
+                    maxWidth = props.width;
+                }
+                if (props.width < minWidth) {
+                    minWidth = props.width;
+                }
+                if (props.height > maxHeight) {
+                    maxHeight = props.height;
+                }
+                if (props.height < minHeight) {
+                    minHeight = props.height;
+                }
+            }
+            let changed = 0;
+            for (let m of elements) {
+                let props = m.props, lChanged = 0;
+                if (e.to == 'maw') {
+                    if (props.width != maxWidth) {
+                        lChanged = 1;
+                        changed = 1;
+                        props.width = maxWidth;
+                    }
+                } else if (e.to == 'miw') {
+                    if (props.width != minWidth) {
+                        lChanged = 1;
+                        changed = 1;
+                        props.width = minWidth;
+                    }
+                } else if (e.to == 'mah') {
+                    if (props.width != maxHeight) {
+                        lChanged = 1;
+                        changed = 1;
+                        props.height = maxHeight;
+                    }
+                } else if (e.to == 'mih') {
+                    if (props.width != minHeight) {
+                        lChanged = 1;
+                        changed = 1;
+                        props.height = minHeight;
+                    }
+                }
+                if (lChanged) {
+                    if (m.type == 'table') {
+                        Table["@{update.cells.metas}"](m.props, {
+                            lw: true
+                        });
+                    }
+                    let vf = Vframe.get(m.id);
+                    if (vf) {
+                        if (vf.invoke('assign', m)) {
+                            vf.invoke('render');
+                        }
+                    }
+                }
+            }
+
+            if (changed) {
+                State.fire('@{property&element.property.update}');
+                State.fire('@{history&save.snapshot}');
+            }
         }
     },
     '@{prevent}<contextmenu>'(e: Editor.TableTriggeredEvent) {
@@ -465,6 +833,7 @@ export default View.extend<Editor.Dragdrop>({
             y: e.pageY
         });
         StageElements["@{context.menu}"](me, e, null, stageElements, v => {
+            console.log(v);
             if (v.id == 0) {
                 StageElements["@{select.all}"](stageElements);
             } else if (v.id == 1) {

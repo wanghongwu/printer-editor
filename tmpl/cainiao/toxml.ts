@@ -12,7 +12,7 @@ let GSpace = (count) => {
 let LineEncode = (props, space, vertical) => {
     let s1 = GSpace(space + 1);
     let s2 = GSpace(space + 2);
-    return `${s1}<line style="lineType:${props.type};lineColor:#000;lineWidth:${ToPT(vertical ? props.width : props.height)};zIndex:${props.zIndex}"${s2}startX="${ToMM(props.x)}"${s2}startY="${ToMM(props.y)}"${s2}endX="${ToMM(props.x + (vertical ? 0 : props.width))}"${s2}endY="${ToMM(props.y + (vertical ? props.height : 0))}"${vertical ? `${s2}editor:_deg_="90"` : ''}>${s1}</line>`;
+    return `${s1}<line style="lineType:${props.type};lineColor:#000;lineWidth:${ToPT(vertical ? props.width : props.height)};zIndex:${props.zIndex}"${s2}startX="${ToMM(props.x)}"${s2}startY="${ToMM(props.y)}"${s2}endX="${ToMM(props.x + (vertical ? 0 : props.width))}"${s2}endY="${ToMM(props.y + (vertical ? props.height : 0))}"${vertical ? `${s2}editor:_deg_="90"` : ''}${s2}editor:tip="${props.tip}">${s1}</line>`;
 };
 let TextEncode = ({ props }, space, vertical) => {
     let { _layouts, _children, useCNStyle } = props;
@@ -66,12 +66,12 @@ let TextEncode = ({ props }, space, vertical) => {
     let content = ``;
     let alias = ``;
     if (props.alias) {
-        alias = ` editor:_printName_="${props.alias}"`;
+        alias = `${s3}editor:_printName_="${props.alias}"`;
     }
     if (props.allowEdit === 0) {
-        alias += ' editor:component="true"';
+        alias += `${s3}editor:component="true"`;
     }
-    let text = `${s2}<text${alias} ${textStyle}>`;
+    let text = `${s2}<text ${textStyle}${alias}${s3}editor:tip="${props.tip}">`;
     if (_children && _children.length) {
         for (let c of _children) {
             if (c.tag == '#script') {
@@ -113,7 +113,7 @@ let CodeEncoder = ({ props }, space, type) => {
         style = `opacity:${props.alpha};hideText:${!props.showText};rotation:${type == 'vcode' ? 90 : 0};`
     }
     let content = '';
-    let code = `${s2}<barcode type="${props.type}"${s3}ratioMode="keepRatio"${s3}style="${style}"${ext}>`;
+    let code = `${s2}<barcode type="${props.type}"${s3}ratioMode="keepRatio"${s3}style="${style}"${ext}${s3}editor:tip="${props.tip}">`;
     if (_children && _children.length) {
         for (let c of _children) {
             if (c.tag == '#script') {
@@ -165,6 +165,11 @@ let Encoder = {
             rectStyle = ` style="${rectStyle}"`;
         }
         let content = '';
+        if (rectStyle) {
+            rectStyle += `${s3}editor:tip="${props.tip}"`;
+        } else {
+            rectStyle = ` editor:tip="${props.tip}"`;
+        }
         let rect = `${s2}<rect${rectStyle}>`;
         if (_children && _children.length) {
             for (let c of _children) {
@@ -203,7 +208,7 @@ let Encoder = {
         if (imgStyle) {
             imgStyle = `${s3}style="${imgStyle}"`;
         }
-        let img = `${s2}<image src="${props.src}"${imgStyle} ${s3}allowFailure="false"/>`;
+        let img = `${s2}<image src="${props.src}"${imgStyle} ${s3}allowFailure="false"${s3}editor:tip="${props.tip}"/>`;
         let content = '';
         if (_layouts) {
             for (let c of _layouts) {
@@ -247,7 +252,7 @@ let Encoder = {
         if (props.hideBorder) {
             table += ` style="borderWidth:0;cellBorderWidth:0;"`;
         }
-        table += '>';
+        table += ` editor:tip="${props.tip}">`;
         for (let r of props.rows) {
             if (r.tag == '#script') {
                 table += `${s3}${r.text}`;

@@ -42,7 +42,7 @@
             {{else if prop.type==desc.CELLSIZE}}
                 <mx-cell.size @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLFOCUS}}
-                <mx-cell.focus @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
+                <mx-cell.focus @disabled="{{=data.locked}}" mx-change="@{cell.change}({ui:true})" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLCOLSHARE}}
                 <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">{{=i18n('@{property.divide.width}')}}</button>
             {{else if prop.type==desc.CELLROWSHARE}}
@@ -57,15 +57,15 @@
     <ul mx-view="gallery/mx-dragsort/index" view-selector="li .@:(icon)" class="unselectable box-panel" mx-dragfinish="@{sort.finish}()">
         {{for(let index=elements.length;index--)}}
         {{let element=elements[index];}}
-        <li class="group-item pl10 clearfix" data-eid="{{=element.id}}" id="{{=vId}}_{{=element.id}}" mx-mouseover="@{fake.active}({element:{{@element}}})" mx-mouseout="@{fake.active}()">
-            <div class="icon fl mr5">
+        <li class="group-item pl10 clearfix group-item-drag" data-eid="{{=element.id}}" id="{{=vId}}_{{=element.id}}" mx-mouseover="@{fake.active}({element:{{@element}}})" mx-mouseout="@{fake.active}()">
+            <div class="icon fl mr5" title="{{=i18n('@{property.press.drag.sort}')}}">
                 {{!element.ctor.icon}}
             </div>
             <div class="fl clearfix desc">
                 <div class="fl text" title="{{=element.props.tip}}">
                     {{=element.props.tip}}
                 </div>
-                <i class="iconfont fl del" mx-click="@{del}({i:{{=index}}})">&#xe600;</i>
+                <i title="{{=i18n('@{property.delete.element}')}}" class="iconfont fl del" mx-click="@{del}({i:{{=index}}})">&#xe600;</i>
             </div>
         </li>
         {{/for}}

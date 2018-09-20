@@ -5,6 +5,7 @@ import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
 import DesignerHistory from '../core/history';
 import I18n from '../../i18n/index';
+import { StageElements } from './workaround';
 Magix.applyStyle('@toolbar.less');
 const ApplyByJSON = json => {
     State.fire('@{stage&apply.stage}', {
@@ -45,6 +46,22 @@ export default Magix.View.extend({
         });
         me.updater.set({
             CNC,
+            canCenter() {
+                let select = State.get('@{stage&select.elements}');
+                if (select.length == 1) {
+                    let first = select[0];
+                    let props = first.props;
+                    return !props.useCNStyle
+                }
+                return select.length > 1;
+            },
+            canAvg() {
+                let stages = StageElements["@{get.select.elements.stage}"]();
+                if (stages.length == 1) {
+                    return stages[0].elements.length > 1;
+                }
+                return 0;
+            },
             toMM: Convert["@{pixel.to.millimeter}"]
         });
     },
@@ -157,9 +174,12 @@ export default Magix.View.extend({
         }
     },
     '@{align}<click>'(e) {
+        let { action, to } = e.params;
         State.fire('@{toolbar&item.click}', {
-            action: 'align',
-            to: e.params.to
+            action: action || 'align',
+            shift: e.shiftKey,
+            ctrl: e.ctrlKey || e.metaKey,
+            to
         });
     },
     '@{new}<click>'() {

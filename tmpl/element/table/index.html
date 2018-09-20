@@ -1,5 +1,5 @@
 <div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;z-index:{{=zIndex}}" class="pa">
-    <div class="pa del" mx-click="@{delete.table}()">
+    <div class="pa del" mx-click="@{delete.table}()" title="{{=i18n('@{delete.table}')}}">
         <i class="iconfont">&#xe600;</i>
     </div>
     <table class="e-table{{if hideBorder}} hide-border{{/if}}">
@@ -10,12 +10,13 @@
                     {{if cell.tag=='td'}}
                     <td class="cell{{if hideBorder}} hide-border{{/if}}" style="width:{{=cell.width}}px;height:{{=cell.height}}px" mx-mousedown="@{select.cell}({row:{{=ri}},col:{{=ci}}})" mx-contextmenu="@{table.prevent}({row:{{=ri}},col:{{=ci}}})" id="{{=vId}}_c_{{=ri}}_{{=ci}}"{{if cell.rowspan&&cell.rowspan>1}} rowspan="{{=cell.rowspan}}"{{/if}}{{if cell.colspan&&cell.colspan>1}} colspan="{{=cell.colspan}}"{{/if}}>
                         <div class="dashed none" id="{{=vId}}_dashed_{{=ri}}_{{=ci}}"></div>
-                        <div class="cell-content">
+                        <!--data-role不能删除，在util/convert.ts中，坐标转换要用-->
+                        <div class="cell-content" data-role="table-cell">
                             {{if cell.children}}
                                 {{each cell.children as cc}}
                                     {{set {ctor,props,id,type}=cc}}
                                     {{if type!='#script'}}
-                                    <mx-vframe id="{{=id}}" src="element/{{=ctor.type}}/designer" *type="{{=type}}" *ctor="{{@ctor}}" *id="{{=id}}" *props="{{@props}}" mx-mousedown="@{table.mouse.down}({id:'{{=id}}',ctor:{{@ctor}},props:{{@props}},type:'{{=type}}'})" />
+                                    <mx-vframe id="{{=id}}" src="element/{{=ctor.type}}/designer" *type="{{=type}}" *ctor="{{@ctor}}" *id="{{=id}}" *props="{{@props}}" *cell="true" mx-mousedown="@{table.mouse.down}({id:'{{=id}}',ctor:{{@ctor}},props:{{@props}},type:'{{=type}}'})" />
                                     {{/if}}
                                 {{/each}}
                             {{/if}}
@@ -23,14 +24,14 @@
 
                         {{if rowIndex==ri&&colIndex==ci}}
                         <div class="focus">
-                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:{{=cell.width/2-size}}px;bottom:-{{=size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',cell:{{@cell}}})"></div>
-                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;right:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',cell:{{@cell}}})"></div>
-                             {{if cell.top}}
+                            {{if cell.top}}
                                 <div style="width:{{=2*size}}px;height:{{=2*size}}px;top:{{=-size}}px;left:{{=cell.width/2-size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',ri:{{=cell.top.row}},ci:{{=cell.top.col}}})"></div>
                             {{/if}}
                             {{if cell.left}}
                                 <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=cell.left.row}},ci:{{=cell.left.col}}})"></div>
                             {{/if}}
+                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:{{=cell.width/2-size}}px;bottom:-{{=size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',cell:{{@cell}}})"></div>
+                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;right:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',cell:{{@cell}}})"></div>
                         </div>
                         {{/if}}
                     </td>

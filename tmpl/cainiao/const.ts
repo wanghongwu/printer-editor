@@ -43,7 +43,7 @@ export default {
     { value: 'ean13', text: 'EAN13' },
     { value: 'itf14', text: 'ITF14' },
     { value: 'c25inter', text: 'Interleaved 2 of 5' }],
-    TABLE_ROWS_HEIGHT: 20,//表格默认行高，单位px
+    TABLE_ROWS_HEIGHT: 30,//表格默认行高，单位px
     TABLE_CELLS_WIDTH: 200,//表格默认宽度，单位px
     HISTORY_MAX: 100,//历史记录最大数量
     PAGES: [{

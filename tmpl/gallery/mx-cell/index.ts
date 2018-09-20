@@ -28,7 +28,19 @@ export default Magix.View.extend({
         if (me.updater.get('disabled')) {
             return;
         }
-        Table["@{operate.row.or.col}"](data.props, e.params.type);
-        me['@{owner.node}'].trigger('change');
+        if (Table["@{operate.row.or.col}"](data.props, e.params.type)) {
+            me['@{owner.node}'].trigger('change');
+        }
+    },
+    '@{cell}<click>'(e) {
+        let me = this,
+            updater = me.updater,
+            data = updater.get();
+        if (me.updater.get('disabled')) {
+            return;
+        }
+        if (Table["@{operate.cell}"](data.props, e.params.type)) {
+            me['@{owner.node}'].trigger('change');
+        }
     }
 });

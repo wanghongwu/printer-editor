@@ -11,9 +11,9 @@
     {{each yHelpers as help}}
         {{set current=mmToPixed*(Math.abs(toMM(yStart))+help.mm)+20}}
         <div class="y-axis-help-line" style="width:{{=vWidth}}px;top:{{=current}}px;">
-            <i class="iconfont y-help-line-icon" title="删除当前辅助线" mx-click="@{delete.help.line}({type:'y',id:'{{=help.id}}'})">&#xe600;</i>
+            <i class="iconfont y-help-line-icon" title="{{=i18n('@{axis.delete.line}')}}" mx-click="@{delete.help.line}({type:'y',id:'{{=help.id}}'})">&#xe600;</i>
             <span class="y-help-line-text">{{=help.mm}}</span>
-            <span class="y-help-line-move" mx-mousedown="@{drag.help.line}({type:'y',id:'{{=help.id}}',c:{{=current}}})" title="按下拖动可调整辅助线位置"></span>
+            <span class="y-help-line-move" mx-mousedown="@{drag.help.line}({type:'y',id:'{{=help.id}}',c:{{=current}}})" title="{{=i18n('@{axis.move.line}')}}"></span>
         </div>
     {{/each}}
     {{/if}}
@@ -23,9 +23,9 @@
     {{each xHelpers as help}}
         {{set current=mmToPixed*(Math.abs(toMM(xStart))+help.mm)}}
         <div class="x-axis-help-line" style="height:{{=vHeight}}px;left:{{=current}}px;">
-            <i class="iconfont x-help-line-icon" title="删除当前辅助线" mx-click="@{delete.help.line}({type:'x',id:'{{=help.id}}'})">&#xe600;</i>
+            <i class="iconfont x-help-line-icon" title="{{=i18n('@{axis.delete.line}')}}" mx-click="@{delete.help.line}({type:'x',id:'{{=help.id}}'})">&#xe600;</i>
             <span class="x-help-line-text">{{=help.mm}}</span>
-            <span class="x-help-line-move" mx-mousedown="@{drag.help.line}({type:'x',id:'{{=help.id}}',c:{{=current}}})"></span>
+            <span class="x-help-line-move" mx-mousedown="@{drag.help.line}({type:'x',id:'{{=help.id}}',c:{{=current}}})" title="{{=i18n('@{axis.move.line}')}}"></span>
         </div>
     {{/each}}
     {{/if}}

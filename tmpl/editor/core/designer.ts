@@ -4,6 +4,7 @@ import Convert from '../../util/converter';
 import Transform from '../../util/transform';
 import $ from '$';
 import * as Dragdrop from '../../gallery/mx-dragdrop/index';
+Magix.applyStyle('@designer.less');
 let Has = Magix.has;
 const BaseIndex = {
     0: 1,
@@ -15,31 +16,51 @@ const BaseIndex = {
     3: 3,
     7: 3
 };
+let LangElements = {};
+let WatchSelectElements = {};
+
+State.on('@{property&element.property.change}', (e: Editor.PropoertyChangeEvent) => {
+    console.log(e.eId);
+    let vf = Vframe.get(e.eId);
+    if (vf) {
+        vf.invoke('@{update}', [e.data]);
+    }
+});
+State.on('@{lang.change}', () => {
+    for (let p in LangElements) {
+        let vf = Vframe.get(p);
+        if (vf) {
+            vf.invoke('@{refresh}');
+        }
+    }
+});
+
+State.on('@{stage&select.elements.change}', () => {
+    for (let p in WatchSelectElements) {
+        let vf = Vframe.get(p);
+        if (vf) {
+            vf.invoke('@{check.status}');
+            vf.invoke('render');
+        }
+    }
+});
 export default Magix.View.extend<Editor.Dragdrop>({
     tmpl: '@designer.html',
     mixins: [Dragdrop],
     init(data) {
         let me = this;
         me.assign(data);
-        let selectChange = () => {
-            me['@{check.status}']();
-            me.render();
-        };
-        let propertyChange = (e: MagixGallery.IViewDOMEvent & {
-            eId: string,
-            data: any
-        }) => {
-            if (e.eId == data.id) {
-                me.updater.digest({
-                    props: e.data
-                });
+        WatchSelectElements[me.id] = 1;
+        if (data.type == 'table') {
+            LangElements[me.id] = 1;
+        } else if (!data.cell) {
+            if (data.type == 'htext' || data.type == 'vtext') {
+                LangElements[me.id] = 1;
             }
-        };
-        State.on('@{stage&select.elements.change}', selectChange);
-        State.on('@{property&element.property.change}', propertyChange);
+        }
         me.on('destroy', () => {
-            State.off('@{stage&select.elements.change}', selectChange);
-            State.off('@{property&element.property.change}', propertyChange);
+            delete WatchSelectElements[me.id];
+            delete LangElements[me.id];
         });
         me['@{owner.node}'] = $('#' + me.id);
     },
@@ -68,11 +89,12 @@ export default Magix.View.extend<Editor.Dragdrop>({
             count
         });
     },
-    assign({ id, ctor, props, type }) {
+    assign({ id, ctor, props, type }, ctrl) {
         this.updater.set({
             ctor,
             id,
             type,
+            onlyMove: ctrl && ctrl.move,
             space: CNC.ELEMENT_CTRL_SPACE,
             size: CNC.RESIZER_SIZE,
             props,
@@ -82,6 +104,18 @@ export default Magix.View.extend<Editor.Dragdrop>({
     },
     render() {
         this.updater.digest();
+    },
+    '@{refresh}'() {
+        let updater = this.updater;
+        let props = updater.get('props');
+        updater.digest({
+            props
+        });
+    },
+    '@{update}'(props) {
+        this.updater.digest({
+            props
+        });
     },
     '@{start.resize}<mousedown>'(e) {
         let me = this;
@@ -210,7 +244,8 @@ export default Magix.View.extend<Editor.Dragdrop>({
 
         let pos = Convert["@{real.to.nearest.coord}"](me['@{owner.node}'], {
             x: e.pageX,
-            y: e.pageY
+            y: e.pageY,
+            find: 1
         });
         let c = Transform["@{element.center}"](props);
         let rotate = props.rotate;
@@ -222,7 +257,8 @@ export default Magix.View.extend<Editor.Dragdrop>({
         me.dragdrop(e.eventTarget, (evt) => {
             let pos = Convert["@{real.to.nearest.coord}"](me['@{owner.node}'], {
                 x: evt.pageX,
-                y: evt.pageY
+                y: evt.pageY,
+                find: 1
             });
             moved = true;
             let deg = Math.atan2(pos.y - c.y, pos.x - c.x);

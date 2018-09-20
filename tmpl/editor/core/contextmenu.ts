@@ -69,6 +69,14 @@ let MenuCellDeleteCol = {
     id: 13,
     text: '@{menu.delete.current.cols}'
 };
+// let MenuCellHSplit = {
+//     id: 15,
+//     text: '@{menu.cell.h.split}'
+// };
+// let MenuCellVSplit = {
+//     id: 16,
+//     text: '@{menu.cell.v.split}'
+// };
 let Cache = {};
 let TranslateMenu = menus => {
     return (lang) => {

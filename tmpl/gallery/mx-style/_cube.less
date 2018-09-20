@@ -21,9 +21,10 @@
  ========================================================================== */
 body, dl, dd,
 ul, ol,
-h1, h2, h3, h4, h5, h6, pre,
-form, fieldset, legend, input, textarea,
-p, figure, hr, /*menu, dir,*/
+h4,
+/*h1, h2, h3, h4, h5, h6,*/ pre,
+form, input, textarea,
+p, /*menu, dir,*/
 thead, tbody, tfoot, th, td {
   margin: 0;
   padding: 0;
@@ -119,33 +120,33 @@ textarea {
 * 1. 统一 IE 6-7 中字体大小
 * 2. 统一 Firefox 4+，Safari 5 和 Chrome 中「section」和「article」内的字体大小
 */
-h1, h2, h3, h4, h5, h6 {
+/*h1, h2, h3, h4, h5, h6*/h4 {
   font-weight: normal;
 }
 
-h1 {
-  font-size: 36px;
-}
+// h1 {
+//   font-size: 36px;
+// }
 
-h2 {
-  font-size: 30px;
-}
+// h2 {
+//   font-size: 30px;
+// }
 
-h3 {
-  font-size: 22px;
-}
+// h3 {
+//   font-size: 22px;
+// }
 
 h4 {
   font-size: 18px;
 }
 
-h5 {
-  font-size: 14px;
-}
+// h5 {
+//   font-size: 14px;
+// }
 
-h6 {
-  font-size: 12px;
-}
+// h6 {
+//   font-size: 12px;
+// }
 
 /**
 * 修正「abbr」元素在 Firefox 外其他浏览器没有下划线的问题
@@ -162,10 +163,10 @@ acronym {
 /**
 * Firefox3+，Safari4/5 和 Chrome 中统一设置为粗体
 */
-b,
-strong {
-  font-weight: bold;
-}
+// b,
+// strong {
+//   font-weight: bold;
+// }
 
 /**
 * 修正 Safari5 和 Chrome 中没有样式的问题
@@ -177,10 +178,10 @@ strong {
 /**
 * 修正 Firefox 和其他浏览器之间的差异
 */
-hr {
-  box-sizing: content-box;
-  height: 0;
-}
+// hr {
+//   box-sizing: content-box;
+//   height: 0;
+// }
 
 /**
 * 网页标记，荧光笔
@@ -224,46 +225,46 @@ pre {
 * IE 6-7 不支持 quotes 属性
 * 现代浏览器去除 quotes 内容
 */
-q {
-  quotes: none;
-}
+// q {
+//   quotes: none;
+// }
 
-/**
-* Safari 4 不支持<q>标签
-*/
-q:before,
-q:after {
-  content: '';
-  content: none;
-}
+// /**
+// * Safari 4 不支持<q>标签
+// */
+// q:before,
+// q:after {
+//   content: '';
+//   content: none;
+// }
 
 /**
 * 中文网页<small>元素字号小于 12px 不易阅读
 */
-small {
-  font-size: 85.7%;
-  /* 12/14=0.8571428571 */
-}
+// small {
+//   font-size: 85.7%;
+//   /* 12/14=0.8571428571 */
+// }
 
-/**
-* 防止所有浏览器中的<sub>和<sup>影响行高
-* http://jsbin.com/usoyal/1/edit
-*/
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
+// /**
+// * 防止所有浏览器中的<sub>和<sup>影响行高
+// * http://jsbin.com/usoyal/1/edit
+// */
+// sub,
+// sup {
+//   font-size: 75%;
+//   line-height: 0;
+//   position: relative;
+//   vertical-align: baseline;
+// }
 
-sup {
-  top: -.5em;
-}
+// sup {
+//   top: -.5em;
+// }
 
-sub {
-  bottom: -.25em;
-}
+// sub {
+//   bottom: -.25em;
+// }
 
 /* ==========================================================================
  表格
@@ -342,25 +343,25 @@ svg:not(:root) {
 /**
 * 定义一致的边框、外边距和内边距
 */
-fieldset {
-  border: 1px solid #c0c0c0;
-  margin: 0 2px;
-  padding: .35em .625em .75em;
-}
+// fieldset {
+//   border: 1px solid #c0c0c0;
+//   margin: 0 2px;
+//   padding: .35em .625em .75em;
+// }
 
 /**
 * 1. 修正 IE 6-9 中颜色不能继承的问题
 * 2. 修正 Firefox3 中文字不换行的问题
 * 3. 修正 IE6-7 中怪异的对齐方式
 */
-legend {
-  border-style: none;
-  /* 1 */
-  white-space: normal;
-  /* 2 */
-  *margin-left: -7px;
-  /* 3 */
-}
+// legend {
+//   border-style: none;
+//   /* 1 */
+//   white-space: normal;
+//   /* 2 */
+//   *margin-left: -7px;
+//   /* 3 */
+// }
 
 /**
 * 1. 修正所有浏览器中字体不继承的问题
@@ -563,15 +564,15 @@ summary {
 * 1. 修正未定义为「inline-block」的元素
 * 2. 修正 Chrome、Firefox、Opera 中 「progress」元素 vertical-align 默认值不一致
 */
-audio,
-canvas,
-video/*,
-progress*/ {
-  display: inline-block;
-  /* 1 */
-  vertical-align: baseline;
-  /* 2 */
-}
+// audio,
+// canvas,
+// video/*,
+// progress*/ {
+//   display: inline-block;
+//   /* 1 */
+//   vertical-align: baseline;
+//   /* 2 */
+// }
 
 /**
 * 1.防止现代浏览器将没有「controls」属性的 「audio」元素显示出来
