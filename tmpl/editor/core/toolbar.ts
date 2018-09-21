@@ -11,6 +11,9 @@ const ApplyByJSON = json => {
     State.fire('@{stage&apply.stage}', {
         json
     });
+    if (json.pageChange) {
+        State.fire('@{stage&ui.change}');
+    }
     State.fire('@{stage&elements.change}');
     State.fire('@{stage&select.elements.change}');
     State.fire('@{history&save.snapshot}');

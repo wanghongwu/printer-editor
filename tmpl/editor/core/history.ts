@@ -22,7 +22,9 @@ const UpdateStage = jsonStr => {
     State.fire('@{stage&apply.stage}', {
         json
     });
-    State.fire('@{history&status.change}');
+    State.fire('@{history&status.change}', {
+        history: true
+    });
     State.fire('@{stage&select.elements.change}');
 };
 export default {

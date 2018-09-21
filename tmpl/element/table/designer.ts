@@ -3,6 +3,7 @@ import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
 import I18n from '../../i18n/index';
+import Table from '../../util/table';
 let Base = Designer.prototype;
 export default Designer.extend({
     init() {
@@ -29,6 +30,7 @@ export default Designer.extend({
                 colIndex: -1,
                 splitable: true,
                 hideBorder: false,
+                lockSize: false,
                 rows: [{
                     tag: 'tr',
                     cells: [{
@@ -88,6 +90,15 @@ export default Designer.extend({
             key: 'height',
             type: PropsDesc.LABEL,
             read: Convert["@{pixel.to.millimeter}"]
+        }, {
+            tip: '@{element.table.lockSize}',
+            key: 'lockSize',
+            type: PropsDesc.BOOLEAN,
+            write(v, data) {
+                data.lockSize = v;
+                Table["@{update.cells.metas}"](data);
+                return v;
+            }
         }, {
             tip: '@{element.table.border}',
             key: 'hideBorder',

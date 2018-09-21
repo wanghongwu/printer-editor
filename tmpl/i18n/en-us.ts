@@ -114,6 +114,7 @@ export default {
     '@{element.table.height}': 'Height',
     '@{element.table.dwidth}': 'Div-Width',
     '@{element.table.dheight}': 'Div-Height',
+    '@{element.table.lockSize}': 'Lock Size',
     '@{element.text.h}': 'H-Text',
     '@{element.text.v}': 'V-Text',
     '@{element.text.alias}': 'Alias',

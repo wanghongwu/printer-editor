@@ -12,6 +12,7 @@ import QRCode from './qrcode/designer';
 import HCode from './hcode/designer';
 import VCode from './vcode/designer';
 import Table from './table/designer';
+import UTable from '../util/table';
 let List = [HLine, VLine, Rect, HText, VText, Image, HCode, VCode, QRCode, Table];
 let EMap = Object.create(null);
 for (let e of List) {
@@ -55,6 +56,7 @@ export default {
                             }
                         }
                     }
+                    UTable["@{update.cells.metas}"](i.props);
                 }
             }
         };

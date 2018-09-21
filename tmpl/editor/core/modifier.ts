@@ -13,12 +13,27 @@ export default View.extend({
             rectWidth: 0,
             rectHeight: 0,
             hoverElement: State.get('@{property&hover.active.element}'),
-            transformCoord(props) {
-                let xy = {
+            transformProps(props) {
+                let p = {
+                    rotate: props.rotate,
+                    width: props.width,
+                    height: props.height,
                     x: props.x,
                     y: props.y
                 };
-                return Convert["@{stage.to.outer}"](xy);
+                let cell = State.get('@{property&hover.element.cell}');
+                if (cell) {
+                    p.x += cell.pos.x;
+                    p.y += cell.pos.y;
+                    if (props.useCNStyle) {
+                        p.width = cell.width * 0.92;
+                        p.height = cell.height * 0.92;
+                    }
+                }
+                let t = Convert["@{stage.to.outer}"](p);
+                p.x = t.x;
+                p.y = t.y;
+                return p;
             }
         });
         State.on('@{property&hover.element}', () => {

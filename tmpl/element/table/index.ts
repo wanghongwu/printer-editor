@@ -22,10 +22,6 @@ const MenusMap = {
     12: 'ca',
     13: 'c'
 };
-const MenuCellsMap = {
-    15: 'sh',
-    16: 'sv'
-};
 Magix.applyStyle('@index.less');
 export default View.extend<Editor.Dragdrop>({
     tmpl: '@index.html',
@@ -182,16 +178,53 @@ export default View.extend<Editor.Dragdrop>({
         State.fire('@{stage&lock.scroll}', {
             locked: 1
         });
+        let ref = {} as { rowHeights?: number[], colWidths?: number[] };
+        if (props.lockSize) {
+            Table["@{update.cells.metas}"](props, ref);
+        }
         this.dragdrop(e.eventTarget, (evt) => {
             let dx = evt.pageX - beginX;
             let dy = evt.pageY - beginY;
-            if (type == 'row') {
-                cell.height = Math.max(startHeight + dy, 0);
-            } else if (type == 'col') {
-                cell.width = Math.max(0, startWidth + dx);
+            let ndy = 0, ndx;
+            if (props.lockSize) {
+                let rowspan = cell.rowspan || 1;
+                let next = ref.rowHeights[cell.row + rowspan];
+                ndy = next - dy;
+                if (ndy < 0) {
+                    dy = next;
+                    ndy = 0;
+                } else if (ndy > next + startHeight) {
+                    ndy = next + startHeight - 1;
+                }
+                let colspan = cell.colspan || 1;
+                let nextCol = ref.colWidths[cell.col + colspan];
+                ndx = nextCol - dx;
+                if (ndx < 0) {
+                    dx = nextCol;
+                    ndx = 0;
+                } else if (ndx > nextCol + startWidth) {
+                    ndx = nextCol + startWidth;
+                }
             }
-            moved = true;
-            Table["@{update.cells.metas}"](props, { col: cell });
+            let h = Math.max(startHeight + dy, 0);
+            let w = Math.max(0, startWidth + dx);
+            if (type == 'row') {
+                if (h != cell.height) {
+                    moved = true;
+                    cell.height = h;
+                }
+            } else if (type == 'col') {
+                if (w != cell.width) {
+                    moved = true;
+                    cell.width = w;
+                }
+            }
+            Table["@{update.cells.metas}"](props, {
+                col: cell,
+                changeType: type,
+                nextRow: ndy,
+                nextCol: ndx
+            });
             State.fire('@{property&element.property.change}', {
                 data: props,
                 eId: id

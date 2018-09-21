@@ -442,7 +442,7 @@ module.exports = Magix.View.extend({
         if (!me['@{fn.zone.scroll}']) {
             me['@{fn.zone.scroll}'] = () => {
                 let zoneBound = me['@{last.zone.bound}'];
-                if (zoneBound) {
+                if (zoneBound && (zoneBound.maxWidth > zoneBound.width + 5 || zoneBound.maxHeight > zoneBound.height + 5)) {
                     let zone = me['@{hover.info}'].zone;
                     let tx = 0,
                         ty = 0,

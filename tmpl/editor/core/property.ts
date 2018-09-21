@@ -4,6 +4,7 @@ import Transform from '../../util/transform';
 import Table from '../../util/table';
 import I18n from '../../i18n/index';
 import $ from '$';
+import { StageElements } from './workaround';
 Magix.applyStyle('@property.less');
 export default View.extend({
     tmpl: '@property.html',
@@ -165,11 +166,8 @@ export default View.extend({
         State.fire('@{history&save.snapshot}');
     },
     '@{del}<click>'(e) {
-        let elements = State.get('@{stage&elements}');
-        elements.splice(e.params.i, 1);
-        this.updater.digest({
-            elements
-        });
+        StageElements["@{delete.element.by.id}"](e.params.id, true);
+        this.render();
         State.set({
             '@{property&hover.active.element}': null
         });
@@ -178,8 +176,10 @@ export default View.extend({
         State.fire('@{history&save.snapshot}');
     },
     '@{fake.active}<mouseover,mouseout>'(e) {
+        if (e.from == 'p-table') return;
         let flag = Magix.inside(e.relatedTarget, e.eventTarget);
         if (!flag) {
+            console.log(e.type, e.params);
             State.set({
                 '@{property&hover.active.element}': e.params.element
             });

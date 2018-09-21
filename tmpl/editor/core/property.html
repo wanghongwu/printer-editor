@@ -57,16 +57,21 @@
     <ul mx-view="gallery/mx-dragsort/index" view-selector="li .@:(icon)" class="unselectable box-panel" mx-dragfinish="@{sort.finish}()">
         {{for(let index=elements.length;index--)}}
         {{let element=elements[index];}}
-        <li class="group-item pl10 clearfix group-item-drag" data-eid="{{=element.id}}" id="{{=vId}}_{{=element.id}}" mx-mouseover="@{fake.active}({element:{{@element}}})" mx-mouseout="@{fake.active}()">
-            <div class="icon fl mr5" title="{{=i18n('@{property.press.drag.sort}')}}">
-                {{!element.ctor.icon}}
-            </div>
-            <div class="fl clearfix desc">
-                <div class="fl text" title="{{=element.props.tip}}">
-                    {{=element.props.tip}}
+        <li class="group-item pl10 clearfix group-item-drag" data-eid="{{=element.id}}" id="{{=vId}}_{{=element.id}}">
+            <div class="clearfix" mx-mouseover="@{fake.active}({element:{{@element}}})" mx-mouseout="@{fake.active}()">
+                <div class="icon fl mr5" title="{{=i18n('@{property.press.drag.sort}')}}">
+                    {{!element.ctor.icon}}
                 </div>
-                <i title="{{=i18n('@{property.delete.element}')}}" class="iconfont fl del" mx-click="@{del}({i:{{=index}}})">&#xe600;</i>
+                <div class="fl clearfix desc">
+                    <div class="fl text" title="{{=element.props.tip}}">
+                        {{=element.props.tip}}
+                    </div>
+                    <i title="{{=i18n('@{property.delete.element}')}}" class="iconfont fl del" mx-click="@{del}({id:'{{=element.id}}'})">&#xe600;</i>
+                </div>
             </div>
+            {{if element.type=='table'}}
+                <mx-vframe src="./p-table" *e-id="{{=element.id}}" *rows="{{@element.props.rows}}" class="p-table"/>
+            {{/if}}
         </li>
         {{/for}}
     </ul>

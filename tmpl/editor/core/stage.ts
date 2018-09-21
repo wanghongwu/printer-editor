@@ -75,12 +75,14 @@ export default View.extend<Editor.Dragdrop>({
                 DesignerHistory["@{save}"]();
             }
         });
-        State.on('@{history&status.change}', () => {
-            let elements = State.get('@{stage&elements}');
-            me.updater.set({
-                elements
-            });
-            me.render();
+        State.on('@{history&status.change}', (e: Magix.TriggerEventDescriptor & { history: boolean }) => {
+            if (e.history) {
+                let elements = State.get('@{stage&elements}');
+                me.updater.set({
+                    elements
+                });
+                me.render();
+            }
             Store["@{save}"]();
         });
         State.on('@{stage&ui.change}', (e: Editor.StageScaleEvent) => {
@@ -429,7 +431,6 @@ export default View.extend<Editor.Dragdrop>({
                 let lChanged = 0;
                 if (e.to == 'right') {
                     let diff = maxRight - (bound.right - pos.left);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -437,7 +438,6 @@ export default View.extend<Editor.Dragdrop>({
                     }
                 } else if (e.to == 'left') {
                     let diff = minLeft - (bound.left - pos.left);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -445,7 +445,6 @@ export default View.extend<Editor.Dragdrop>({
                     }
                 } else if (e.to == 'top') {
                     let diff = minTop - (bound.top - pos.top);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -453,7 +452,6 @@ export default View.extend<Editor.Dragdrop>({
                     }
                 } else if (e.to == 'bottom') {
                     let diff = maxBottom - (bound.bottom - pos.top);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -461,7 +459,6 @@ export default View.extend<Editor.Dragdrop>({
                     }
                 } else if (e.to == 'vcenter') {
                     let diff = minVCenter - (bound.top - pos.top + (bound.bottom - bound.top) / 2);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -469,7 +466,6 @@ export default View.extend<Editor.Dragdrop>({
                     }
                 } else if (e.to == 'hcenter') {
                     let diff = minHCenter - (bound.left - pos.left + (bound.right - bound.left) / 2);
-                    diff |= 0;
                     if (diff != 0) {
                         changed = 1;
                         lChanged = 1;
@@ -687,11 +683,13 @@ export default View.extend<Editor.Dragdrop>({
                                     m.props.y = centerY;
                                 }
                             } else {
-                                let diff = prev.props.x + avgX;
-                                if (m.props.x != diff) {
+                                let centerX = prev.props.x + prev.props.width / 2;
+                                centerX += avgX;
+                                centerX -= m.props.width / 2;
+                                if (m.props.x != centerX) {
                                     changed = 1;
                                     lChanged = 1;
-                                    m.props.x = diff;
+                                    m.props.x = centerX;
                                 }
                             }
                             if (lChanged) {
@@ -801,8 +799,14 @@ export default View.extend<Editor.Dragdrop>({
                 if (lChanged) {
                     if (m.type == 'table') {
                         Table["@{update.cells.metas}"](m.props, {
-                            lw: true
+                            fsize: true
                         });
+                    } else if (m.type == 'qrcode') {
+                        if (e.to == 'mah' || e.to == 'mih') {
+                            props.width = props.height;
+                        } else {
+                            props.height = props.width;
+                        }
                     }
                     let vf = Vframe.get(m.id);
                     if (vf) {

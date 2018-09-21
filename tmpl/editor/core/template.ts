@@ -646,7 +646,7 @@ const Templates = [{
     </page>`
 },{
     id:7,
-    name:'申请表',
+    name:'调查表',
     code:`<?xml version="1.0" encoding="UTF-8"?>
     <page xmlns="http://cloudprint.cainiao.com/print"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

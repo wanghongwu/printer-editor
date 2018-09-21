@@ -1,9 +1,11 @@
 {{if hoverElement}}
     {{let ctor=hoverElement.ctor;}}
-    {{let props=hoverElement.props;}}
-    {{set xy=transformCoord(props)}}
-    <div class="pa" style="{{if props.rotate}}transform:rotate({{=props.rotate}}deg);{{/if}}left:{{=xy.x-space}}px;top:{{=xy.y-space}}px;width:{{=props.width+2*space}}px;height:{{=props.height+2*space}}px;border:solid 1px red;z-index:9998">
-        
+    {{let props=transformProps(hoverElement.props);}}
+    {{set height=props.height}}
+    {{if ctor.type=='table'}}
+        {{height+=1.5}}
+    {{/if}}
+    <div class="pa" style="{{if props.rotate}}transform:rotate({{=props.rotate}}deg);{{/if}}left:{{=props.x-space}}px;top:{{=props.y-space}}px;width:{{=props.width+2*space}}px;height:{{=height+2*space}}px;border:solid 1px red;z-index:9998">
     </div>
 {{/if}}
 {{if showRect}}

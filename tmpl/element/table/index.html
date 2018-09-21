@@ -30,8 +30,12 @@
                             {{if cell.left}}
                                 <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=cell.left.row}},ci:{{=cell.left.col}}})"></div>
                             {{/if}}
+                            {{if cell.hasBottom}}
                             <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:{{=cell.width/2-size}}px;bottom:-{{=size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',cell:{{@cell}}})"></div>
+                            {{/if}}
+                            {{if cell.hasRight}}
                             <div style="width:{{=2*size}}px;height:{{=2*size}}px;right:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',cell:{{@cell}}})"></div>
+                            {{/if}}
                         </div>
                         {{/if}}
                     </td>

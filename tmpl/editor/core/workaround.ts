@@ -5,6 +5,7 @@ import * as Menu from '../../gallery/mx-menu/index';
 import { Contextmenu } from './contextmenu';
 //import CNC from '../../cainiao/const';
 import $ from '$';
+import Table from '../../util/table';
 let ToMap = Magix.toMap;
 let Has = Magix.has;
 let Assign = Magix.mix;
@@ -157,6 +158,8 @@ export let StageElements = {
             };
             if (element.type == 'vtext' || element.type == 'htext') {
                 props.supportCNStyle = collType == 'td';
+            } else if (element.type == 'table') {
+                Table["@{update.cells.metas}"](props);
             }
             collection.push(m);
             if (focus) {
@@ -1006,8 +1009,8 @@ export let StageElements = {
         return selected;
     }
 };
-let Clone=(from,to)=>{
-return $.extend(true,to,from);
+let Clone = (from, to) => {
+    return $.extend(true, to, from);
 };
 export let Clipboard = {
     '@{has.elements}'() {
@@ -1088,7 +1091,7 @@ export let Clipboard = {
                 }
             };
             for (let m of list) {
-                let nm = Clone(m,{});
+                let nm = Clone(m, {});
                 let props = nm.props;
                 setXY(props);
                 index++;
