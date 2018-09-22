@@ -55,6 +55,7 @@ export default View.extend<Editor.Dragdrop>({
         }), 0);
     },
     assign(data) {
+        console.log(this.id,'table assign');
         this['@{data}'] = data;
         let unchanged = {} as { rows?: number };
         if (data.onlyMove) {
@@ -69,6 +70,7 @@ export default View.extend<Editor.Dragdrop>({
         return data.forceUpdate;
     },
     render() {
+        console.log(this.id,'table render');
         this.updater.digest();
     },
     '@{table.mouse.down}<mousedown>'(e) {

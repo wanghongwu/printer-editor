@@ -2104,6 +2104,19 @@ define('magix', ['$'], function (require) {
             }
         }
     };
+    var I_LazyId = function (ref, node, id) {
+        if (node.nodeType == 1) {
+            id = node.id;
+            if (id) {
+                ref.d.push([node, id]);
+                node.id = G_EMPTY;
+            }
+            for (var _i = 0, _a = node.childNodes; _i < _a.length; _i++) {
+                id = _a[_i];
+                I_LazyId(ref, id);
+            }
+        }
+    };
     var I_SpecialDiff = function (oldNode, newNode) {
         var nodeName = oldNode.nodeName, i;
         var specials = I_Specials[nodeName];
@@ -2199,6 +2212,7 @@ define('magix', ['$'], function (require) {
                 if (nodeKey && keyedNodes[nodeKey] && newKeyedNodes[nodeKey]) {
                     extra++;
                     ref.c = 1;
+                    I_LazyId(ref, tempNew);
                     // If the old child had a key we skip over it until the end.
                     oldParent.insertBefore(tempNew, tempOld);
                 }
@@ -2209,6 +2223,7 @@ define('magix', ['$'], function (require) {
                 }
             }
             else {
+                I_LazyId(ref, tempNew);
                 // Finally if there was no old node we add the new node.
                 oldParent.appendChild(tempNew);
                 ref.c = 1;
@@ -2347,6 +2362,7 @@ define('magix', ['$'], function (require) {
             else {
                 // we have to replace the node.
                 I_UnmountVframs(vf, oldNode);
+                I_LazyId(ref, newNode);
                 oldParent.replaceChild(newNode, oldNode);
                 ref.c = 1;
             }

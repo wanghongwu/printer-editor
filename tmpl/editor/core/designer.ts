@@ -109,11 +109,13 @@ export default Magix.View.extend<Editor.Dragdrop>({
         let updater = this.updater;
         let props = updater.get('props');
         updater.digest({
+            onlyMove: false,
             props
         });
     },
     '@{update}'(props) {
         this.updater.digest({
+            onlyMove: false,
             props
         });
     },
