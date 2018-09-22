@@ -1273,6 +1273,12 @@ define('magix', ['$'], function (require) {
                 vframe: vframe,
                 fcc: fcc //fireChildrenCreated
             });
+            if (DEBUG) {
+                var nodes = G_DOCUMENT.querySelectorAll('#' + id);
+                if (nodes.length > 1) {
+                    Magix_Cfg.error(Error("remove vframe error. dom id:\"" + id + "\" duplicate"));
+                }
+            }
             id = G_GetById(id);
             if (id) {
                 id['$b'] = 0;
@@ -1557,7 +1563,7 @@ define('magix', ['$'], function (require) {
             for (var _a = 0, vfs_1 = vfs; _a < vfs_1.length; _a++) {
                 _b = vfs_1[_a], id = _b[0], vf = _b[1];
                 if (DEBUG && document.querySelectorAll("#" + id).length > 1) {
-                    Magix_Cfg.error(Error("dom id:\"" + id + "\" duplicate"));
+                    Magix_Cfg.error(Error("mount vframe error. dom id:\"" + id + "\" duplicate"));
                 }
                 if (DEBUG) {
                     if (vfs[id]) {
@@ -2104,19 +2110,6 @@ define('magix', ['$'], function (require) {
             }
         }
     };
-    var I_LazyId = function (ref, node, id) {
-        if (node.nodeType == 1) {
-            id = node.id;
-            if (id) {
-                ref.d.push([node, id]);
-                node.id = G_EMPTY;
-            }
-            for (var _i = 0, _a = node.childNodes; _i < _a.length; _i++) {
-                id = _a[_i];
-                I_LazyId(ref, id);
-            }
-        }
-    };
     var I_SpecialDiff = function (oldNode, newNode) {
         var nodeName = oldNode.nodeName, i;
         var specials = I_Specials[nodeName];
@@ -2212,9 +2205,10 @@ define('magix', ['$'], function (require) {
                 if (nodeKey && keyedNodes[nodeKey] && newKeyedNodes[nodeKey]) {
                     extra++;
                     ref.c = 1;
-                    I_LazyId(ref, tempNew);
+                    ref.n.push([8, oldParent, tempNew, tempOld]);
+                    //I_LazyId(ref, tempNew);
                     // If the old child had a key we skip over it until the end.
-                    oldParent.insertBefore(tempNew, tempOld);
+                    //oldParent.insertBefore(tempNew, tempOld);
                 }
                 else {
                     oldNode = oldNode.nextSibling;
@@ -2223,22 +2217,25 @@ define('magix', ['$'], function (require) {
                 }
             }
             else {
-                I_LazyId(ref, tempNew);
+                //I_LazyId(ref, tempNew);
                 // Finally if there was no old node we add the new node.
-                oldParent.appendChild(tempNew);
+                //oldParent.appendChild(tempNew);
                 ref.c = 1;
+                ref.n.push([1, oldParent, tempNew]);
             }
         }
         // If we have any remaining unkeyed nodes remove them from the end.
+        tempOld = oldParent.lastChild;
         while (extra-- > 0) {
-            tempOld = oldParent.lastChild;
             I_UnmountVframs(vframe, tempOld);
             if (DEBUG) {
                 if (!tempOld.parentNode) {
                     console.error('Avoid remove node on view.destroy in digesting');
                 }
             }
-            oldParent.removeChild(tempOld);
+            ref.n.push([2, oldParent, tempOld]);
+            tempOld = tempOld.previousSibling;
+            //oldParent.removeChild(tempOld);
             ref.c = 1;
         }
     };
@@ -2362,9 +2359,10 @@ define('magix', ['$'], function (require) {
             else {
                 // we have to replace the node.
                 I_UnmountVframs(vf, oldNode);
-                I_LazyId(ref, newNode);
-                oldParent.replaceChild(newNode, oldNode);
+                //I_LazyId(ref, newNode);
+                //oldParent.replaceChild(newNode, oldNode);
                 ref.c = 1;
+                ref.n.push([4, oldParent, newNode, oldNode]);
             }
         }
     };
@@ -2400,7 +2398,7 @@ define('magix', ['$'], function (require) {
     var Updater_QR = /[\\'"]/g;
     var Updater_EncodeQ = function (v) { return Updater_Safeguard(v).replace(Updater_QR, '\\$&'); };
     var Updater_Digest = function (updater, digesting) {
-        var keys = updater['$k'], changed = updater['$c'], selfId = updater['$b'], vf = Vframe_Vframes[selfId], view = vf && vf['$v'], ref = { d: [], v: [] }, node = G_GetById(selfId), tmpl, vdom, data = updater['$d'], refData = updater['$a'], redigest = function (trigger) {
+        var keys = updater['$k'], changed = updater['$c'], selfId = updater['$b'], vf = Vframe_Vframes[selfId], view = vf && vf['$v'], ref = { d: [], v: [], n: [] }, node = G_GetById(selfId), tmpl, vdom, data = updater['$d'], refData = updater['$a'], redigest = function (trigger) {
             if (digesting.i < digesting.length) {
                 Updater_Digest(updater, digesting);
             }
@@ -2430,6 +2428,15 @@ define('magix', ['$'], function (require) {
                 vdom = _a[_i];
                 vdom[0].id = vdom[1];
             }
+            for (var _b = 0, _c = ref.n; _b < _c.length; _b++) {
+                vdom = _c[_b];
+                if (vdom[0] & 3) {
+                    vdom[1][(vdom[0] == 1 ? 'append' : 'remove') + 'Child'](vdom[2]);
+                }
+                else {
+                    vdom[1][vdom[0] == 4 ? 'replaceChild' : 'insertBefore'](vdom[2], vdom[3]);
+                }
+            }
             /*
                 在dom diff patch时，如果已渲染的vframe有变化，则会在vom tree上先派发created事件，同时传递inner标志，vom tree处理alter事件派发状态，未进入created事件派发状态
     
@@ -2438,8 +2445,8 @@ define('magix', ['$'], function (require) {
                 有可能不需要endUpdate，所以hold fire要视情况而定
             */
             vf['$d'] = tmpl = ref.c || !view['$e'];
-            for (var _b = 0, _c = ref.v; _b < _c.length; _b++) {
-                vdom = _c[_b];
+            for (var _d = 0, _e = ref.v; _d < _e.length; _d++) {
+                vdom = _e[_d];
                 vdom['$b']();
             }
             if (tmpl) {
