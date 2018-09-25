@@ -78,6 +78,8 @@ export default Magix.View.extend({
                 'xmlns:editor': CNC.EDITOR_NAME_SPACE,
                 width: CNC.PAGE_WIDTH_DEFAULT * CNC.SCALE_DEFAULT,
                 height: CNC.PAGE_HEIGHT_DEFAULT * CNC.SCALE_DEFAULT,
+                header: 30,
+                footer: 50,
                 splitable: true
             },
             '@{stage&scale}': CNC.SCALE_DEFAULT,

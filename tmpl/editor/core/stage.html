@@ -1,5 +1,6 @@
 <div class="outer pr" mx-mousedown="@{start.drag}()" id="stage_outer" tabindex="0" mx-keydown="@{stage.keydown}()" mx-focusout="@{stage.deactive}()" mx-focusin="@{stage.active}()" mx-drop="@{drop.file}()">
     <div class="canvas" id="cx_{{=vId}}">
+        <div class="hf" style="height:{{if header>0}}{{=header}}{{else}}0{{/if}}px;width:{{=width}}px;"></div>
         <div class="pr main" style="width:{{=width}}px;height:{{=height}}px;" id="stage_stage" mx-contextmenu="@{prevent}()">
             {{each elements as element}}
                 {{set {ctor,props,id,type}=element}}
@@ -8,6 +9,7 @@
                 {{/if}}
             {{/each}}
         </div>
+        <div class="hf" style="height:{{if footer>0}}{{=footer}}{{else}}0{{/if}}px;width:{{=width}}px;"></div>
     </div>
     <mx-vframe src="./modifier" id="m_{{=vId}}"/>
     <div id="outer_cm"></div>

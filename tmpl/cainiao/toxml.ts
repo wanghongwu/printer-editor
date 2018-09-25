@@ -320,11 +320,17 @@ export default stage => {
     xsi:schemaLocation="${page['xsi:schemaLocation']}"
     xmlns:editor="${page['xmlns:editor']}"
     width="${ToMM(page.width)}" height="${ToMM(page.height)}"${splitable}>`;
+    if (page.header > 0) {
+        xml += `${GSpace(1)}<header height="${ToMM(page.header)}"></header>`;
+    }
     for (let e of stage.elements) {
         let fn = Encoder[e.type];
         if (fn) {
             xml += fn(e, 0);
         }
+    }
+    if (page.footer > 0) {
+        xml += `${GSpace(1)}<footer height="${ToMM(page.footer)}"></footer>`;
     }
     xml += `\n</page>`;
     return xml;

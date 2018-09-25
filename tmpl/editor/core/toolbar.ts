@@ -8,6 +8,7 @@ import I18n from '../../i18n/index';
 import { StageElements } from './workaround';
 Magix.applyStyle('@toolbar.less');
 const ApplyByJSON = json => {
+    json.scale = json.scale || State.get('@{stage&scale}');
     State.fire('@{stage&apply.stage}', {
         json
     });
@@ -209,9 +210,6 @@ export default Magix.View.extend({
             State.set({
                 '@{stage&scale}': scale
             });
-            let page = State.get('page');
-            page.width = page.width / old * scale;
-            page.height = page.height / old * scale;
             this.render();
             State.fire('@{stage&ui.change}', {
                 scale: true,

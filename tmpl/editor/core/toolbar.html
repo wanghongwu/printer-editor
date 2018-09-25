@@ -1,5 +1,5 @@
 <div class="items clearfix unselectable pr">
-    <div class="fl">
+    <div class="fl hp100">
         <i class="iconfont item{{if !hs.canUndo}} icon-disabled{{/if}}" title="{{=i18n('@{menu.undo}')}}(Ctrl+Z)"{{if hs.canUndo}} mx-click="@{set.history}({type:'undo'})"{{/if}}>&#xe682;</i>
         <i class="iconfont item flipx{{if !hs.canRedo}} icon-disabled{{/if}}" title="{{=i18n('@{menu.redo}')}}(Ctrl+Y)"{{if hs.canRedo}} mx-click="@{set.history}({type:'redo'})"{{/if}}>&#xe682;</i>
         <i class="spliter"></i>
@@ -39,6 +39,16 @@
                 <mx-number class="input num" value="{{=width}}" mx-input="@{set.value}({key:'width'})" min="{{=CNC.PAGE_WIDTH_MIN}}" fixed="2" max="{{=CNC.PAGE_WIDTH_MAX}}"/>
                 <span class="ib gap">X</span>
                 <mx-number class="input num" value="{{=height}}" mx-input="@{set.value}({key:'height'})" min="{{=CNC.PAGE_HEIGHT_MIN}}" fixed="2" max="{{=CNC.PAGE_HEIGHT_MAX}}"/>
+            </div>
+        </div>
+        {{set header=page.header===''?'':toMM(page.header)}}
+        {{set footer=page.footer===''?'':toMM(page.footer)}}
+        <div class="form-item clearfix">
+            <label class="form-label">页头：</label>
+            <div class="form-content">
+                <mx-number class="input num-hf" value="{{=header}}" mx-input="@{set.value}({key:'header'})" min="0" fixed="2" max="{{=CNC.PAGE_WIDTH_MAX}}"/>
+                <span class="ib gap-hf">页脚：</span>
+                <mx-number class="input num-hf" value="{{=footer}}" mx-input="@{set.value}({key:'footer'})" min="0" fixed="2" max="{{=CNC.PAGE_HEIGHT_MAX}}"/>
             </div>
         </div>
         <div class="form-item clearfix">

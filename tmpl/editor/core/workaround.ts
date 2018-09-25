@@ -877,13 +877,27 @@ export let StageElements = {
                             }
                         }
                         if (e.type == 'table') {
-                            for (let r of e.props.rows) {
-                                if (r.tag == 'tr') {
-                                    for (let d of r.cells) {
-                                        if (d.tag == 'td') {
-                                            if (d.children) {
-                                                let dc = Transform["@{get.sorted.elements}"](d.children);
-                                                find(dc);
+                            let { rows, rowIndex, colIndex } = e.props;
+                            let haveFocused = 0;
+                            if (rowIndex > -1 && colIndex > -1) {
+                                let cell = rows[rowIndex].cells[colIndex];
+                                if (cell.children) {
+                                    let dc = Transform["@{get.sorted.elements}"](cell.children);
+                                    if (dc.length) {
+                                        haveFocused = 1;
+                                        find(dc);
+                                    }
+                                }
+                            }
+                            if (!haveFocused) {
+                                for (let r of rows) {
+                                    if (r.tag == 'tr') {
+                                        for (let d of r.cells) {
+                                            if (d.tag == 'td') {
+                                                if (d.children) {
+                                                    let dc = Transform["@{get.sorted.elements}"](d.children);
+                                                    find(dc);
+                                                }
                                             }
                                         }
                                     }

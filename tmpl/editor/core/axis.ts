@@ -48,6 +48,7 @@ export default Magix.View.extend<{
     },
     rerender(draw) {
         let node = this['@{scroll.node}'];
+        //let page = State.get('page');
         let width = node.prop('scrollWidth') + 50;
         let height = node.prop('scrollHeight') + 50;
         let xStart = 0;
@@ -65,7 +66,7 @@ export default Magix.View.extend<{
             let left = Math.round(offset.left - outerOffset.left);
             xStart = left + axisWidth;
             xEnd = width - xStart;
-            yStart = Math.round(offset.top - outerOffset.top);
+            yStart = Math.round(offset.top - outerOffset.top /*- (page.header || 0)*/);
             yEnd = height - yStart;
             vHeight = node.height();
             vWidth = node.width();

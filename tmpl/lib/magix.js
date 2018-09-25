@@ -2150,7 +2150,7 @@ define('magix', ['$'], function (require) {
     var I_SetChildNodes = function (oldParent, newParent, ref, vframe, keys) {
         var oldNode = oldParent.lastChild;
         var newNode = newParent.firstChild;
-        var tempNew, tempOld, extra = 0, nodeKey, foundNode, keyedNodes = {}, newKeyedNodes = {}, removed;
+        var tempNew, tempOld, extra = 0, nodeKey, foundNode, keyedNodes = {}, newKeyedNodes = {}, next;
         // Extract keyed nodes from previous children and keep track of total count.
         while (oldNode) {
             extra++;
@@ -2171,12 +2171,12 @@ define('magix', ['$'], function (require) {
         while (newNode) {
             nodeKey = I_GetCompareKey(newNode);
             if (nodeKey) {
-                newKeyedNodes[nodeKey] = 1;
+                newKeyedNodes[nodeKey] = (newKeyedNodes[nodeKey] || 0) + 1;
             }
             newNode = newNode.nextSibling;
         }
         newNode = newParent.firstChild;
-        removed = newParent.childNodes.length < extra;
+        //removed = newParent.childNodes.length < extra;
         oldNode = oldParent.firstChild;
         while (newNode) {
             extra--;
@@ -2185,18 +2185,25 @@ define('magix', ['$'], function (require) {
             nodeKey = I_GetCompareKey(tempNew);
             foundNode = keyedNodes[nodeKey];
             if (foundNode && (foundNode = foundNode.pop())) {
-                if (foundNode != oldNode) { //如果找到的节点和当前不同，则移动
-                    if (removed && oldNode.nextSibling == foundNode) {
-                        oldParent.appendChild(oldNode);
-                        oldNode = foundNode.nextSibling;
-                    }
-                    else {
-                        oldParent.insertBefore(foundNode, oldNode);
-                    }
+                while (foundNode != oldNode) {
+                    next = oldNode.nextSibling;
+                    oldParent.appendChild(oldNode);
+                    oldNode = next;
                 }
-                else {
-                    oldNode = oldNode.nextSibling;
+                oldNode = foundNode.nextSibling;
+                if (newKeyedNodes[nodeKey]) {
+                    newKeyedNodes[nodeKey]--;
                 }
+                // if (foundNode != oldNode) {//如果找到的节点和当前不同，则移动
+                //     if (removed && oldNode.nextSibling == foundNode) {
+                //         oldParent.appendChild(oldNode);
+                //         oldNode = foundNode.nextSibling;
+                //     } else {
+                //         oldParent.insertBefore(foundNode, oldNode);
+                //     }
+                // } else {
+                //     oldNode = oldNode.nextSibling;
+                // }
                 I_SetNode(foundNode, tempNew, oldParent, ref, vframe, keys);
             }
             else if (oldNode) {
@@ -2205,10 +2212,10 @@ define('magix', ['$'], function (require) {
                 if (nodeKey && keyedNodes[nodeKey] && newKeyedNodes[nodeKey]) {
                     extra++;
                     ref.c = 1;
-                    ref.n.push([8, oldParent, tempNew, tempOld]);
+                    //ref.n.push([8, oldParent, tempNew, tempOld]);
                     //I_LazyId(ref, tempNew);
                     // If the old child had a key we skip over it until the end.
-                    //oldParent.insertBefore(tempNew, tempOld);
+                    oldParent.insertBefore(tempNew, tempOld);
                 }
                 else {
                     oldNode = oldNode.nextSibling;
@@ -2430,11 +2437,14 @@ define('magix', ['$'], function (require) {
             }
             for (var _b = 0, _c = ref.n; _b < _c.length; _b++) {
                 vdom = _c[_b];
-                if (vdom[0] & 3) {
-                    vdom[1][(vdom[0] == 1 ? 'append' : 'remove') + 'Child'](vdom[2]);
+                if (vdom[0] == 1) {
+                    vdom[1].appendChild(vdom[2]);
+                }
+                else if (vdom[0] == 2) {
+                    vdom[1].removeChild(vdom[2]);
                 }
                 else {
-                    vdom[1][vdom[0] == 4 ? 'replaceChild' : 'insertBefore'](vdom[2], vdom[3]);
+                    vdom[1].replaceChild(vdom[2], vdom[3]);
                 }
             }
             /*

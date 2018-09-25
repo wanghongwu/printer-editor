@@ -539,7 +539,7 @@ let Decoders = {
     page(stage, node) {
         if (node['@{~v#node.deep}'] === 1) {
             let keys = ValidKeys.page;
-            let scale = State.get('stage&scale');
+            let scale = State.get('@{stage&scale}');
             let defaults = {
                 'xmlns': CNC.CLOUD_PRINT_NAME_SPACE,
                 'xmlns:xsi': CNC.XSI_NAME_SPACE,
@@ -563,7 +563,7 @@ let Decoders = {
             let type = vertical ? 'vline' : 'hline';
             let ctor = Elements.byType(type);
             let defaults = ctor.getProps(0, 0);
-            let scale = State.get('stage&scale');
+            let scale = State.get('@{stage&scale}');
             defaults.width *= scale;
             defaults.height *= scale;
             DecodeNodeAttrs(node, keys, defaults);
@@ -594,7 +594,7 @@ let Decoders = {
         if (prt && prt['@{~v#node.tag}'] == 'layout') {
             let ctor = Elements.byType('rect');
             let defaults = ctor.getProps(0, 0);
-            let scale = State.get('stage&scale');
+            let scale = State.get('@{stage&scale}');
             defaults.width *= scale;
             defaults.height *= scale;
             let keys = ValidKeys.rect;
@@ -708,7 +708,7 @@ let Decoders = {
         if (prt && prt['@{~v#node.tag}'] == 'layout') {
             let ctor = Elements.byType('image');
             let defaults = ctor.getProps(0, 0);
-            let scale = State.get('stage&scale');
+            let scale = State.get('@{stage&scale}');
             defaults.width *= scale;
             defaults.height *= scale;
             let keys = ValidKeys.image;
@@ -742,7 +742,7 @@ let Decoders = {
             }
             let ctor = Elements.byType(type);
             let defaults = ctor.getProps(0, 0);
-            let scale = State.get('stage&scale');
+            let scale = State.get('@{stage&scale}');
             defaults.width *= scale;
             defaults.height *= scale;
             let tip = nodeAttrsMap['editor:tip'];
@@ -779,7 +779,7 @@ let Decoders = {
         if (prt['@{~v#node.tag}'] != 'layout') return;
         let ctor = Elements.byType(type);
         let defaults = ctor.getProps(0, 0);
-        let scale = State.get('stage&scale');
+        let scale = State.get('@{stage&scale}');
         defaults.width *= scale;
         defaults.height *= scale;
         for (let r of defaults.rows) {
@@ -886,6 +886,24 @@ let Decoders = {
         RecordScripts(e, node, prt);
         stage.elements.push(e);
     },
+    header(stage, node, map) {
+        stage.setHeader = true;
+        let prt = map[node['@{~v#node.pId}']];
+        if (prt['@{~v#node.tag}'] != 'page') return;
+        let aMap = node['@{~v#node.attrs.map}'];
+        if (aMap.height) {
+            stage.page.header = ToPixel(aMap.height);
+        }
+    },
+    footer(stage, node, map) {
+        stage.setFooter = true;
+        let prt = map[node['@{~v#node.pId}']];
+        if (prt['@{~v#node.tag}'] != 'page') return;
+        let aMap = node['@{~v#node.attrs.map}'];
+        if (aMap.height) {
+            stage.page.footer = ToPixel(aMap.height);
+        }
+    },
     '#script'(stage, node, map) {
         let prt = map[node['@{~v#node.pId}']];
         if (prt) {
@@ -907,7 +925,15 @@ export default xml => {
     let stage = {
         page: {},
         elements: []
-    };
+    } as {
+            setHeader: boolean
+            setFooter: boolean
+            page: {
+                header: number
+                footer: number
+            }
+            elements: object[]
+        };
     let walk = (nodes) => {
         for (let n of nodes) {
             let tag = n['@{~v#node.tag}'];
@@ -921,5 +947,13 @@ export default xml => {
         }
     };
     walk(node['@{~v#node.children}']);
+    if (!stage.setHeader) {
+        stage.page.header = 0;
+    }
+    if (!stage.setFooter) {
+        stage.page.footer = 0;
+    }
+    delete stage.setHeader;
+    delete stage.setFooter;
     return stage;
 };

@@ -1,15 +1,25 @@
 {{let bar=4;}}
 {{let hbar=12}}
-{{let mmToPixed=scale*3.7795275593333;}}
-{{let space=20}}
-{{let step=2*mmToPixed}}
+{{let mmToPixel=scale*3.7795275593333;}}
+{{let space=15}}
+{{if scale<1}}
+    {{space=25}}
+{{else if scale>=4}}
+    {{space=4}}
+{{else if scale>=3}}
+    {{space=6}}
+{{else if scale>=2}}
+    {{space=10}}
+{{/if}}
+{{let r=space/5}}
+{{let step=r*mmToPixel}}
 {{let temp;}}
 {{let barColor='#aaa;'}}
 
 <div class="y-axis-help" style="top:-{{=sTop}}px" id="{{=vId}}_y_help">
     {{if draw}}
     {{each yHelpers as help}}
-        {{set current=mmToPixed*(Math.abs(toMM(yStart))+help.mm)+20}}
+        {{set current=mmToPixel*(Math.abs(toMM(yStart))+help.mm)+20}}
         <div class="y-axis-help-line" style="width:{{=vWidth}}px;top:{{=current}}px;">
             <i class="iconfont y-help-line-icon" title="{{=i18n('@{axis.delete.line}')}}" mx-click="@{delete.help.line}({type:'y',id:'{{=help.id}}'})">&#xe600;</i>
             <span class="y-help-line-text">{{=help.mm}}</span>
@@ -21,7 +31,7 @@
 <div class="x-axis-help" style="left:-{{=sLeft}}px" id="{{=vId}}_x_help">
     {{if draw}}
     {{each xHelpers as help}}
-        {{set current=mmToPixed*(Math.abs(toMM(xStart))+help.mm)}}
+        {{set current=mmToPixel*(Math.abs(toMM(xStart))+help.mm)}}
         <div class="x-axis-help-line" style="height:{{=vHeight}}px;left:{{=current}}px;">
             <i class="iconfont x-help-line-icon" title="{{=i18n('@{axis.delete.line}')}}" mx-click="@{delete.help.line}({type:'x',id:'{{=help.id}}'})">&#xe600;</i>
             <span class="x-help-line-text">{{=help.mm}}</span>

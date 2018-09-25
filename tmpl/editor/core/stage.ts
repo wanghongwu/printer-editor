@@ -59,6 +59,11 @@ export default View.extend<Editor.Dragdrop>({
             let elements = State.get('@{stage&elements}');
             if (e && e.scale) {
                 StageElements["@{scale.by.step}"](e.from, e.to);
+                let page = State.get('page');
+                page.width = page.width / e.from * e.to;
+                page.height = page.height / e.from * e.to;
+                page.header = page.header / e.from * e.to;
+                page.footer = page.footer / e.from * e.to;
                 me.updater.set({
                     elements
                 });
@@ -182,6 +187,8 @@ export default View.extend<Editor.Dragdrop>({
         let page = State.get('page');
         let me = this;
         me.updater.digest({
+            header: page.header,
+            footer: page.footer,
             width: page.width,
             height: page.height
         });

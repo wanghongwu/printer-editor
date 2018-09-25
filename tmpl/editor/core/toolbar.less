@@ -31,7 +31,7 @@
 .bg{
     position: absolute;
     right: 0;
-    top: 24px;
+    top: calc(~"100% - 1px");
     background: #fff;
     width: 400px;
     z-index: 199999;
@@ -40,9 +40,17 @@
 .num{
     width:125px;
 }
+.num-hf{
+    width: 105px;
+}
 .gap{
     width:20px;
     text-align: center;
+}
+.gap-hf{
+    width:60px;
+    text-align: right;
+    vertical-align: middle;
 }
 .pages{
     overflow: auto;
@@ -80,9 +88,9 @@
     color: #aaa;
     background: transparent;
 }
-.r180{
-    transform: rotate(180deg);
-}
+// .r180{
+//     transform: rotate(180deg);
+// }
 .r90{
     transform: rotate(90deg);
 }

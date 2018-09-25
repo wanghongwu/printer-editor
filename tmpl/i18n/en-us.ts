@@ -7,7 +7,7 @@ export default {
     '@{property.divide.height}': 'Divide Table Height',
     '@{property.type}': 'Type',
     '@{property.load.img.error}': 'Get image size error. Try again~~',
-    '@{property.press.drag.sort}': 'Press drag sort',
+    '@{property.press.drag.sort}': 'Press drag sort element z index',
     '@{property.delete.element}': 'Delete element',
     '@{xml.code}': 'XML Code',
     '@{btn.save}': 'Save',

@@ -7,7 +7,7 @@ export default {
     '@{property.divide.width}': '单元格均分宽度',
     '@{property.divide.height}': '单元格均分高度',
     '@{property.load.img.error}': '获取图片尺寸失败，请重试～～',
-    '@{property.press.drag.sort}': '按下拖动排序',
+    '@{property.press.drag.sort}': '按下拖动排序z轴',
     '@{property.delete.element}': '删除元素',
     '@{xml.code}': '代码',
     '@{btn.save}': '保存',
