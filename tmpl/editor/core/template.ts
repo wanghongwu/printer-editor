@@ -992,6 +992,69 @@ const Templates = [{
             </layout>
         </layout>
     </page>`
+},{
+    id:8,
+    name:'合并单元格',
+    code:`<?xml version="1.0" encoding="UTF-8"?>
+    <page xmlns="http://cloudprint.cainiao.com/print"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd"
+        xmlns:editor="http://cloudprint.cainiao.com/schema/editor"
+        width="210" height="110">
+        <layout orientation="vertical">
+            <layout editor:_for_="1537855109857"
+                width="158.75"
+                left="10.47"
+                top="25.29"
+                style="zIndex:1">
+                <table editor:tip="表格">
+                    <tr>
+                        <td width="52.92" height="15.87" rowspan="2"></td>
+                        <td width="52.92" height="7.94"></td>
+                        <td width="52.92" height="7.94"></td>
+                    </tr>
+                    <tr>
+                        <td width="52.92" height="15.87" rowspan="2">
+                            <layout editor:_for_="1537855109855"
+                                width="6"
+                                height="34"
+                                left="16.78"
+                                top="4.08"
+                                style="zIndex:1">
+                                <text style="fontFamily:SimHei;orientation:vertical;"
+                                    editor:tip="纵向文本">
+                                    <![CDATA[]]>
+                                </text>
+                            </layout>
+                        </td>
+                        <td width="52.92" height="7.94"></td>
+                    </tr>
+                    <tr>
+                        <td width="52.92" height="7.94"></td>
+                        <td width="52.92" height="23.81" rowspan="2">
+                            <layout editor:_for_="1537855109857"
+                                width="30"
+                                height="30"
+                                left="4.61"
+                                top="2.49"
+                                style="zIndex:1">
+                                <barcode type="qrcode"
+                                    ratioMode="keepRatio"
+                                    style="opacity:1;"
+                                    editor:tip="二维码">
+                                    <![CDATA[]]>
+                                </barcode>
+                            </layout>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="52.92" height="15.87"></td>
+                        <td width="52.92" height="15.87"></td>
+                    </tr>
+                </table>
+            </layout>
+        </layout>
+    </page>`
 }];
 Magix.applyStyle('@template.less');
 export default Magix.View.extend({
