@@ -59,7 +59,7 @@ export default Designer.extend({
             key: 'width',
             max: 2800,
             type: PropsDesc.NUMBER,
-            min: 1,
+            min: '0',
             fixed: 2,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
@@ -67,7 +67,7 @@ export default Designer.extend({
             tip: '@{element.height}',
             key: 'height',
             type: PropsDesc.NUMBER,
-            min: 1,
+            min: '0',
             fixed: 2,
             max: 2800,
             read: Convert["@{pixel.to.millimeter}"],

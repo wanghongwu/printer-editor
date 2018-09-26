@@ -193,11 +193,23 @@ let Types = {
 };
 //解析xml时有效的key白名单，其它key则忽略
 let PRule = (alias?: string) => {
-    return {
-        alias,
+    let rule = {
         type: Types.NUMBER,
         convert: ToPixel
-    }
+    } as {
+            type: number
+            convert: () => number
+            alias: string
+            min: number
+            max: number
+        };
+    if (alias) {
+        rule.alias = alias;
+    } else {
+        rule.min = 0;
+        rule.max = 2800;
+    };
+    return rule;
 };
 let ValidKeys = {
     page: {
@@ -269,7 +281,7 @@ let ValidKeys = {
         height: PRule(),
         borderWidth: {
             type: Types.NUMBER,
-            min: 1
+            min: 0
         },
         borderStyle: {
             alias: 'borderType',

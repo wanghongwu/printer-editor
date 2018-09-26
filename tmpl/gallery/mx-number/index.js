@@ -22,6 +22,7 @@ module.exports = Magix.View.extend({
         if (v !== '') {
             v = +v;
         }
+        let diff = me['@{value}'] !== v;
         me['@{value}'] = v;
         me['@{step}'] = +ops.step || 1;
         me['@{support.empty}'] = (ops.empty + '') == 'true';
@@ -30,7 +31,7 @@ module.exports = Magix.View.extend({
         me['@{min}'] = Magix.has(ops, 'min') ? +ops.min : -Number.MAX_VALUE;
         me['@{ratio}'] = +ops.ratio || 10;
         me['@{tail.length}'] = ops.fixed || 0;
-        return !me['@{input.actived}'];
+        return diff;
     },
     render() {
         let me = this;
@@ -47,9 +48,7 @@ module.exports = Magix.View.extend({
             v = v.toFixed(me['@{tail.length}']);
         }
         me['@{ctrl.input}'] = me['@{owner.node}'].find('input');//.val(v);
-        if (!me['@{input.actived}']) {
-            me['@{ctrl.input}'].val(v);
-        }
+        me['@{ctrl.input}'].val(v);
     },
     val(v, ignoreFill) {
         let me = this;
@@ -137,12 +136,10 @@ module.exports = Magix.View.extend({
         target.value = v;
     },
     '@{active}<focusin>'() {
-        this['@{input.actived}'] = true;
         this['@{simulator.active}']();
     },
     '@{deactive}<focusout>'() {
         let me = this;
-        delete me['@{input.actived}'];
         if (!me['@{ui.keep.active}']) {
             me['@{owner.node}'].removeClass('@scoped.style:input-focus');
             if (me['@{last.value}'] != me['@{value}']) {

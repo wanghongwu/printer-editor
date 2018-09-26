@@ -55,7 +55,7 @@ export default View.extend<Editor.Dragdrop>({
         }), 0);
     },
     assign(data) {
-        console.log(this.id,'table assign');
+        console.log(this.id, 'table assign');
         this['@{data}'] = data;
         let unchanged = {} as { rows?: number };
         if (data.onlyMove) {
@@ -70,7 +70,7 @@ export default View.extend<Editor.Dragdrop>({
         return data.forceUpdate;
     },
     render() {
-        console.log(this.id,'table render');
+        console.log(this.id, 'table render');
         this.updater.digest();
     },
     '@{table.mouse.down}<mousedown>'(e) {
@@ -167,6 +167,9 @@ export default View.extend<Editor.Dragdrop>({
             type,
             ri: rowIndex,
             ci: colIndex } = e.params;
+        State.fire('@{cursor&update}', {
+            cursor: type == 'col' ? 'ew-resize' : 'ns-resize'
+        });
         if (!cell) {
             cell = Table["@{get.cell.by.pure.location}"](rows, rowIndex, colIndex);
         }
@@ -237,6 +240,7 @@ export default View.extend<Editor.Dragdrop>({
                 State.fire('@{history&save.snapshot}');
             }
             State.fire('@{stage&lock.scroll}');
+            State.fire('@{cursor&update}');
         });
     },
     '@{table.prevent}<contextmenu>'(e: MouseEvent & {

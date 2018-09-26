@@ -23,13 +23,22 @@ cursor:pointer;{{if (ctor.type=='htext'||ctor.type=='vtext')&&props.editable}}po
     {{if ctor.modifier.resize&&count==1}}
     {{let r=((props.rotate||0)+360)%360}}
     {{if ctor.modifier.resizeX&&!props.locked&&!props.widthLocked}}
-    <div style="left:{{=width+2*space-size-1}}px;top:{{=(height+2*space)/2-space-size}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ew{{else if r<=67.5||(r>202.5&&r<=247.5)}}nwse{{else if r<=112.5||(r>247.5&&r<=292.5)}}ns{{else if r<=157.5||(r>292.5&&r<=337.5)}}nesw{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'rm'})"></div>
+    {{set hHandle=Math.max(0,Math.min(8*size,props.height-2*size-2*space))|0}}
+    {{if hHandle<2*size&&!ctor.modifier.resizeY}}
+        {{hHandle=2*size}}
+    {{/if}}
+    <div style="right:-{{=Math.round(size/2)}}px;top:{{=((height+2*space-hHandle)/2)|0}}px;width:{{=size}}px;height:{{=hHandle}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ew{{else if r<=67.5||(r>202.5&&r<=247.5)}}nwse{{else if r<=112.5||(r>247.5&&r<=292.5)}}ns{{else if r<=157.5||(r>292.5&&r<=337.5)}}nesw{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'rm'})"></div>
     {{/if}}
     {{if ctor.modifier.resizeY&&!props.locked&&!props.heightLocked}}
-    <div style="left:{{=(width+2*space)/2-space-size}}px;top:{{=height+2*space-size-1}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ns{{else if r<=67.5||(r>202.5&&r<=247.5)}}nesw{{else if r<=112.5||(r>247.5&&r<=292.5)}}ew{{else if r<=157.5||(r>292.5&&r<=337.5)}}nwse{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'mb'})"></div>
+    {{set wHandle=Math.max(0,Math.min(8*size,props.width-2*size-2*space))|0}}
+    {{if wHandle<2*size&&!ctor.modifier.resizeX}}
+        {{wHandle=2*size}}
+    {{/if}}
+    <div style="left:{{=((width+2*space-wHandle)/2)|0}}px;bottom:-{{=Math.round(size/2)}}px;width:{{=wHandle}}px;height:{{=size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}ns{{else if r<=67.5||(r>202.5&&r<=247.5)}}nesw{{else if r<=112.5||(r>247.5&&r<=292.5)}}ew{{else if r<=157.5||(r>292.5&&r<=337.5)}}nwse{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'mb'})"></div>
     {{/if}}
     {{if ctor.modifier.resizeXY&&!props.locked&&!(props.widthLocked||props.heightLocked)}}
-    <div style="left:{{=width+2*space-size-1}}px;top:{{=height+2*space-size-1}}px;width:{{=2*size}}px;height:{{=2*size}}px;background:#5390ef;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}nwse{{else if r<=67.5||(r>202.5&&r<=247.5)}}ns{{else if r<=112.5||(r>247.5&&r<=292.5)}}nesw{{else if r<=157.5||(r>292.5&&r<=337.5)}}ew{{/if}}-resize;pointer-events:all;" class="pa" mx-mousedown="@{start.resize}({key:'rb'})"></div>
+    {{set csize=Math.max(2*size,Math.min(4*size,props.width-10*size,props.height-10*size))|0}}
+    <div style="right:-2px;bottom:-2px;width:{{=csize}}px;height:{{=csize}}px;cursor:{{if r<=22.5||r>337.5||(r>157.5&&r<=202.5)}}nwse{{else if r<=67.5||(r>202.5&&r<=247.5)}}ns{{else if r<=112.5||(r>247.5&&r<=292.5)}}nesw{{else if r<=157.5||(r>292.5&&r<=337.5)}}ew{{/if}}-resize;pointer-events:all;border-right:solid {{=size}}px #5390ef;border-bottom:solid {{=size}}px #5390ef" class="pa" mx-mousedown="@{start.resize}({key:'rb'})"></div>
     {{/if}}
     {{/if}}
 </div>

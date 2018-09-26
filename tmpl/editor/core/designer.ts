@@ -128,9 +128,18 @@ export default Magix.View.extend<Editor.Dragdrop>({
         State.fire('@{stage&lock.scroll}', {
             locked: 1
         });
+        let target = $(e.eventTarget);
+        let cursor = target.css('cursor');
+        if (cursor) {
+            State.fire('@{cursor&update}', {
+                cursor
+            });
+        }
         let rotate = props.rotate || 0;
         let { key } = e.params;
         rotate = (rotate + 360) % 360;
+        if (props.width == 0) props.width = 0.01;
+        if (props.height == 0) props.height = 0.01;
         let beginWidth = props.width;
         let beginHeight = props.height;
         let beginX = props.x;
@@ -206,7 +215,7 @@ export default Magix.View.extend<Editor.Dragdrop>({
             } else {
                 realScale = (oY + offsetHeight) / offsetHeight;
             }
-            if (realScale < 0) return;
+            if (realScale < 0) realScale = 0;
             let m = BaseIndex[baseIndex];
             if (m === 1) {
                 scale.x = scale.y = realScale;
@@ -218,10 +227,18 @@ export default Magix.View.extend<Editor.Dragdrop>({
             let newRect = Transform["@{get.new.rect}"](oPoint, scale, transformedRect, baseIndex);
             let width = Convert["@{to.float}"](newRect.width),
                 height = Convert["@{to.float}"](newRect.height);
-            if (width >= minWidth &&
-                width <= maxWidth &&
-                height >= minHeight &&
-                height <= maxHeight) {
+            if (width < minWidth) {
+                width = minWidth;
+            } else if (width > maxWidth) {
+                width = maxWidth;
+            }
+            if (height < minHeight) {
+                height = minHeight;
+            } else if (height > maxHeight) {
+                height = maxHeight;
+            }
+            if (width != props.width ||
+                height != props.height) {
                 props.x = Convert["@{to.float}"](newRect.left);
                 props.y = Convert["@{to.float}"](newRect.top);
                 props.width = width;
@@ -236,6 +253,7 @@ export default Magix.View.extend<Editor.Dragdrop>({
                 State.fire('@{history&save.snapshot}');
             }
             State.fire('@{stage&lock.scroll}');
+            State.fire('@{cursor&update}');
         });
     },
     '@{start.rotate}<mousedown>'(e) {
@@ -243,6 +261,13 @@ export default Magix.View.extend<Editor.Dragdrop>({
         let me = this;
         let props = me.updater.get('props');
         if (props.locked) return;
+        let target = $(e.eventTarget);
+        let cursor = target.css('cursor');
+        if (cursor) {
+            State.fire('@{cursor&update}', {
+                cursor
+            });
+        }
 
         let pos = Convert["@{real.to.nearest.coord}"](me['@{owner.node}'], {
             x: e.pageX,
@@ -275,6 +300,7 @@ export default Magix.View.extend<Editor.Dragdrop>({
                 State.fire('@{history&save.snapshot}');
             }
             State.fire('@{stage&lock.scroll}');
+            State.fire('@{cursor&update}');
         });
     },
     '@{text.editable}<dblclick>'(e) {

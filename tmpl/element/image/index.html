@@ -1,3 +1,4 @@
-<div style="{{if src}}width:{{=width}}px;height:{{=height}}px;{{else}}width:100px;height:100px;{{/if}}left:{{=x}}px;top:{{=y}}px;transform:rotate({{=rotate}}deg);opacity:{{=alpha}};z-index:{{=zIndex}}" class="pa">
-    <img style="width:100%;height:100%;" src="{{if src}}{{=src}}{{/if}}" {{if !src}} alt="请设置图片"{{/if}}/>
+{{set tipBorder=width<=1||height<=1||alpha==0}}
+<div style="{{if src}}width:{{=width}}px;height:{{=height}}px;{{else}}width:100px;height:100px;{{/if}}left:{{=x}}px;top:{{=y}}px;transform:rotate({{=rotate}}deg);z-index:{{=zIndex}};{{if tipBorder}}border:dotted 1px #ff000030{{/if}}" class="pa">
+    <img style="width:100%;height:100%;opacity:{{=alpha}};" src="{{if src}}{{=src}}{{/if}}" {{if !src}} alt="请设置图片"{{/if}}/>
 </div>

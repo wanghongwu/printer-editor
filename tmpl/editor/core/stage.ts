@@ -165,8 +165,8 @@ export default View.extend<Editor.Dragdrop>({
             let bar = $('#stayBar');
             let scroll = $('#app_stage');
             if (e.locked) {
-                let width = scroll.prop('scrollWidth') + 100;
-                let height = scroll.prop('scrollHeight') + 100;
+                let width = scroll.prop('scrollWidth');
+                let height = scroll.prop('scrollHeight');
                 let page = State.get('page');
                 bar.css({
                     height,

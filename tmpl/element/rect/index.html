@@ -1,1 +1,2 @@
-<div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;{{if borderWidth}}{{set width=borderWidth*scale}}border:{{=borderType}} {{=width<1?1:width}}px #000;{{/if}}{{if fill}}background-color:#000;{{/if}}z-index:{{=zIndex}}" class="pa"></div>
+{{set tipBorder=!(borderWidth||fill)}}
+<div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;{{if borderWidth}}{{set width=borderWidth*scale}}border:{{=borderType}} {{=width<1?1:width}}px #000;{{/if}}{{if fill}}background-color:#000;{{/if}}z-index:{{=zIndex}};{{if tipBorder}}border:dotted 1px #ff000030{{/if}}" class="pa"></div>

@@ -2,14 +2,24 @@
 {{let hbar=12}}
 {{let mmToPixel=scale*3.7795275593333;}}
 {{let space=15}}
-{{if scale<1}}
+{{if scale<=0.5}}
+    {{space=30}}
+{{else if scale<1}}
     {{space=25}}
+{{else if scale>=4.5}}
+    {{space=3}}
 {{else if scale>=4}}
     {{space=4}}
+{{else if scale>=3.5}}
+    {{space=5}}
 {{else if scale>=3}}
     {{space=6}}
+{{else if scale>=2.5}}
+    {{space=8}}
 {{else if scale>=2}}
     {{space=10}}
+{{else if scale>=1.5}}
+    {{space=12}}
 {{/if}}
 {{let r=space/5}}
 {{let step=r*mmToPixel}}

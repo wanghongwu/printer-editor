@@ -1055,6 +1055,117 @@ const Templates = [{
             </layout>
         </layout>
     </page>`
+},{
+    id:9,
+    name:'不可见元素',
+    code:`<?xml version="1.0" encoding="UTF-8"?>
+    <page xmlns="http://cloudprint.cainiao.com/print"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd"
+        xmlns:editor="http://cloudprint.cainiao.com/schema/editor"
+        width="105" height="148">
+        <line style="lineType:solid;lineColor:#000;lineWidth:1;zIndex:1"
+            startX="7.52"
+            startY="6.61"
+            endX="27.52"
+            endY="6.61"
+            editor:tip="垂直直线">
+        </line>
+        <line style="lineType:solid;lineColor:#000;lineWidth:1;zIndex:2"
+            startX="36.89"
+            startY="8.2"
+            endX="36.89"
+            endY="28.2"
+            editor:_deg_="90"
+            editor:tip="水平直线">
+        </line>
+        <layout editor:_for_="1537931926568"
+            width="26"
+            height="0"
+            left="65.73"
+            top="14.29"
+            style="zIndex:3">
+            <rect style="borderWidth:0;"
+                editor:tip="矩形"></rect>
+        </layout>
+        <layout editor:_for_="1537931926568"
+            width="0"
+            height="26"
+            left="3.29"
+            top="33.34"
+            style="zIndex:4">
+            <rect style="borderWidth:0;"
+                editor:tip="矩形"></rect>
+        </layout>
+        <layout editor:_for_="1537931926568"
+            width="0"
+            height="0"
+            left="15.99"
+            top="34.4"
+            style="zIndex:5">
+            <rect style="borderWidth:0;"
+                editor:tip="矩形"></rect>
+        </layout>
+        <layout editor:_for_="1537931926598"
+            width="26"
+            height="26"
+            left="28.69"
+            top="33.6"
+            style="zIndex:6">
+            <rect style="borderWidth:0;"
+                editor:tip="矩形"></rect>
+        </layout>
+        <layout editor:_for_="1537931926599"
+            width="22.75"
+            height="22.75"
+            left="65.73"
+            top="22.49"
+            style="zIndex:7">
+            <image src="//img.alicdn.com/tfs/TB1E1OSryAnBKNjSZFvXXaTKXXa-200-200.png"
+                style="alpha:0;" 
+                allowFailure="false"
+                editor:tip="图片"/>
+        </layout>
+        <layout editor:_for_="1537931926603"
+            width="40"
+            height="0"
+            left="13.08"
+            top="76.99"
+            style="zIndex:8">
+            <barcode type="code128"
+                ratioMode="keepRatio"
+                style="opacity:1;hideText:true;rotation:0;"
+                editor:tip="横向条码">
+                <![CDATA[]]>
+            </barcode>
+        </layout>
+        <layout editor:_for_="1537931926603"
+            width="40"
+            height="0.19"
+            left="72.61"
+            top="87.31"
+            style="zIndex:9">
+            <barcode type="code128"
+                ratioMode="keepRatio"
+                style="opacity:1;hideText:true;rotation:90;"
+                editor:tip="纵向条码">
+                <![CDATA[]]>
+            </barcode>
+        </layout>
+        <layout editor:_for_="1537931926603"
+            width="30"
+            height="30"
+            left="26.57"
+            top="98.95"
+            style="zIndex:10">
+            <barcode type="qrcode"
+                ratioMode="keepRatio"
+                style="opacity:0;"
+                editor:tip="二维码">
+                <![CDATA[]]>
+            </barcode>
+        </layout>
+    </page>`
 }];
 Magix.applyStyle('@template.less');
 export default Magix.View.extend({

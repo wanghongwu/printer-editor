@@ -6,6 +6,7 @@ import DesignerHistory from './core/history';
 import Store from './core/store';
 import Elements from '../element/index';
 import I18n from '../i18n/index';
+import Cursor from './core/cursor';
 const Assign = Magix.mix;
 Magix.applyStyle('@index.less');
 Magix.View.merge(Dialog, {
@@ -99,6 +100,13 @@ export default Magix.View.extend({
         DesignerHistory["@{save.default}"]();
         State.on('@{stage&apply.stage}', (e: Editor.ApplyStageEvent) => {
             ApplyStage(e.json);
+        });
+        State.on('@{cursor&update}', (e: Editor.CursorChangeEvent) => {
+            if (e.cursor) {
+                Cursor["@{show}"](e.cursor);
+            } else {
+                Cursor["@{hide}"]();
+            }
         });
     },
     render() {

@@ -24,17 +24,19 @@
 
                         {{if rowIndex==ri&&colIndex==ci}}
                         <div class="focus">
+                            {{set wHandle=Math.max(0,Math.min(8*size,cell.width-2*size))}}
+                            {{set hHandle=Math.max(0,Math.min(8*size,cell.height-2*size))}}
                             {{if cell.top}}
-                                <div style="width:{{=2*size}}px;height:{{=2*size}}px;top:{{=-size}}px;left:{{=cell.width/2-size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',ri:{{=cell.top.row}},ci:{{=cell.top.col}}})"></div>
+                                <div style="width:{{=wHandle}}px;height:{{=size}}px;top:{{=-size+1}}px;left:{{=((cell.width-wHandle)/2)|0}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',ri:{{=cell.top.row}},ci:{{=cell.top.col}}})"></div>
                             {{/if}}
                             {{if cell.left}}
-                                <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=cell.left.row}},ci:{{=cell.left.col}}})"></div>
+                                <div style="width:{{=size}}px;height:{{=hHandle}}px;left:-{{=size-1}}px;top:{{=((cell.height-hHandle)/2)|0}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',ri:{{=cell.left.row}},ci:{{=cell.left.col}}})"></div>
                             {{/if}}
                             {{if cell.hasBottom}}
-                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;left:{{=cell.width/2-size}}px;bottom:-{{=size}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',cell:{{@cell}}})"></div>
+                            <div style="width:{{=wHandle}}px;height:{{=size}}px;left:{{=((cell.width-wHandle)/2)|0}}px;bottom:-{{=size-1}}px;" class="handle handle-bottom" mx-mousedown="@{start.resize}({type:'row',cell:{{@cell}}})"></div>
                             {{/if}}
                             {{if cell.hasRight}}
-                            <div style="width:{{=2*size}}px;height:{{=2*size}}px;right:-{{=size}}px;top:{{=cell.height/2-size}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',cell:{{@cell}}})"></div>
+                            <div style="width:{{=size}}px;height:{{=hHandle}}px;right:-{{=size-1}}px;top:{{=((cell.height-hHandle)/2)|0}}px" class="handle handle-right" mx-mousedown="@{start.resize}({type:'col',cell:{{@cell}}})"></div>
                             {{/if}}
                         </div>
                         {{/if}}

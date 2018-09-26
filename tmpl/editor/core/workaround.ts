@@ -737,6 +737,12 @@ export let StageElements = {
         if (event.shiftKey || event.ctrlKey || event.metaKey) {//多选
             StageElements["@{multi.select}"](event, element);
         } else {
+            State.fire('@{stage&lock.scroll}', {
+                locked: 1
+            });
+            State.fire('@{cursor&update}', {
+                cursor: 'move'
+            });
             let startInfos = [],
                 exist = false;
             for (let e of elements) {
@@ -787,6 +793,8 @@ export let StageElements = {
                 } else if (elementMoved) {
                     State.fire('@{history&save.snapshot}');
                 }
+                State.fire('@{stage&lock.scroll}');
+                State.fire('@{cursor&update}');
             });
         }
     },
