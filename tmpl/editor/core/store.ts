@@ -1,7 +1,9 @@
-import { State } from 'magix';
+import Magix, { State } from 'magix';
 export default {
     '@{save}'() {
         let stage = JSON.stringify({
+            tempId: Magix.config('tempId'),
+            bizId: Magix.config('bizId'),
             page: State.get('page'),
             scale: State.get('@{stage&scale}'),
             elements: State.get('@{stage&elements}'),
@@ -9,22 +11,30 @@ export default {
             xLines: State.get('@{stage&x.help.lines}'),
             yLines: State.get('@{stage&y.help.lines}')
         });
-        localStorage.setItem('l.state', stage);
+        try {
+            localStorage.setItem('l.state', stage);
+        } catch{
+
+        }
     },
     '@{read}'(): Editor.SnapshotStatus {
         let stage = {} as Editor.SnapshotStatus;
-        let str = localStorage.getItem('l.state');
-        if (str) {
-            try {
+        try {
+            let str = localStorage.getItem('l.state');
+            if (str) {
                 stage = JSON.parse(str);
                 stage.success = true;
-            } catch  {
-
             }
+        } catch  {
+
         }
         return stage;
     },
     '@{clear}'() {
-        localStorage.removeItem('l.state');
+        try {
+            localStorage.removeItem('l.state');
+        } catch{
+
+        }
     }
 }

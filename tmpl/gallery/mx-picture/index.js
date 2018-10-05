@@ -10,6 +10,7 @@ module.exports = Magix.View.extend({
     },
     assign(data) {
         this.updater.set({
+            lang: data.lang,
             pic: data.pic,
             disabled: (data.disabled + '') == 'true'
         });
@@ -22,7 +23,7 @@ module.exports = Magix.View.extend({
     '@{show.dlg}<click>'() {
         let me = this;
         me.mxDialog('@./list', {
-            width: 600,
+            width: 945,
             done(pic) {
                 me.updater.digest({
                     pic: pic.src

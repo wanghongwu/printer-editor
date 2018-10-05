@@ -6,10 +6,11 @@ import Convert from '../../util/converter';
 import Keys from '../const/keys';
 import { StageSelectElements, StageElements, Clipboard } from './workaround';
 import DesignerHistory from './history';
-import Store from './store';
-import Uploader from './uploader';
+//import Store from './store';
+import Service from '../../service/index';
 import ImageDesigner from '../../element/image/designer';
 import Table from '../../util/table';
+import CNC from '../../cainiao/const';
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -50,8 +51,8 @@ import Table from '../../util/table';
 //     return selected;
 // };
 Magix.applyStyle('@stage.less');
-export default View.extend<Editor.Dragdrop>({
-    mixins: [Dragdrop],
+export default View.extend<Editor.Dragdrop & Editor.Service>({
+    mixins: [Dragdrop, Service],
     tmpl: '@stage.html',
     init() {
         let me = this;
@@ -88,12 +89,12 @@ export default View.extend<Editor.Dragdrop>({
                 });
                 me.render();
             }
-            Store["@{save}"]();
+            //Store["@{save}"]();
         });
         State.on('@{stage&ui.change}', (e: Editor.StageScaleEvent) => {
             if (e.scale) {
                 updateElements(e);
-            } else {
+            } else if (!e.keepSelect) {
                 StageSelectElements['@{set}']();
             }
             me.render();
@@ -129,13 +130,13 @@ export default View.extend<Editor.Dragdrop>({
         State.on('@{toolbox&drag.element.drop}', (e: Editor.ToolboxStageDropEvent) => {
             if (Magix.inside(e.dropNode, 'stage_stage')) {
                 let td = StageElements["@{get.best.cell}"](e.dropNode);
-                let elements = StageElements["@{add.element}"](e, false, td);
+                let elements = StageElements["@{add.element}"](e, false, td, e.ignoreSnapshot);
                 if (elements) {
                     me.updater.digest({
                         elements
                     });
                     if (!e.ignoreSnapshot) {
-                        State.fire('@{history&save.snapshot}');
+                        //State.fire('@{history&save.snapshot}');
                     }
                 }
             }
@@ -879,21 +880,22 @@ export default View.extend<Editor.Dragdrop>({
         let files = oe.dataTransfer.files;
         let ids = [], pFiles = [],
             x = e.pageX,
-            y = e.pageY;
-        for (let i = 0; i < files.length; i++) {
-            let f = files[i];
-            if (f.type.indexOf('image/') === 0) {
+            y = e.pageY,
+            groupId = Magix.guid('g_');
+        StageElements["@{get.drop.files}"](files, fis => {
+            for (let fi of fis) {
                 let id = Magix.guid('file_');
                 ids.push(id);
-                pFiles.push(f);
+                pFiles.push(fi.file);
                 State.set({
                     '@{toolbox&drag.element}': ImageDesigner,
                     '@{toolbox&drag.element.props}': {
                         locked: true,
                         barred: id,
-                        src: '//img.alicdn.com/tfs/TB1dIR5XpzqK1RjSZFzXXXjrpXa-400-240.gif',
-                        width: 400,
-                        height: 240
+                        groupId,
+                        src: CNC.DROP_STAGE_LOADING,
+                        width: fi.width,
+                        height: fi.height
                     }
                 });
                 State.fire('@{toolbox&drag.element.drop}', {
@@ -905,50 +907,57 @@ export default View.extend<Editor.Dragdrop>({
                 x += 40;
                 y += 40;
             }
-        }
-        if (pFiles.length) {
-            State.set({
-                '@{toolbox&drag.element}': null,
-                '@{toolbox&drag.element.props}': null
-            });
-            StageSelectElements["@{set}"]();
-        }
-        Uploader["@{upload.images}"](this, pFiles, (exts) => {
-            let elements = State.get('@{stage&elements}');
-            let removeElements = [];
-            let map = {}, added = 0;
-            for (let i = 0; i < ids.length; i++) {
-                if (exts[i]) {
-                    map[ids[i]] = exts[i];
-                }
+
+            if (pFiles.length) {
+                State.set({
+                    '@{toolbox&drag.element}': null,
+                    '@{toolbox&drag.element.props}': null
+                });
+                State.fire('@{stage&ui.change}');
             }
-            StageElements["@{walk.elements}"](elements, (e, type) => {
-                if (type == 'element') {
-                    let uId = e.props.barred;
-                    if (uId) {
-                        if (map[uId]) {
-                            added = 1;
-                            Magix.mix(e.props, map[uId]);
-                            e.props.locked = false;
-                            e.props.barred = '';
-                        } else {
-                            removeElements.push(e);
-                        }
+            this.upload(pFiles, groupId, (groupId, exts) => {
+                console.log('back', groupId, exts);
+                let elements = State.get('@{stage&elements}');
+                let removeElements = [];
+                let map = {}, added = 0;
+                for (let i = 0; i < ids.length; i++) {
+                    if (exts[i]) {
+                        map[ids[i]] = exts[i];
                     }
                 }
-            });
-            if (removeElements.length) {
-                for (let r of removeElements) {
-                    StageElements["@{delete.element.by.id}"](r.id, true);
-                    StageSelectElements["@{remove}"](r);
-                }
-                this.updater.digest({
-                    elements
+                StageElements["@{walk.elements}"](elements, (e, type) => {
+                    if (type == 'element') {
+                        let uId = e.props.barred;
+                        if (e.props.groupId == groupId) {
+                            if (uId) {
+                                let fInfo = map[uId];
+                                if (fInfo && !fInfo.error) {
+                                    added = 1;
+                                    Magix.mix(e.props, fInfo);
+                                    e.props.locked = false;
+                                    delete e.props.barred;
+                                    delete e.props.groupId;
+                                } else {
+                                    removeElements.push(e);
+                                }
+                            }
+                        }
+                    }
                 });
-            }
-            if (added) {
-                State.fire('@{history&save.snapshot}');
-            }
+                if (removeElements.length) {
+                    for (let r of removeElements) {
+                        StageElements["@{delete.element.by.id}"](r.id, true);
+                    }
+                }
+                if (added) {
+                    State.fire('@{history&save.snapshot}');
+                }
+                if (added || removeElements.length) {
+                    this.updater.digest({
+                        elements
+                    });
+                }
+            });
         });
     },
     '@{stage.deactive}<focusout>'() {

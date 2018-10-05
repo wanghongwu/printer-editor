@@ -106,7 +106,7 @@ export default Magix.View.extend({
     '@{test.templates}<click>'() {
         let me = this;
         me.mxDialog('@./template', {
-            width: 600,
+            width: 900,
             enter(json) {
                 ApplyByJSON(json);
                 if (json.pageChange) {

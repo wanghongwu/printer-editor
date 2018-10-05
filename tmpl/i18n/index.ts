@@ -7,11 +7,19 @@ const I18n = {
 };
 const DefaultLang = 'zh-cn';
 const Has = Magix.has;
-export default (key) => {
+const Reg = /\{(\d+)\}/g;
+export default (key, ...args) => {
     let lang = (Magix.config('lang') || navigator.language).toLowerCase();
     if (!Has(I18n, lang)) {
         lang = DefaultLang;
     }
     let l = I18n[lang];
-    return Has(l, key) ? l[key] : key;
+    let res = Has(l, key) ? l[key] : key;
+    if (args.length) {
+        res = res.replace(Reg, (m, i) => {
+            i |= 0;
+            return args.length > i ? args[i] : m;
+        });
+    }
+    return res;
 };

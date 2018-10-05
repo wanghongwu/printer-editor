@@ -44,10 +44,10 @@
         {{set header=page.header===''?'':toMM(page.header)}}
         {{set footer=page.footer===''?'':toMM(page.footer)}}
         <div class="form-item clearfix">
-            <label class="form-label">页头：</label>
+            <label class="form-label">{{=i18n('@{page.header}')}}：</label>
             <div class="form-content">
                 <mx-number class="input num-hf" value="{{=header}}" mx-input="@{set.value}({key:'header'})" min="0" fixed="2" max="{{=CNC.PAGE_WIDTH_MAX}}"/>
-                <span class="ib gap-hf">页脚：</span>
+                <span class="ib gap-hf">{{=i18n('@{page.footer}')}}：</span>
                 <mx-number class="input num-hf" value="{{=footer}}" mx-input="@{set.value}({key:'footer'})" min="0" fixed="2" max="{{=CNC.PAGE_HEIGHT_MAX}}"/>
             </div>
         </div>

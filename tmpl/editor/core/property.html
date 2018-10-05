@@ -26,7 +26,7 @@
             {{else if prop.type==desc.DROPDOWN}}
                 <mx-dropdown mx-change="@{prop.change}({key:'{{=prop.key}}',read:'value',refresh:{{@prop.refresh}}})" list="{{@prop.items}}" @text-key="{{=prop.textKey}}" @value-key="{{=prop.valueKey}}" selected="{{=data[prop.key]}}" @disabled="{{=data.locked}}"/>
             {{else if prop.type==desc.IMAGE}}
-                <mx-picture class="ib" mx-change="@{image.change}({key:'{{=prop.key}}',updateSize:{{=prop.updateSize}}})" pic="{{=data[prop.key]}}" @disabled="{{=data.locked}}" />
+                <mx-picture class="ib" mx-change="@{image.change}({key:'{{=prop.key}}',updateSize:{{=prop.updateSize}}})" pic="{{=data[prop.key]}}" *lang="{{=lang}}" @disabled="{{=data.locked}}" />
             {{else if prop.type==desc.ORIGINSIZE}}
                 <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.origin.size}()">{{=i18n('@{property.image.size}')}}</button>
             {{else if prop.type==desc.BOOLEAN}}

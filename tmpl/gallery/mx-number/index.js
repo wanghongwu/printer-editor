@@ -23,6 +23,7 @@ module.exports = Magix.View.extend({
             v = +v;
         }
         let diff = me['@{value}'] !== v;
+        let preDis = me['@{disabled}'];
         me['@{value}'] = v;
         me['@{step}'] = +ops.step || 1;
         me['@{support.empty}'] = (ops.empty + '') == 'true';
@@ -31,7 +32,7 @@ module.exports = Magix.View.extend({
         me['@{min}'] = Magix.has(ops, 'min') ? +ops.min : -Number.MAX_VALUE;
         me['@{ratio}'] = +ops.ratio || 10;
         me['@{tail.length}'] = ops.fixed || 0;
-        return diff;
+        return diff || preDis != me['@{disabled}'];
     },
     render() {
         let me = this;

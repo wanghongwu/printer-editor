@@ -324,9 +324,11 @@ export default stage => {
         xml += `${GSpace(1)}<header height="${ToMM(page.header)}"></header>`;
     }
     for (let e of stage.elements) {
-        let fn = Encoder[e.type];
-        if (fn) {
-            xml += fn(e, 0);
+        if (!e.props.barred) {
+            let fn = Encoder[e.type];
+            if (fn) {
+                xml += fn(e, 0);
+            }
         }
     }
     if (page.footer > 0) {

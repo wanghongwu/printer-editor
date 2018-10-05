@@ -133,7 +133,7 @@ export let StageSelectElements = {
 
 
 export let StageElements = {
-    '@{add.element}'(e?: any, clicked?: boolean, td?: any) {
+    '@{add.element}'(e?: any, clicked?: boolean, td?: any, upload?: boolean) {
         let element = State.get('@{toolbox&drag.element}');
         if (element) {
             let elements = State.get('@{stage&elements}');
@@ -162,7 +162,7 @@ export let StageElements = {
                 Table["@{update.cells.metas}"](props);
             }
             collection.push(m);
-            if (focus) {
+            if (focus && !upload) {
                 StageSelectElements['@{set}'](m);
             }
             return elements;
@@ -720,6 +720,7 @@ export let StageElements = {
     },
     '@{select.or.move.elements}'(event, view) {
         let element = event.params;
+        if (element.props.barred) return;//上传
         let elements = StageSelectElements['@{all}']();
         if (event.button !== undefined && event.button != 0) {//如果不是左键
             let exist = false;
@@ -789,7 +790,7 @@ export let StageElements = {
                 State.fire('@{stage&select.elements.change}');
             }, () => {
                 if (!moved) {
-                    StageSelectElements['@{set}'](element);
+                    //StageSelectElements['@{set}'](element);
                 } else if (elementMoved) {
                     State.fire('@{history&save.snapshot}');
                 }
@@ -1029,6 +1030,46 @@ export let StageElements = {
             }
         }
         return selected;
+    },
+    '@{get.drop.files}'(files, callback) {
+        let images = [],
+            ready = 0,
+            total = 0,
+            index = 0,
+            check = () => {
+                if (ready == total) {
+                    callback(images);
+                }
+            },
+            read = (file, index) => {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    let img = new Image();
+                    img.onload = () => {
+                        images[index] = {
+                            file,
+                            width: img.width,
+                            height: img.height
+                        };
+                        ready++;
+                        check();
+                    };
+                    img.onerror = () => {
+                        ready++;
+                        check();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+        for (let i = 0; i < files.length; i++) {
+            let f = files[i];
+            if (f.type.indexOf('image/') === 0) {
+                total++;
+                read(f, index++);
+            }
+        }
+        check();
     }
 };
 let Clone = (from, to) => {

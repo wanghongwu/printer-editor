@@ -1,12 +1,18 @@
 <div class="dialog-header">
     <b class="mr10">{{=i18n('@{template.title}')}}</b>
 </div>
-<div class="dialog-body clearfix">
-    {{each templates as t}}
-    <div class="template{{if selected==t.id}} template-active{{/if}}" mx-click="@{enter}({t:{{@t}}})">
-        {{=t.name}}
-    </div>
-    {{/each}}
+<div class="dialog-body clearfix min-body">
+    {{if error}}
+        {{=error.msg}}
+    {{else if templates.length}}
+        {{each templates as t}}
+        <div class="template{{if selected==t.id}} template-active{{/if}}" mx-click="@{enter}({t:{{@t}}})">
+            {{=t.name}}
+        </div>
+        {{/each}}
+    {{else}}
+        {{=i18n('@{empty.templates}')}}
+    {{/if}}
 </div>
 <!-- <div class="dialog-footer">
     <button class="btn btn-brand" mx-click="@{enter}()">确定</button>

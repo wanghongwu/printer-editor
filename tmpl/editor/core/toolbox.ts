@@ -2,6 +2,7 @@ import Magix, { State } from 'magix';
 import Elements from '../../element/index';
 import $ from '$';
 import * as Dragdrop from '../../gallery/mx-dragdrop/index';
+import Service from '../../service/index';
 Magix.applyStyle('@toolbox.less');
 let DEId = Magix.guid('de_');
 let DragEffect = {
@@ -29,7 +30,7 @@ let DragEffect = {
     }
 };
 export default Magix.View.extend<Editor.Dragdrop>({
-    mixins: [Dragdrop],
+    mixins: [Dragdrop, Service],
     tmpl: '@toolbox.html',
     init() {
         State.on('@{lang.change}', (e: Editor.LangChangeEvent) => {
@@ -44,32 +45,19 @@ export default Magix.View.extend<Editor.Dragdrop>({
             keyword: '',
             preList: []
         });
-        /*setTimeout(() => {
-            this.updater.digest({
-                preList: [{
-                    type: 'image',
-                    name: '什么图片界面，我也不知道啊',
-                    props: {
-                        src: '//gogo.com/abc.jpg'
-                    }
-                }, {
-                    type: 'vcode',
-                    name: '什么图片界面，aaaaaaaaaaaaaaaaaaa'
-                }, {
-                    type: 'vline',
-                    name: '什么图片界面，bbbbbbbbb'
-                }, {
-                    type: 'vtext',
-                    name: '什么图片界面，cccc我也不知道啊'
-                }, {
-                    type: 'htext',
-                    name: '什么图片界面，ddd我也不知道啊',
-                    props: {
-                        text: '<%=abc%>'
-                    }
-                }]
-            });
-        }, 2000);*/
+        this.fetch({
+            name: '@{get.components}',
+            params: {
+                biz_id: Magix.config('bizId')
+            }
+        }, (err, bag) => {
+            let list = bag.get('data', []);
+            if (list.length) {
+                this.updater.digest({
+                    preList: list
+                });
+            }
+        });
     },
     '@{start.drag}<mousedown>'(e: MagixGallery.IViewDOMEvent) {
         let { element, props, pre, name } = e.params;

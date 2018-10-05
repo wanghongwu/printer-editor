@@ -1,10 +1,12 @@
 let Magix = require('magix');
 let $ = require('$');
 import I18n from '../../i18n/index';
+import Service from '../../service/index';
 'ref@./index.less';
 Magix.applyStyle('@index.less');
 module.exports = Magix.View.extend({
     tmpl: '@list.html',
+    mixins: [Service],
     init(data) {
         let me = this;
         me['@{done.callback}'] = data.done;
@@ -12,7 +14,18 @@ module.exports = Magix.View.extend({
     },
     render() {
         let me = this;
-        me.updater.digest();
+        me.fetch({
+            name: '@{get.images}',
+            params: {
+                biz_id: Magix.config('bizId')
+            }
+        }, (err, bag) => {
+            me.updater.digest({
+                keyword: '',
+                list: bag.get('data', []),
+                error: err
+            });
+        });
     },
     '@{cancel}<click>'() {
         this['@{dialog}'].close();
@@ -39,7 +52,6 @@ module.exports = Magix.View.extend({
     '@{use}<click>'(e) {
         let me = this;
         let img = new Image();
-        let root = Magix.config('picRoot');
         let done = me['@{done.callback}'];
         let src = e.params.src;
         img.onerror = () => {
@@ -55,15 +67,76 @@ module.exports = Magix.View.extend({
                 height: h
             });
         };
-        img.src = root + src;
+        img.src = src;
+    },
+    '@{search}<input>'(e) {
+        let me = this;
+        clearTimeout(me['@{search.timer}']);
+        let updater = me.updater;
+        updater.set({
+            keyword: e.eventTarget.value
+        });
+        me['@{search.timer}'] = setTimeout(me.wrapAsync(() => {
+            updater.digest();
+        }), 300);
+    },
+    '@{upload.files}'(files) {
+        let req = this.request();
+        req.all({
+            name: '@{file.upload}',
+            files
+        }, (err) => {
+            if (err) {
+                this.alert(err.msg);
+            } else {
+                this.render();
+            }
+        });
     },
     '@{paste.upload}<paste>'(e) {
-        console.log(e);
+        e.preventDefault();
+        let clipboardData = e.originalEvent.clipboardData;
+        let files = [];
+        if (clipboardData && clipboardData.items) {
+            for (let i of clipboardData.items) {
+                if (i.type.indexOf('image/') === 0) {
+                    files.push(i.getAsFile());
+                }
+            }
+        }
+        if (!files.length) {
+            this.alert(I18n('@{paste.unfound.images}'));
+            return;
+        }
+        this['@{upload.files}'](files);
     },
     '@{drop.upload}<drop>'(e) {
-        console.log(e);
+        this['@{check.drag.status}'](e.eventTarget);
+        let oe = e.originalEvent;
+        let files = oe.dataTransfer.files;
+        this['@{upload.files}'](files);
     },
     '@{select.upload}<change>'(e) {
-        console.log(e);
+        let target = e.eventTarget;
+        let files = target.files;
+        this['@{upload.files}'](files);
+        target.outerHTML = target.outerHTML;
+    },
+    '@{check.drag.status}'(target) {
+        let me = this;
+        if (!me['@{user.focused}']) {
+            $(target).removeClass('@index.less:s-active');
+        }
+    },
+    '@{drag.leave}<dragleave>'(e) {
+        this['@{check.drag.status}'](e.eventTarget);
+    },
+    '@{drag.enter}<dragenter>'(e) {
+        let me = this;
+        let userFocused = document.activeElement == e.eventTarget;
+        if (!userFocused) {
+            $(e.eventTarget).addClass('@index.less:s-active');
+            me['@{user.focused}'] = userFocused;
+        }
     }
 });

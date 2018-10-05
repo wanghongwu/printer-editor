@@ -19,6 +19,10 @@ export default View.extend({
     },
     render() {
         let elements = State.get('@{stage&select.elements}');
+        let lang = Magix.config('lang');
+        this.updater.set({
+            lang
+        });
         if (elements.length === 1) {
             let { ctor, props, id } = elements[0];
             this.updater.digest({
@@ -179,7 +183,6 @@ export default View.extend({
         if (e.from == 'p-table') return;
         let flag = Magix.inside(e.relatedTarget, e.eventTarget);
         if (!flag) {
-            console.log(e.type, e.params);
             State.set({
                 '@{property&hover.active.element}': e.params.element
             });

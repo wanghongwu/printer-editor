@@ -1,7 +1,0 @@
-<div class="pr lh1">
-    <input class="input ipt" autocomplete="off" value="{{=color}}" mx-change="@{stop}()" mx-click="@{show.panel}()" id="ipt_<%=viewId%>" {{if color}} style="background-color:{{=color}}"{{/if}} />
-    {{if color&&!hideClear}}
-    <i class="mc-iconfont clear" title="<%=i18n('@{menu.delete}')%>" mx-click="@{clear.color}()">&#xe67f;</i>
-    {{/if}}
-</div>
-<div mx-change="@{color.picked}()" id="cpcnt_<%=viewId%>" style="position:absolute;display:none;" mx-view="./index" view-color="{{=color}}" view-show-btns="true"></div>
