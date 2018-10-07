@@ -194,17 +194,18 @@ export default Magix.View.extend({
             this['@{delay.task}'](start, end, 300, () => {
                 if (sign == this['@{save.sign}']) {
                     this['@{stop.auto.save}']();
+                    if (vf) {
+                        vf.invoke('@{update}', [{
+                            saving: 0,
+                            draft: 0,
+                            error: err
+                        }]);
+                    }
                     if (err) {
                         if (!autoSave) {
-                            this.alert(err.msg);
+                            this.alert(I18n('@{save.error}') + err.msg);
                         }
                     } else {
-                        if (vf) {
-                            vf.invoke('@{update}', [{
-                                saving: 0,
-                                draft: 0
-                            }]);
-                        }
                         Store["@{clear}"]();
                         this['@{xml.content}'] = this['@{get.snapshot}']();
                     }

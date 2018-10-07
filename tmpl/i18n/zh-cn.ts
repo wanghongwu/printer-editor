@@ -160,11 +160,12 @@ export default {
     '@{paste.unfound.images}': '未检测到图片，请重新复制粘贴',
     '@{empty.templates}': '暂无通用模板',
     '@{processing}': '正在处理...',
+    '@{save.error}': '保存失败：',
     '@{missing.init.params}': '缺少参数"temp_id"或"biz_id"',
     '@{unsaved}': '[未保存 {0}]',
     '@{saving}': '[保存中...]',
     '@{find.draft}': '检测到上次未保存就退出，是否恢复到上次编辑状态？',
     '@{change.and.unsaved}': '内容尚未保存，确认关闭？',
-    '@{page.header}':'页头',
-    '@{page.footer}':'页脚'
+    '@{page.header}': '页头',
+    '@{page.footer}': '页脚'
 };

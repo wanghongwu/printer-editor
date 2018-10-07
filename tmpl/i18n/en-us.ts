@@ -167,4 +167,5 @@ export default {
     '@{change.and.unsaved}':'Unsaved,quit?',
     '@{page.header}':'Header',
     '@{page.footer}':'Footer',
+    '@{save.error}': 'Error：',
 };
