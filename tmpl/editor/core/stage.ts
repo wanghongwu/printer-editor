@@ -135,9 +135,9 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
                     me.updater.digest({
                         elements
                     });
-                    if (!e.ignoreSnapshot) {
-                        //State.fire('@{history&save.snapshot}');
-                    }
+                    // if (!e.ignoreSnapshot) {
+                    //     //State.fire('@{history&save.snapshot}');
+                    // }
                 }
             }
         });

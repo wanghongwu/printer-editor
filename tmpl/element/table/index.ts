@@ -67,6 +67,7 @@ export default View.extend<Editor.Dragdrop>({
             size: CNC.RESIZER_SIZE,
             scale: State.get('@{stage&scale}')
         });
+        console.log('table',data);
         return data.forceUpdate;
     },
     render() {
