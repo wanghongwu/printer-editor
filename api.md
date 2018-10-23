@@ -121,6 +121,7 @@
 > uploadImagesUrl
 * 输入(入参)
   * biz_id
+  * temp_id
   * files (files为图片文件数组，该key可以在Designer.init中进行配置)
 * 输出(响应内容)
 ```json
@@ -139,6 +140,34 @@
 }
 ```
 > 响应中的`data`数组顺序要与上传时的`files`顺序一致，当某个文件保存出错时也要返回对应的信息
+
+
+### 上传缩略图
+> uploadThumbImageUrl
+* 输入(入参)
+  * biz_id
+  * temp_id
+  * thumb (thumb为缩略图的key，该key可以在Designer.init中进行配置)
+* 输出(响应内容)
+```json
+{
+    "status": 1,
+    "message": "success",
+    "data": {
+        "url": "http://pic26.photophoto.cn/20130326/0033034324989838_b.jpg"
+    }
+}
+```
+
+### 上传图片key
+> uploadImagesKey
+服务端用于接收上传的图片key，默认`files[]`，该值内容是一个数组
+
+### 上传缩略图片key
+> thumbImageKey
+服务端用于接收上传的缩略图片key，默认`thumb`
+
+
 
 ### 模拟开发
 > mock

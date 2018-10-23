@@ -54,8 +54,10 @@ combineTool.config({
 gulp.task('cleanSrc', () => del(srcFolder));
 
 gulp.task('combine', ['cleanSrc'], () => {
+    console.time('combine');
     return combineTool.combine().then(() => {
         console.log('complete');
+        console.timeEnd('combine');
     }).catch(function (ex) {
         console.log('gulpfile:', ex);
         process.exit();
@@ -80,34 +82,36 @@ gulp.task('cleanBuild', function () {
     return del(buildFolder);
 });
 
-gulp.task('build', ['cleanBuild', 'cleanSrc'], function () {
-    combineTool.config({
-        debug: false
-    });
-    combineTool.combine().then(() => {
-        gulp.src(srcFolder + '/**/*.js')
-            .pipe(uglify({
-                compress: {
-                    drop_console: true,
-                    drop_debugger: true,
-                    global_defs: {
-                        DEBUG: false
-                    }
-                }
-            }))
-            .pipe(gulp.dest(buildFolder));
-    }).catch(ex => {
-        console.error(ex);
-    });
-});
+// gulp.task('build', ['cleanBuild', 'cleanSrc'], function () {
+//     combineTool.config({
+//         debug: false
+//     });
+//     combineTool.combine().then(() => {
+//         gulp.src(srcFolder + '/**/*.js')
+//             .pipe(uglify({
+//                 compress: {
+//                     drop_console: true,
+//                     drop_debugger: true,
+//                     global_defs: {
+//                         DEBUG: false
+//                     }
+//                 }
+//             }))
+//             .pipe(gulp.dest(buildFolder));
+//     }).catch(ex => {
+//         console.error(ex);
+//     });
+// });
 
 gulp.task('dist', ['cleanSrc'], () => {
+    console.time('dist');
     return del('./dist').then(() => {
         combineTool.config({
             debug: false
         });
         return combineTool.combine();
     }).then(() => {
+        console.timeEnd('dist');
         return gulp.src([
             './src/editor.js',
             './src/gallery/**',

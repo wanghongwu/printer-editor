@@ -1,16 +1,16 @@
-import Magix, { State, Vframe, View } from 'magix';
 import $ from '$';
-import ClickDesc from '../const/click-desc';
+import Magix, { State, Vframe, View } from 'magix';
+import CNC from '../../cainiao/const';
+import ImageDesigner from '../../element/image/designer';
 import * as Dragdrop from '../../gallery/mx-dragdrop/index';
-import Convert from '../../util/converter';
-import Keys from '../const/keys';
-import { StageSelectElements, StageElements, Clipboard } from './workaround';
-import DesignerHistory from './history';
 //import Store from './store';
 import Service from '../../service/index';
-import ImageDesigner from '../../element/image/designer';
+import Convert from '../../util/converter';
 import Table from '../../util/table';
-import CNC from '../../cainiao/const';
+import ClickDesc from '../const/click-desc';
+import Keys from '../const/keys';
+import DesignerHistory from './history';
+import { Clipboard, StageElements, StageSelectElements } from './workaround';
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -183,6 +183,9 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
             elements: State.get('@{stage&elements}')
         });
         me['@{owner.node}'] = $('#' + me.id);
+        State.on('@{capture.thumb.image}', (e: Editor.CaptureThumbImageEvent) => {
+            me['@{owner.node}'][e.start ? 'addClass' : 'removeClass']('@stage.less:thumb');
+        });
     },
     render() {
         let page = State.get('page');
@@ -875,7 +878,7 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
             }
         });
     },
-    '@{drop.file}<drop>'(e: JQueryEventConstructor) {
+    '@{drop.file}<drop>'(e: JQuery.Event) {
         let oe = e.originalEvent as DragEvent;
         let files = oe.dataTransfer.files;
         let ids = [], pFiles = [],

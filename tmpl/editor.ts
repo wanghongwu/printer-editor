@@ -2,6 +2,7 @@
 if (typeof DEBUG == 'undefined') DEBUG = true;
 '@./lib/sea.js';
 '@./lib/jquery.js';
+'@./lib/html2canvas.js'; 
 define('$', (require, exports) => {
     jQuery.__esModule = true;;
     jQuery.default = jQuery;

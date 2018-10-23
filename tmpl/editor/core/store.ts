@@ -1,6 +1,7 @@
 import Magix, { State } from 'magix';
 export default {
     '@{save}'() {
+        return;
         let stage = JSON.stringify({
             tempId: Magix.config('tempId'),
             bizId: Magix.config('bizId'),

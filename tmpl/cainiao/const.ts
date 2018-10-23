@@ -46,7 +46,7 @@ export default {
     TABLE_ROWS_HEIGHT: 30,//表格默认行高，单位px
     TABLE_CELLS_WIDTH: 200,//表格默认宽度，单位px
     HISTORY_MAX: 100,//历史记录最大数量
-    AUTO_SAVE: 30 * 1000,
+    AUTO_SAVE: -1,//30 * 1000,
     DROP_STAGE_LOADING: '//img.alicdn.com/tfs/TB1dIR5XpzqK1RjSZFzXXXjrpXa-400-240.gif',//编辑区上传图片时的loading图
     PAGES: [{
         text: 'A1',

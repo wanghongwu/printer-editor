@@ -1,5 +1,5 @@
 {{if draft}}
-    {{=i18n('@{unsaved}',after)}}
+    {{=i18n('@{unsaved}',after>0?after:'')}}
 {{else if saving}}
     {{=i18n('@{saving}')}}
 {{else if error}}

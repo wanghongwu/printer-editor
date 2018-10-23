@@ -35,10 +35,19 @@ let Service = Magix.Service.extend((bag, callback) => {
     } as JQueryAjaxSettings;
     if (upload) {
         let fd = new FormData();
-        let key = Magix.config('uploadImagesKey') || 'files';
+        let key = bag.get('key') || 'files';
         let files = bag.get('files') || [];
-        for (let f of files) {
-            fd.append(key, f);
+        if (files.length) {
+            for (let f of files) {
+                fd.append(key, f);
+            }
+        } else {
+            fd.append(key, files);
+        }
+        if (data) {
+            for (let p in data) {
+                fd.append(p, data[p]);
+            }
         }
         params.cache = false;
         params.processData = false;
@@ -57,6 +66,7 @@ Service.add([{
 }, {
     name: '@{file.upload}',
     url: Magix.config('uploadImagesUrl'),
+    key: Magix.config('uploadImagesKey'),
     method: 'POST',
     upload: true
 }, {
@@ -70,6 +80,12 @@ Service.add([{
     name: '@{save.content}',
     url: Magix.config('saveContentUrl'),
     method: 'POST'
+}, {
+    name: '@{save.thumb.image}',
+    url: Magix.config('uploadThumbImageUrl'),
+    key: Magix.config('thumbImageKey'),
+    method: 'POST',
+    upload: true
 }]);
 
 export default {
@@ -130,8 +146,12 @@ export default {
     upload(files, groupId, cb) {
         let req = this.request(groupId);
         req.all({
-            name: 'upload',
-            files
+            name: '@{file.upload}',
+            files,
+            params: {
+                biz_id: Magix.config('bizId'),
+                temp_id: Magix.config('tempId')
+            }
         }, (err, bag) => {
             cb(groupId, bag.get('data', []));
         });

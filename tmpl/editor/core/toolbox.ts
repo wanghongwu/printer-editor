@@ -1,6 +1,6 @@
+import $ from '$';
 import Magix, { State } from 'magix';
 import Elements from '../../element/index';
-import $ from '$';
 import * as Dragdrop from '../../gallery/mx-dragdrop/index';
 import Service from '../../service/index';
 Magix.applyStyle('@toolbox.less');

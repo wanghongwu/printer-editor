@@ -84,7 +84,11 @@ module.exports = Magix.View.extend({
         let req = this.request();
         req.all({
             name: '@{file.upload}',
-            files
+            files,
+            params: {
+                biz_id: Magix.config('bizId'),
+                temp_id: Magix.config('tempId')
+            }
         }, (err) => {
             if (err) {
                 this.alert(err.msg);

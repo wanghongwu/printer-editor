@@ -11,6 +11,17 @@ import Mask from './core/mask';
 import Serializer from '../cainiao/serializer';
 import Service from '../service/index';
 import * as Runner from '../gallery/mx-runner/index';
+let DataToBlob = base64 => {
+    let arr = base64.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+};
 const Assign = Magix.mix;
 Magix.applyStyle('@index.less');
 Magix.View.merge(Dialog, {
@@ -165,42 +176,56 @@ export default Magix.View.extend({
             }
         }
     },
-    '@{save.content}'(autoSave?: boolean) {
-        if (!this['@{is.changed}']()) {
-            return;
-        }
+    '@{save.thumb.image}'(callback) {
+        let me = this;
+        let start = Date.now();
+        setTimeout(me.wrapAsync(() => {
+            html2canvas(Magix.node('stage_stage')).then(canvas => {
+                let data = canvas.toDataURL('image/png');
+                let files = DataToBlob(data);
+                let req = me.request();
+                req.all({
+                    name: '@{save.thumb.image}',
+                    files,
+                    params: {
+                        temp_id: Magix.config('tempId'),
+                        biz_id: Magix.config('bizId')
+                    }
+                }, (err, bag) => {
+                    let end = Date.now();
+                    this['@{delay.task}'](start, end, 300, () => {
+                        if (err) {
+                            this.alert(err.msg);
+                            callback(err);
+                        } else {
+                            callback(null, bag.get('data.url', ''));
+                        }
+                    });
+                });
+            });
+        }), 50);
+    },
+    '@{save.xml.content}'(autoSave, url, callback) {
         let json = {
             page: State.get('page'),
             elements: State.get('@{stage&elements}')
         };
         let sign = this['@{save.sign}'];
         let newXML = Serializer.encode(json);
-        let vf = Vframe.get('draft_' + this.id);
-        if (vf) {
-            vf.invoke('@{update}', [{
-                saving: 1,
-                draft: 0
-            }]);
-        }
         let start = Date.now();
         this.save({
             name: '@{save.content}',
             params: {
                 temp_id: Magix.config('tempId'),
-                content: newXML
+                content: newXML,
+                thumb_url: url
             }
         }, (err, bag) => {
             let end = Date.now();
             this['@{delay.task}'](start, end, 300, () => {
                 if (sign == this['@{save.sign}']) {
                     this['@{stop.auto.save}']();
-                    if (vf) {
-                        vf.invoke('@{update}', [{
-                            saving: 0,
-                            draft: 0,
-                            error: err
-                        }]);
-                    }
+                    callback(err);
                     if (err) {
                         if (!autoSave) {
                             this.alert(I18n('@{save.error}') + err.msg);
@@ -211,6 +236,48 @@ export default Magix.View.extend({
                     }
                 }
             });
+        });
+    },
+    '@{save.content}'(autoSave?: boolean) {
+        // if (!this['@{is.changed}']()) {
+        //     return;
+        // }
+        State.fire('@{document&clicked}', {
+            zone: ClickDesc.OTHER
+        });
+        this['@{save.started}'] = 1;
+        let vf = Vframe.get('draft_' + this.id);
+        if (vf) {
+            vf.invoke('@{update}', [{
+                saving: 1,
+                draft: 0
+            }]);
+        }
+        State.fire('@{capture.thumb.image}', {
+            start: true
+        });
+        this['@{save.thumb.image}']((e, url) => {
+            State.fire('@{capture.thumb.image}');
+            if (!e) {
+                this['@{save.xml.content}'](autoSave, url, e => {
+                    if (vf) {
+                        vf.invoke('@{update}', [{
+                            saving: 0,
+                            draft: 0,
+                            error: e
+                        }]);
+                    }
+                    this['@{save.started}'] = 0;
+                });
+            } else {
+                if (vf) {
+                    vf.invoke('@{update}', [{
+                        saving: 0,
+                        draft: 1
+                    }]);
+                }
+                this['@{save.started}'] = 0;
+            }
         });
     },
     '@{is.changed}'() {
@@ -376,7 +443,7 @@ export default Magix.View.extend({
             }
         }
     },
-    '$doc<drop,dragover>'(e: JQueryEventConstructor) {
+    '$doc<drop,dragover>'(e: JQuery.Event) {
         e.preventDefault();
         if (e.type == 'dragover') {
             State.fire('@{toolbox&drag.hover.element.change}', {
