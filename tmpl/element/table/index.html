@@ -1,5 +1,5 @@
 <div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;z-index:{{=zIndex}}" class="pa">
-    <div class="pa del" mx-click="@{delete.table}()" title="{{=i18n('@{delete.table}')}}">
+    <div class="pa del" mx-mousedown="@{stop.mouse.down}()" mx-click="@{delete.table}()" title="{{=i18n('@{delete.table}')}}">
         <i class="iconfont">&#xe600;</i>
     </div>
     <table class="e-table{{if hideBorder}} hide-border{{/if}}">

@@ -18,7 +18,7 @@
             {{if prop.type==desc.LABEL}}
                 {{=prop.read?prop.read(data[prop.key]):data[prop.key]}}
             {{else if prop.type==desc.INPUT}}
-                <input class="input" value="{{=data[prop.key]}}" mx-input="@{prop.change}({key:'{{=prop.key}}'})" @disabled="{{=data.locked&&!prop.role}}" />
+                <input class="input" value="{{=data[prop.key]}}" mx-input="@{prop.change}({key:'{{=prop.key}}',sync:{{@prop.sync}},refresh:{{@prop.refresh}}})" @disabled="{{=data.locked&&!prop.role}}" />
             {{else if prop.type==desc.TEXTAREA}}
                 <textarea class="textarea" mx-input="@{prop.change}({key:'{{=prop.key}}'})" @disabled="{{=data.locked&&!prop.role}}" style="height:100px;">{{=data[prop.key]}}</textarea>
             {{else if prop.type==desc.NUMBER}}

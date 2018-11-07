@@ -105,7 +105,7 @@ export default Designer.extend({
             max: 2800,
             read: Convert["@{pixel.to.millimeter}"],
             write: Convert["@{millimeter.to.pixel}"]
-        }, {
+        }, /*{
             tip: '@{element.text.cnstyle}',
             key: 'useCNStyle',
             ifKey: 'supportCNStyle',
@@ -113,7 +113,7 @@ export default Designer.extend({
             type: PropsDesc.BOOLEAN,
             refresh: true,
             write: WriteCNAdapter
-        }, {
+        },*/ {
             tip: '@{element.rotate}',
             key: 'rotate',
             type: PropsDesc.NUMBER,
@@ -189,7 +189,9 @@ export default Designer.extend({
             key: 'alias',
             type: PropsDesc.INPUT,
             gtKey: 'allowEdit',
-            gtValue: 0
+            gtValue: 0,
+            refresh:true,
+            sync: 'tip'
         }, {
             type: PropsDesc.SPLITER
         }, {

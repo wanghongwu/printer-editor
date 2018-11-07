@@ -67,7 +67,7 @@ export default View.extend<Editor.Dragdrop>({
             size: CNC.RESIZER_SIZE,
             scale: State.get('@{stage&scale}')
         });
-        console.log('table',data);
+        console.log('table', data);
         return data.forceUpdate;
     },
     render() {
@@ -332,6 +332,9 @@ export default View.extend<Editor.Dragdrop>({
                 State.fire('@{history&save.snapshot}');
             }*/
         });
+    },
+    '@{stop.mouse.down}<mousedown>'(e) {
+        e.from = 'element_table';
     },
     '@{delete.table}<click>'() {
         let { id } = this['@{data}'];
