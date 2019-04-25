@@ -54,15 +54,15 @@ let GetCells = (rows, options: {
             col: colIndex,
             cell: cellIndex
         } as {
-                row: number
-                col: number
-                data: boolean
-                td: object
-                rowspan: number
-                colspan: number
-                cell: number
-                ref?: any
-            }, ref;
+            row: number
+            col: number
+            data: boolean
+            td: object
+            rowspan: number
+            colspan: number
+            cell: number
+            ref?: any
+        }, ref;
         if ((ref = isSpanned(rowIndex, colIndex))) {
             if (!skipCell(rowIndex, colIndex, 1)) {
                 out.ref = ref;
@@ -539,9 +539,9 @@ export default {
                     tag: 'td',
                     width: -1
                 } as {
-                        colspan?: number
-                        rowspan?: number
-                    };
+                    colspan?: number
+                    rowspan?: number
+                };
                 if (newCellsSpan > 1) {
                     newCell.colspan = newCellsSpan;
                 }
@@ -581,9 +581,9 @@ export default {
                     tag: 'td',
                     width
                 } as {
-                        colspan?: number
-                        rowspan?: number
-                    };
+                    colspan?: number
+                    rowspan?: number
+                };
                 if (rowspan > 1) {
                     newCell.rowspan = rowspan;
                 }
@@ -958,6 +958,7 @@ export default {
         nextCol?: number,
         changeType?: string
     }) {
+        if (props.__invalid) return;
         let { col, share, lw, fsize, nextRow, nextCol, changeType } = options;
         let rows = props.rows;
         let newRows = GetNewRows(rows);

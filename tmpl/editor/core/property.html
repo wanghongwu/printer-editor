@@ -38,15 +38,15 @@
             {{else if prop.type==desc.FONTALIGN}}
                 <mx-font.align @disabled="{{=data.locked}}" mx-input="@{prop.change}({key:'{{=prop.key}}',read:'value'})" value="{{@data[prop.key]}}" class="ib"/>
             {{else if prop.type==desc.CELLOPERATE}}
-                <mx-cell @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
+                <mx-cell @disabled="{{=data.locked||data.__invalid}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLSIZE}}
-                <mx-cell.size @disabled="{{=data.locked}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
+                <mx-cell.size @disabled="{{=data.locked||data.__invalid}}" mx-change="@{cell.change}()" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLFOCUS}}
-                <mx-cell.focus @disabled="{{=data.locked}}" mx-change="@{cell.change}({ui:true})" props="{{@data}}" class="ib"/>
+                <mx-cell.focus @disabled="{{=data.locked||data.__invalid}}" mx-change="@{cell.change}({ui:true})" props="{{@data}}" class="ib"/>
             {{else if prop.type==desc.CELLCOLSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">{{=i18n('@{property.divide.width}')}}</button>
+                <button @disabled="{{=data.locked||data.__invalid}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'x'})">{{=i18n('@{property.divide.width}')}}</button>
             {{else if prop.type==desc.CELLROWSHARE}}
-                <button @disabled="{{=data.locked}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">{{=i18n('@{property.divide.height}')}}</button>
+                <button @disabled="{{=data.locked||data.__invalid}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">{{=i18n('@{property.divide.height}')}}</button>
             {{/if}}
             {{/if}}
             {{/if}}

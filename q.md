@@ -75,6 +75,7 @@
 3. √ 表格分页要再加一个layout
 4. √ 表格中的text可能没有layout
 5. √ 表格layout分页时不能添加高度
+6. √ 表格`rowspan`或`colspan`可为变量，当为变量时，表格的一切可视化操作将被禁止
 
 
 # elements

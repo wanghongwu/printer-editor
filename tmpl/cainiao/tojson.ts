@@ -184,6 +184,7 @@ let ToNum = f => {
     return isNaN(f) ? 0 : f;
 };
 let ToDeg = f => ToNum(f) % 360;
+let VariableReg = /^\s*<%[\s\S]*%>\s*$/;
 //let ToMM = Convert["@{pixel.to.millimeter}"];
 let Types = {
     STRING: 1,
@@ -197,12 +198,12 @@ let PRule = (alias?: string) => {
         type: Types.NUMBER,
         convert: ToPixel
     } as {
-            type: number
-            convert: () => number
-            alias: string
-            min: number
-            max: number
-        };
+        type: number
+        convert: () => number
+        alias: string
+        min: number
+        max: number
+    };
     if (alias) {
         rule.alias = alias;
     } else {
@@ -847,8 +848,19 @@ let Decoders = {
                             } else {
                                 let width = -1, height = -1;
                                 let xwidth = Number(cell['@{~v#node.attrs.map}'].width);
-                                let rowspan = Number(cell['@{~v#node.attrs.map}'].rowspan) || 1;
-                                let colspan = Number(cell['@{~v#node.attrs.map}'].colspan) || 1;
+                                //let rowspan = Number(cell['@{~v#node.attrs.map}'].rowspan) || 1;
+                                let rowspan = cell['@{~v#node.attrs.map}'].rowspan;
+                                if (VariableReg.test(rowspan)) {
+                                    defaults.__invalid = true;
+                                } else {
+                                    rowspan = Number(rowspan) || 1;
+                                }
+                                let colspan = cell['@{~v#node.attrs.map}'].colspan;
+                                if (VariableReg.test(colspan)) {
+                                    defaults.__invalid = true;
+                                } else {
+                                    colspan = Number(colspan) || 1;
+                                }
                                 if (xwidth >= 0) {
                                     width = xwidth;
                                 }
@@ -938,14 +950,14 @@ export default xml => {
         page: {},
         elements: []
     } as {
-            setHeader: boolean
-            setFooter: boolean
-            page: {
-                header: number
-                footer: number
-            }
-            elements: object[]
-        };
+        setHeader: boolean
+        setFooter: boolean
+        page: {
+            header: number
+            footer: number
+        }
+        elements: object[]
+    };
     let walk = (nodes) => {
         for (let n of nodes) {
             let tag = n['@{~v#node.tag}'];

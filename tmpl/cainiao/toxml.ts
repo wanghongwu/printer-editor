@@ -1,6 +1,7 @@
 import Convert from '../util/converter';
 let ToMM = Convert["@{pixel.to.millimeter}"];
 let ToPT = Convert["@{pixel.to.pt}"];
+let VariableReg = /^\s*<%[\s\S]*%>\s*$/;
 //let ToFloat = Convert["@{to.float}"];
 let GSpace = (count) => {
     let r = '\n';
@@ -263,10 +264,14 @@ let Encoder = {
                         table += `${s4}${c.text}`;
                     } else if (c.tag == 'td') {
                         table += `${s4}<td width="${ToMM(c.width)}" height="${ToMM(c.height)}"`;
-                        if (c.rowspan > 1) {
+                        if (c.rowspan &&
+                            (c.rowspan > 1 ||
+                                (props.__invalid && VariableReg.test(c.rowspan)))) {
                             table += ` rowspan="${c.rowspan}"`;
                         }
-                        if (c.colspan > 1) {
+                        if (c.colspan &&
+                            (c.colspan > 1 ||
+                                (props.__invalid && VariableReg.test(c.colspan)))) {
                             table += ` colspan="${c.colspan}"`;
                         }
                         table += `>`;
