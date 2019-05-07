@@ -86,6 +86,10 @@ Service.add([{
     key: Magix.config('thumbImageKey'),
     method: 'POST',
     upload: true
+}, {
+    name: '@{del.image}',
+    url: Magix.config('delImageUrl'),
+    method: 'POST'
 }]);
 
 export default {

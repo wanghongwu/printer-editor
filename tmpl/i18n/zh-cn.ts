@@ -66,6 +66,7 @@ export default {
     '@{gallery.mx-picture.browser.images}': '浏览图库',
     '@{gallery.mx-picture.images.title}': '图片库',
     '@{gallery.mx-picture.images.url}': '图片网络地址',
+    '@{gallery.mx-picture.del.confirm}':'确认删除该图片？',
     '@{dialog.tip}': '提示',
     '@{dropdown.search.tip}': '搜索关键词',
     '@{element.x}': 'X坐标',

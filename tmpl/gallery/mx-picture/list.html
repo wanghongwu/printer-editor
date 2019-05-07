@@ -28,11 +28,12 @@
         {{each list as pic}}
             {{if !keyword||pic.title.indexOf(keyword)>-1}}
             {{renderedImage=1}}
-            <div class="fl" title="{{=pic.title}}">
+            <div class="fl pic-root" title="{{=pic.title}}">
                 <div class="pic-container" mx-click="@{use}({src:'{{=pic.src}}'})">
                     <div class="pic" style="background-image:url('{{=pic.src}}')"></div>
                 </div>
                 <div class="tc pic-title ellipsis">{{=pic.title}}</div>
+                <div mx-click="@{del}({id:'{{=pic.id}}'})" class="del mc-iconfont" title="{{=i18n('@{menu.delete}')}}">&#xe67f;</div>
             </div>
             {{/if}}
         {{/each}}

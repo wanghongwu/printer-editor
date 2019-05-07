@@ -14,7 +14,7 @@ combineTool.config({
     debug: true,
     commonFolder: tmplFolder,
     compiledFolder: srcFolder,
-    cssSelectorPrefix: 'p',
+    cssSelectorPrefix: 'pe-',
     loaderType: 'cmd',
     md5CssSelectorLen: 3,
     addTmplViewsToDependencies: true,
@@ -156,4 +156,22 @@ gulp.task('cdist', () => {
             }
         }))
         .pipe(gulp.dest('./dist'));
+});
+
+
+gulp.task('diff', () => {
+    let f1 = fs.readFileSync('./dist/editor.js') + '';
+    let f2 = fs.readFileSync('./dist/editor1.js') + '';
+    let max = Math.max(f1.length, f2.length);
+    for (let i = 0; i < max; i++) {
+        let c1 = f1[i];
+        let c2 = f2[i];
+        if (c1 && c2) {
+            if (c1 != c2) {
+                console.log('diff at ', i,c1,c2);
+            }
+        } else {
+            break;
+        }
+    }
 });

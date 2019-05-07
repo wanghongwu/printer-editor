@@ -100,22 +100,40 @@
 * 输入(入参)
   * biz_id
 * 输出(响应内容)
+> 增加图片`id`，用来在删除时把该`id`传回来确定删除的图片，`id`建议用字符串而非数字，防止后期超出`Number.MAX_SAFE_INTEGER`后导致删除错误的图片
 ```json
 {
     "status": 1,
     "message": "success",
     "data": [
         {
+            "id":"123",
             "title": "power up",
             "src": "http://pic.qiantucdn.com/58pic/11/39/18/98D58PICPZI.jpg!/fw/1024/watermark/url/L2ltYWdlcy93YXRlcm1hcmsveGlhb3R1LnBuZw==/align/center"
         },
         {
+            "id":"456",
             "src": "http://image.tupian114.com/20121128/14562878.jpg",
             "title": "球"
         }
     ]
 }
 ```
+
+### 删除图片库中的图片
+> delImageUrl
+* 输入(入参)
+  * biz_id 
+  * id 图片id
+* 输出(响应内容)
+
+```json
+{
+    "status": 1,
+    "message": "ok"
+}
+```
+>当删除失败时，返回`status<>1`，且`message`给出相应的提示内容即可
 
 ### 上传图片
 > uploadImagesUrl

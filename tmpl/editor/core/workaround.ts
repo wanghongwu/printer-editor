@@ -816,7 +816,7 @@ export let StageElements = {
         disabled[Contextmenu.pasteId] = !copyList.length;
         if (elements.length === 1) {
             let e = elements[0];
-            let locked = e.props.locked;
+            let locked = e.props.locked || e.props.__invalid;
             if (tableId && elements[0].id == tableId) {
                 listKey = 4;
                 list = Contextmenu.tableCell(lang);

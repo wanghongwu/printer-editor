@@ -31,7 +31,9 @@ export default Magix.View.extend({
         let c = elements.length;
         for (let li of lis) {
             let id = li.getAttribute('data-eid');
-            map[id].props.zIndex = c--;
+            if (id) {
+                map[id].props.zIndex = c--;
+            }
         }
         this.render();
         State.fire('@{stage&elements.change}');

@@ -69,6 +69,24 @@ module.exports = Magix.View.extend({
         };
         img.src = src;
     },
+    '@{del}<click>'(e) {
+        let { id } = e.params;
+        this.confirm(I18n('@{gallery.mx-picture.del.confirm}'), () => {
+            this.save({
+                name: '@{del.image}',
+                params: {
+                    id,
+                    biz_id: Magix.config('bizId')
+                }
+            }, err => {
+                if (err) {
+                    this.alert(err.msg);
+                } else {
+                    this.render();
+                }
+            });
+        });
+    },
     '@{search}<input>'(e) {
         let me = this;
         clearTimeout(me['@{search.timer}']);

@@ -66,6 +66,7 @@ export default {
     '@{gallery.mx-picture.browser.images}': 'Broswer Images',
     '@{gallery.mx-picture.images.title}': 'Images',
     '@{gallery.mx-picture.images.url}': 'Image URL',
+    '@{gallery.mx-picture.del.confirm}':'Are you sure you want to delete this item?',
     '@{dialog.tip}': 'Tip',
     '@{dropdown.search.tip}': 'Search...',
     '@{element.x}': 'X',

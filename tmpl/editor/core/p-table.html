@@ -18,7 +18,7 @@
                                 </div>
                             </div>
                             {{if e.type=='table'}}
-                                <mx-vframe src="./p-table" *e-id="{{=e.id}}" *rows="{{@e.props.rows}}"/>
+                                <mx-vframe src="./p-table" *e-id="{{=e.id}}" *rows="{{@e.props.rows}}" #ds-draggable="false"/>
                             {{/if}}
                         {{/each}}
                     </div>
