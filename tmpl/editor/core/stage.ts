@@ -262,6 +262,7 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
     },
     '@{element.start.drag}<mousedown>'(e) {
         if (e.from == 'element_table') return;
+        //console.log('here');
         StageElements["@{select.or.move.elements}"](e, this);
     },
     '@{stage.keydown}<keydown>'(e: KeyboardEvent) {

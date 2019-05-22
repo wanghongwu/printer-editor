@@ -20,6 +20,9 @@ export default {
     { text: '@{element.line.dotted}', value: 'dotted' }],
     FONT_FAMILIES: [{ "value": 'SimSun', "text": '@{font.simsun}' },//字体集合
     { "value": 'SimHei', "text": '@{font.simhei}' },
+    { "value": 'Microsoft YaHei', "text": "@{font.yahei}" },
+    { "value": "Microsoft JhengHei", "text": "@{font.jhei}" },
+    { "value": "KaiTi", "text": "@{font.kaiti}" },
     { "value": "Arial", "text": "Arial" },
     { "value": "Times New Roman", "text": "Times New Roman" },
     { "value": "Tahoma", "text": "Tahoma" },

@@ -741,9 +741,6 @@ export let StageElements = {
             State.fire('@{stage&lock.scroll}', {
                 locked: 1
             });
-            State.fire('@{cursor&update}', {
-                cursor: 'move'
-            });
             let startInfos = [],
                 exist = false;
             for (let e of elements) {
@@ -768,6 +765,11 @@ export let StageElements = {
             let moved = false,
                 elementMoved = false;
             view.dragdrop(event.eventTarget, evt => {
+                if (!moved) {
+                    State.fire('@{cursor&update}', {
+                        cursor: 'move'
+                    });
+                }
                 moved = true;
                 let offsetX = evt.pageX - event.pageX;
                 let offsetY = evt.pageY - event.pageY;
