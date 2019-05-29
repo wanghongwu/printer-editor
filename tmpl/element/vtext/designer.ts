@@ -139,7 +139,9 @@ export default Designer.extend({
             tip: '@{element.text.fsize}',
             key: 'fontSize',
             type: PropsDesc.NUMBER,
-            min: '0'
+            min: '0',
+            step: 1,
+            fixed: 2
         }, {
             tip: '@{element.text.lspacing}',
             key: 'letterSpacing',
