@@ -53,6 +53,28 @@ export default View.extend({
             State.fire('@{history&save.snapshot}');
         }
     },
+    '@{cell.border.change}<change>'(e) {
+        let updater = this.updater;
+        let data = updater.get('data');
+        let eId = updater.get('eId');
+        let { rows, rowIndex, colIndex } = data;
+        let row = rows[rowIndex];
+        if (!row) {
+            console.error(`can not find ${rowIndex} row,use first as default`);
+            row = rows[0];
+        }
+        let col = row.cells[colIndex];
+        if (!col) {
+            console.error(`can not find ${colIndex} cell,use first as default`);
+            col = row.cells[0];
+        }
+        col.hasBorder = e.value;
+        State.fire('@{property&element.property.change}', {
+            data,
+            eId
+        });
+        State.fire('@{history&save.snapshot}');
+    },
     '@{set.cell.share}<click>'(e) {
         let updater = this.updater;
         let data = updater.get('data');

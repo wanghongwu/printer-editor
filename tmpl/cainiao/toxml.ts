@@ -252,6 +252,8 @@ let Encoder = {
         let table = `${s2}<table`;
         if (props.hideBorder) {
             table += ` style="borderWidth:0;cellBorderWidth:0;"`;
+        } else {
+            table += ` style="borderWidth:0;"`;
         }
         table += ` editor:tip="${props.tip}">`;
         for (let r of props.rows) {
@@ -274,7 +276,7 @@ let Encoder = {
                                 (props.__invalid && VariableReg.test(c.colspan)))) {
                             table += ` colspan="${c.colspan}"`;
                         }
-                        table += `>`;
+                        table += ` style="borderWidth:${!props.hideBorder && c.hasBorder ? 1 : 0}pt">`;
                         if (c.children && c.children.length) {
                             for (let cc of c.children) {
                                 let encoder = Encoder[cc.type];

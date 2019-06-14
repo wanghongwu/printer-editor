@@ -238,11 +238,11 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
                     x: left,
                     y: top
                 }) as {
-                        x: number,
-                        y: number,
-                        width?: number,
-                        height?: number
-                    };
+                    x: number,
+                    y: number,
+                    width?: number,
+                    height?: number
+                };
                 rect.width = width;
                 rect.height = height;
                 let elements = StageElements["@{get.intersect.elements}"](elementLocations, rect, bak);
@@ -301,7 +301,8 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
             if (!e.ctrlKey && !e.metaKey) {
                 e.preventDefault();
                 let changed = false, propsChanged = false;
-                if (e.keyCode == Keys.DELETE) {
+                if (e.keyCode == Keys.DELETE ||
+                    e.keyCode == Keys.BACKSPACE) {
                     changed = true;
                     StageElements["@{delete.select.elements}"]();
                 } else {

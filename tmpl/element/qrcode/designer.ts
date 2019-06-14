@@ -96,16 +96,14 @@ export default Designer.extend({
         }, {
             tip: '@{element.code.schema}',
             type: PropsDesc.DROPDOWN,
-            ifKey: 'type',
-            ifValue: 'maxicode',
+            ifShow: data => data.type == 'maxicode',
             key: 'schema',
             items: CNC.QRCODES_MAXICODE_SCHEMA
         }, {
             tip: 'primary',
             type: PropsDesc.INPUT,
             key: 'primary',
-            ifKey: 'type',
-            ifValue: 'maxicode'
+            ifShow: data => data.type == 'maxicode'
         }, {
             type: PropsDesc.SPLITER
         }, {

@@ -9,11 +9,9 @@
             {{=i18n(title)}}
         </li>
         {{each props as prop}}
+        {{if !prop.ifShow||prop.ifShow(data)}}
         <li class="group-item{{if prop.type==desc.SPLITER}} group-item-spliter{{/if}}">
             {{if prop.type!=desc.SPLITER}}
-            {{if !(prop.ifKey||prop.gtKey)||
-                (prop.ifKey&&data[prop.ifKey]==prop.ifValue)||
-                (prop.gtKey&&data[prop.gtKey]>prop.gtValue)}}
             <span class="group-item-title{{if prop.styleVTop}} vtop{{/if}}">{{=i18n(prop.tip)}}:</span>
             {{if prop.type==desc.LABEL}}
                 {{=prop.read?prop.read(data[prop.key]):data[prop.key]}}
@@ -25,6 +23,8 @@
                 <mx-number value="{{@prop.read?prop.read(data[prop.key]):data[prop.key]}}" mx-input="@{prop.change}({key:'{{=prop.key}}',read:'value',write:{{@prop.write}},sync:{{@prop.sync}},refresh:{{@prop.refresh}}})" @min="{{=prop.min}}" @max="{{=prop.max}}" @step="{{=prop.step}}" @fixed="{{=prop.fixed}}" @#readonly="{{=data.locked||data[prop.key+'Locked'}}" @disabled="{{=data.locked||data.lockedX||data[prop.key+'Locked']}}" />
             {{else if prop.type==desc.DROPDOWN}}
                 <mx-dropdown mx-change="@{prop.change}({key:'{{=prop.key}}',read:'value',refresh:{{@prop.refresh}}})" list="{{@prop.items}}" @text-key="{{=prop.textKey}}" @value-key="{{=prop.valueKey}}" selected="{{=data[prop.key]}}" @disabled="{{=data.locked}}"/>
+            {{else if prop.type==desc.CELLDROPDOWN}}
+                <mx-dropdown mx-change="@{cell.border.change}()" list="{{@prop.items}}" @text-key="text" @value-key="value" selected="{{=data.rows[data.rowIndex].cells[data.colIndex].hasBorder}}" @disabled="{{=data.locked}}"/>
             {{else if prop.type==desc.IMAGE}}
                 <mx-picture class="ib" mx-change="@{image.change}({key:'{{=prop.key}}',updateSize:{{=prop.updateSize}}})" pic="{{=data[prop.key]}}" *lang="{{=lang}}" @disabled="{{=data.locked}}" />
             {{else if prop.type==desc.ORIGINSIZE}}
@@ -49,8 +49,8 @@
                 <button @disabled="{{=data.locked||data.__invalid}}" type="button" class="btn editor-btn" mx-click="@{set.cell.share}({type:'y'})">{{=i18n('@{property.divide.height}')}}</button>
             {{/if}}
             {{/if}}
-            {{/if}}
         </li>
+        {{/if}}
         {{/each}}
     </ul>
     {{else}}

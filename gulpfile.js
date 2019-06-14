@@ -53,7 +53,7 @@ combineTool.config({
 
 gulp.task('cleanSrc', () => del(srcFolder));
 
-gulp.task('combine', ['cleanSrc'], () => {
+gulp.task('combine', gulp.series('cleanSrc', () => {
     console.time('combine');
     return combineTool.combine().then(() => {
         console.log('complete');
@@ -62,9 +62,9 @@ gulp.task('combine', ['cleanSrc'], () => {
         console.log('gulpfile:', ex);
         process.exit();
     });
-});
+}));
 
-gulp.task('watch', ['combine'], () => {
+gulp.task('watch', gulp.series('combine', () => {
     watch(tmplFolder + '/**/*', e => {
         if (fs.existsSync(e.path)) {
             var c = combineTool.processFile(e.path);
@@ -75,7 +75,7 @@ gulp.task('watch', ['combine'], () => {
             combineTool.removeFile(e.path);
         }
     });
-});
+}));
 
 var uglify = require('gulp-uglify');
 gulp.task('cleanBuild', function () {
@@ -103,7 +103,7 @@ gulp.task('cleanBuild', function () {
 //     });
 // });
 
-gulp.task('dist', ['cleanSrc'], () => {
+gulp.task('dist', gulp.series('cleanSrc', () => {
     console.time('dist');
     return del('./dist').then(() => {
         combineTool.config({
@@ -139,7 +139,7 @@ gulp.task('dist', ['cleanSrc'], () => {
             }))
             .pipe(gulp.dest('./dist'));
     });
-});
+}));
 
 gulp.task('cdist', () => {
     return gulp.src('./dist/*.js')
@@ -168,7 +168,7 @@ gulp.task('diff', () => {
         let c2 = f2[i];
         if (c1 && c2) {
             if (c1 != c2) {
-                console.log('diff at ', i,c1,c2);
+                console.log('diff at ', i, c1, c2);
             }
         } else {
             break;

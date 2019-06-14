@@ -108,8 +108,7 @@ export default Designer.extend({
         }, /*{
             tip: '@{element.text.cnstyle}',
             key: 'useCNStyle',
-            ifKey: 'supportCNStyle',
-            ifValue: true,
+            ifShow: data => data.supportCNStyle,
             type: PropsDesc.BOOLEAN,
             refresh: true,
             write: WriteCNAdapter
@@ -184,14 +183,12 @@ export default Designer.extend({
             styleVTop: 1,
             key: 'text',
             type: PropsDesc.TEXTAREA,
-            gtKey: 'allowEdit',
-            gtValue: 0
+            ifShow: data => data.allowEdit > 0
         }, {
             tip: '@{element.text.alias}',
             key: 'alias',
             type: PropsDesc.INPUT,
-            gtKey: 'allowEdit',
-            gtValue: 0,
+            ifShow: data => data.allowEdit > 0,
             refresh: true,
             sync: 'tip'
         }, {

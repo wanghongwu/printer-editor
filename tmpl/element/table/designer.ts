@@ -35,14 +35,17 @@ export default Designer.extend({
                     tag: 'tr',
                     cells: [{
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
@@ -50,14 +53,17 @@ export default Designer.extend({
                     tag: 'tr',
                     cells: [{
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
+                        hasBorder:true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
@@ -102,7 +108,8 @@ export default Designer.extend({
         }, {
             tip: '@{element.table.border}',
             key: 'hideBorder',
-            type: PropsDesc.BOOLEAN
+            type: PropsDesc.BOOLEAN,
+            refresh: true
         }, {
             tip: '@{element.table.paging}',
             key: 'splitable',
@@ -114,22 +121,33 @@ export default Designer.extend({
             tip: '@{element.table.dheight}',
             type: PropsDesc.CELLROWSHARE
         }, {
+            type: PropsDesc.SPLITER,
+            ifShow: data => data.rowIndex > -1
+        }, {
             tip: '@{element.table.pic}',
             type: PropsDesc.CELLFOCUS,
-            gtKey: 'rowIndex',
-            gtValue: -1
+            ifShow: data => data.rowIndex > -1
         }, {
             tip: '@{element.table.opcell}',
             styleVTop: 1,
             type: PropsDesc.CELLOPERATE,
-            gtKey: 'rowIndex',
-            gtValue: -1
+            ifShow: data => data.rowIndex > -1
         }, {
             tip: '@{element.table.cellsize}',
             styleVTop: 1,
             type: PropsDesc.CELLSIZE,
-            gtKey: 'rowIndex',
-            gtValue: -1
+            ifShow: data => data.rowIndex > -1
+        }, {
+            tip: '@{element.table.cellborder}',
+            type: PropsDesc.CELLDROPDOWN,
+            ifShow: data => data.rowIndex > -1 && !data.hideBorder,
+            items: [{
+                text: '@{element.table.cellborder.yes}',
+                value: true
+            }, {
+                text: '@{element.table.cellborder.no}',
+                value: false
+            }]
         }, {
             type: PropsDesc.SPLITER
         }, {

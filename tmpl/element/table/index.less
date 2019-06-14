@@ -1,11 +1,11 @@
 .e-table{
     border-collapse:collapse;
-    border:1px solid #000;
+    border:1px dotted #ececec;
     border-spacing: 0;
 }
 .cell{
     border-collapse: collapse;
-    border: 1px solid #000;
+    border: 1px dotted #ececec;
     position: relative;
     padding: 0
 }
@@ -50,10 +50,13 @@
 [ref="@../../editor/core/stage.less:thumb"] .del{
     visibility: hidden;
 }
-.hide-border{
-    border-style: dotted;
-    border-color: #ececec;
+.show-border{
+    border-style: solid;
+    border-color: #000;
 }
 .dashed{
     box-shadow: 2px 2px 4px rgba(0,0,0,0.2) inset;
+}
+.dash-focus{
+    border-style: dashed;
 }

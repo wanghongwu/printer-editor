@@ -15,5 +15,6 @@ export default {
     CELLSIZE: 2 << 12,
     CELLFOCUS: 2 << 13,
     CELLCOLSHARE: 2 << 14,
-    CELLROWSHARE: 2 << 15
+    CELLROWSHARE: 2 << 15,
+    CELLDROPDOWN: 2 << 16
 };

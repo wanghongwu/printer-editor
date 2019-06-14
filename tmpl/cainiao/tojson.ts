@@ -847,15 +847,16 @@ let Decoders = {
                                 });
                             } else {
                                 let width = -1, height = -1;
-                                let xwidth = Number(cell['@{~v#node.attrs.map}'].width);
-                                //let rowspan = Number(cell['@{~v#node.attrs.map}'].rowspan) || 1;
-                                let rowspan = cell['@{~v#node.attrs.map}'].rowspan;
+                                let attrsMap = cell['@{~v#node.attrs.map}'];
+                                let xwidth = Number(attrsMap.width);
+                                //let rowspan = Number(attrsMap.rowspan) || 1;
+                                let rowspan = attrsMap.rowspan;
                                 if (VariableReg.test(rowspan)) {
                                     defaults.__invalid = true;
                                 } else {
                                     rowspan = Number(rowspan) || 1;
                                 }
-                                let colspan = cell['@{~v#node.attrs.map}'].colspan;
+                                let colspan = attrsMap.colspan;
                                 if (VariableReg.test(colspan)) {
                                     defaults.__invalid = true;
                                 } else {
@@ -864,12 +865,24 @@ let Decoders = {
                                 if (xwidth >= 0) {
                                     width = xwidth;
                                 }
-                                let cheight = Number(cell['@{~v#node.attrs.map}'].height);
+                                let cheight = Number(attrsMap.height);
                                 if (cheight >= 0) {
                                     height = cheight;
                                 }
+                                let hasBorder = true;
                                 width = ToPixel(width);
                                 height = ToPixel(height);
+                                //debugger;
+                                if (attrsMap.style) {
+                                    let sd = StyleDecoder(attrsMap.style);
+                                    if (sd.borderWidth) {
+                                        hasBorder = parseInt(sd.borderWidth) > 0;
+                                    } else {
+                                        hasBorder = !defaults.hideBorder;
+                                    }
+                                } else {
+                                    hasBorder = !defaults.hideBorder;
+                                }
                                 let children = [];
                                 let walk = (nodes) => {
                                     if (nodes) {
@@ -893,6 +906,7 @@ let Decoders = {
                                     height,
                                     rowspan,
                                     colspan,
+                                    hasBorder,
                                     children
                                 });
                             }
