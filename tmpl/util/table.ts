@@ -842,8 +842,8 @@ export default {
         if (at === 0 || at === newRows.length) {
             let record = CreateRows(columnsCount, cell.height);
             let i = FindRowIndexByPureRow(rows, at === 0 ? at : at + 1);
-            let j = FindNearestCell(rows, i, moveDownwards);
-            rows.splice(j, 0, record);
+            //let j = FindNearestCell(rows, i, moveDownwards);
+            rows.splice(i, 0, record);
             if (moveDownwards) {
                 props.rowIndex++;
             }
@@ -867,8 +867,8 @@ export default {
             }
             let record = CreateRows(cellsToInsert, cell.height);
             let insert = FindRowIndexByPureRow(rows, at);
-            let j = FindNearestCell(rows, insert, moveDownwards);
-            rows.splice(j, 0, record);
+            //let j = FindNearestCell(rows, insert, moveDownwards);
+            rows.splice(insert, 0, record);
             if (moveDownwards) {
                 props.rowIndex++;
             }
