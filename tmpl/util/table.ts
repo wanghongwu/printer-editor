@@ -215,6 +215,7 @@ let CreateRows = (count, height) => {
     for (let i = 0; i < count; i++) {
         row.cells.push({
             tag: 'td',
+            hasBorder: true,
             height: height
         });
     }
@@ -537,8 +538,10 @@ export default {
             for (let i = 0; i < insert; i++) {
                 let newCell = {
                     tag: 'td',
+                    hasBorder: true,
                     width: -1
                 } as {
+                    hasBorder?: boolean
                     colspan?: number
                     rowspan?: number
                 };
@@ -579,8 +582,10 @@ export default {
             for (let i = 0; i < cellsToInsert; i++) {
                 let newCell = {
                     tag: 'td',
+                    hasBorder: true,
                     width
                 } as {
+                    hasBorder?: boolean
                     colspan?: number
                     rowspan?: number
                 };
@@ -634,6 +639,7 @@ export default {
                         tag: 'td',
                         colspan,
                         height,
+                        hasBorder: true,
                         width: cell.width,
                         rowspan: newCellsSpan
                     });
@@ -665,6 +671,7 @@ export default {
                 tag: 'tr',
                 cells: [{
                     tag: 'td',
+                    hasBorder: true,
                     width: cell.width,
                     colspan
                 }]
@@ -874,6 +881,7 @@ export default {
                     let { index: insert } = FindCellByPureCol(r, at === 0 ? at : at + 1);
                     r.cells.splice(insert, 0, {
                         tag: 'td',
+                        hasBorder: true,
                         width: cell.width
                     });
                 }
@@ -897,6 +905,7 @@ export default {
                 if (c.col == at) {
                     r.cells.splice(insert, 0, {
                         tag: 'td',
+                        hasBorder: true,
                         width: cell.width
                     });
                 } else {
@@ -1026,6 +1035,7 @@ export default {
                     added = 1;
                     rows[oRowIndex].cells.push({
                         tag: 'td',
+                        hasBorder: true,
                         width: -1,
                         height: -1
                     });
