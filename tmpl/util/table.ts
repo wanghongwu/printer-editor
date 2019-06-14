@@ -411,6 +411,25 @@ let FindFocusCell = (props, key) => {
     }
     return focusedCell;
 };
+let FindNearestCell = (rows, current, toTop) => {
+    if (toTop) {
+        while (current > 0) {
+            current--;
+            if (rows[current].tag == 'tr') {
+                return current + 1;
+            }
+        }
+        return 0;
+    } else {
+        while (current < rows.length) {
+            if (rows[current].tag == 'tr') {
+                return current + 1;
+            }
+            current++;
+        }
+        return current;
+    }
+};
 export default {
     '@{operate.row.or.col}'(props, type) {
         let update = false;
@@ -823,7 +842,8 @@ export default {
         if (at === 0 || at === newRows.length) {
             let record = CreateRows(columnsCount, cell.height);
             let i = FindRowIndexByPureRow(rows, at === 0 ? at : at + 1);
-            rows.splice(i, 0, record);
+            let j = FindNearestCell(rows, i, moveDownwards);
+            rows.splice(j, 0, record);
             if (moveDownwards) {
                 props.rowIndex++;
             }
@@ -847,7 +867,8 @@ export default {
             }
             let record = CreateRows(cellsToInsert, cell.height);
             let insert = FindRowIndexByPureRow(rows, at);
-            rows.splice(insert, 0, record);
+            let j = FindNearestCell(rows, insert, moveDownwards);
+            rows.splice(j, 0, record);
             if (moveDownwards) {
                 props.rowIndex++;
             }
