@@ -153,6 +153,7 @@ export default Designer.extend({
         }, {
             tip: '@{element.table.cellborder}',
             type: PropsDesc.CELLDROPDOWN,
+            ifShow: data => data.rowIndex > -1,
             //ifShow: data => data.rowIndex > -1 && !data.hideBorder,
             items: [{
                 text: '@{element.table.cellborder.yes}',
