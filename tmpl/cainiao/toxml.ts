@@ -1,4 +1,5 @@
 import Convert from '../util/converter';
+import Consts from './const';
 let ToMM = Convert["@{pixel.to.millimeter}"];
 let ToPT = Convert["@{pixel.to.pt}"];
 let VariableReg = /^\s*<%[\s\S]*%>\s*$/;
@@ -250,11 +251,11 @@ let Encoder = {
         let s3 = GSpace(space + 3);
         let s4 = GSpace(space + 4);
         let table = `${s2}<table`;
-        if (props.hideBorder) {
-            table += ` style="borderWidth:0;cellBorderWidth:0;"`;
-        } else {
-            table += ` style="borderWidth:0;"`;
-        }
+        //if (props.hideBorder) {
+        table += ` style="borderWidth:0;cellBorderWidth:0;"`;
+        //} else {
+        //table += ` style="borderWidth:0;"`;
+        //}
         table += ` editor:tip="${props.tip}">`;
         for (let r of props.rows) {
             if (r.tag == '#script') {
@@ -265,7 +266,12 @@ let Encoder = {
                     if (c.tag == '#script') {
                         table += `${s4}${c.text}`;
                     } else if (c.tag == 'td') {
-                        table += `${s4}<td width="${ToMM(c.width)}" height="${ToMM(c.height)}"`;
+                        table += `${s4}<td width="${ToMM(c.width)}"`;
+                        // let rowspan = c.rowspan || 1;
+                        // if ((props.__invalid && VariableReg.test(c.rowspan)) ||
+                        //     ((c.height / rowspan) != Consts.TABLE_ROWS_HEIGHT)) {
+                        table += ` height="${ToMM(c.height)}"`;
+                        //}
                         if (c.rowspan &&
                             (c.rowspan > 1 ||
                                 (props.__invalid && VariableReg.test(c.rowspan)))) {
@@ -276,7 +282,7 @@ let Encoder = {
                                 (props.__invalid && VariableReg.test(c.colspan)))) {
                             table += ` colspan="${c.colspan}"`;
                         }
-                        table += ` style="borderWidth:${!props.hideBorder && c.hasBorder ? 1 : 0}pt">`;
+                        table += ` style="borderWidth:${c.hasBorder ? 1 : 0}pt">`;
                         if (c.children && c.children.length) {
                             for (let cc of c.children) {
                                 let encoder = Encoder[cc.type];

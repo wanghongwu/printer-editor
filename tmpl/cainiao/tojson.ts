@@ -533,14 +533,14 @@ let StyleDecoder = style => {
 };
 let DecodeNodeAttrs = (node, validRules, host) => {
     for (let a of node['@{~v#node.attrs}']) {
-        ReadByRule('page', validRules, a['@{~v#node.attrs.key}'], a['@{~v#node.attrs.value}'], host);
+        ReadByRule(node['@{~v#node.tag}'], validRules, a['@{~v#node.attrs.key}'], a['@{~v#node.attrs.value}'], host);
     }
     let map = node['@{~v#node.attrs.map}'];
     let style = map.style;
     if (style) {
         let ss = StyleDecoder(style);
         for (let s in ss) {
-            ReadByRule('layout', validRules, s, ss[s], host);
+            ReadByRule(node['@{~v#node.tag}'], validRules, s, ss[s], host);
         }
     }
     let tip = map['editor:tip'];
@@ -814,9 +814,10 @@ let Decoders = {
         let keys = ValidKeys.table;
         DecodeNodeAttrs(prt, keys, defaults);
         DecodeNodeAttrs(node, keys, defaults);
-        if (Has(defaults, 'cellBorderWidth') && Has(defaults, 'borderWidth')) {
-            defaults.hideBorder = defaults.borderWidth === 0 && defaults.cellBorderWidth === 0;
-        }
+        // if (Has(defaults, 'cellBorderWidth') && Has(defaults, 'borderWidth')) {
+        //     defaults.hideBorder = defaults.borderWidth === 0 && defaults.cellBorderWidth === 0;
+        // }
+        // let noBorderWidth = defaults.borderWidth === 0;
         let e = {
             id: Magix.guid('e_'),
             type,
@@ -878,10 +879,10 @@ let Decoders = {
                                     if (sd.borderWidth) {
                                         hasBorder = parseInt(sd.borderWidth) > 0;
                                     } else {
-                                        hasBorder = !defaults.hideBorder;
+                                        hasBorder = true;
                                     }
                                 } else {
-                                    hasBorder = !defaults.hideBorder;
+                                    hasBorder = true;
                                 }
                                 let children = [];
                                 let walk = (nodes) => {

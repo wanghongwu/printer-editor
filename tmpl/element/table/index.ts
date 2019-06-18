@@ -6,14 +6,6 @@ import Table from '../../util/table';
 import CNC from '../../cainiao/const';
 import Keys from '../../editor/const/keys';
 import Convert from '../../util/converter';
-const KeysMap = {
-    [Keys.L]: 'left',
-    [Keys.R]: 'right',
-    [Keys.U]: 'top',
-    [Keys.D]: 'bottom',
-    [Keys.T]: 'top',
-    [Keys.B]: 'bottom'
-};
 const MenusMap = {
     8: 'rt',
     9: 'rb',
@@ -31,7 +23,7 @@ export default View.extend<Editor.Dragdrop>({
         this['@{owner.node}'] = $('#' + this.id);
         let watchKeydown = e => {
             let props = data.props;
-            let update = Table["@{move.focus}"](props, KeysMap[e.key]);
+            let update = Table["@{move.focus}"](props, e.dir);
             if (update) {
                 State.fire('@{property&element.property.change}', {
                     data: props,

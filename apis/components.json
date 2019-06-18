@@ -68,6 +68,25 @@
                 "text": "<%=abc%>",
                 "alias": "测试"
             }
+        },
+        {
+            "type": "table",
+            "name": "表格",
+            "props": {
+                "rows": [
+                    {
+                        "tag": "tr",
+                        "cells": [
+                            {
+                                "tag": "td",
+                                "hasBorder": true,
+                                "width": 100,
+                                "height": 30
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     ],
     "status": 1,

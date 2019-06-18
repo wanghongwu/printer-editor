@@ -8,7 +8,7 @@
             <tr>
                 {{each row.cells as cell ci}}
                     {{if cell.tag=='td'}}
-                    <td class="cell{{if !hideBorder&&cell.hasBorder}} show-border{{/if}}" style="width:{{=cell.width}}px;height:{{=cell.height}}px" mx-mousedown="@{select.cell}({row:{{=ri}},col:{{=ci}}})" mx-contextmenu="@{table.prevent}({row:{{=ri}},col:{{=ci}}})" id="{{=vId}}_c_{{=ri}}_{{=ci}}"{{if cell.rowspan&&cell.rowspan>1}} rowspan="{{=cell.rowspan}}"{{/if}}{{if cell.colspan&&cell.colspan>1}} colspan="{{=cell.colspan}}"{{/if}}>
+                    <td class="cell{{if cell.hasBorder}} show-border{{/if}}" style="width:{{=cell.width}}px;height:{{=cell.height}}px" mx-mousedown="@{select.cell}({row:{{=ri}},col:{{=ci}}})" mx-contextmenu="@{table.prevent}({row:{{=ri}},col:{{=ci}}})" id="{{=vId}}_c_{{=ri}}_{{=ci}}"{{if cell.rowspan&&cell.rowspan>1}} rowspan="{{=cell.rowspan}}"{{/if}}{{if cell.colspan&&cell.colspan>1}} colspan="{{=cell.colspan}}"{{/if}}>
                         <div class="dashed none" id="{{=vId}}_dashed_{{=ri}}_{{=ci}}"></div>
                         <!--data-role不能删除，在util/convert.ts中，坐标转换要用-->
                         <div class="cell-content" data-role="table-cell">

@@ -48,8 +48,8 @@ export default View.extend({
             data,
             eId
         });
+        this.render();
         if (!e.params.ui) {
-            this.render();
             State.fire('@{history&save.snapshot}');
         }
     },

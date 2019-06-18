@@ -11,6 +11,12 @@ import ClickDesc from '../const/click-desc';
 import Keys from '../const/keys';
 import DesignerHistory from './history';
 import { Clipboard, StageElements, StageSelectElements } from './workaround';
+const KeysMap = {
+    [Keys.A]: 'left',
+    [Keys.D]: 'right',
+    [Keys.W]: 'top',
+    [Keys.S]: 'bottom'
+};
 //import UIDesc from '../const/ui-desc';
 //const ToFloat = Convert["@{to.float}"];
 
@@ -278,15 +284,13 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
             if (e.keyCode == Keys.F) {
                 e.preventDefault();
                 StageElements["@{focus.select.element.td}"]();
-            } else if (e.keyCode == Keys.L ||
-                e.keyCode == Keys.R ||
-                e.keyCode == Keys.U ||
+            } else if (e.keyCode == Keys.A ||
+                e.keyCode == Keys.S ||
                 e.keyCode == Keys.D ||
-                e.keyCode == Keys.T ||
-                e.keyCode == Keys.B) {
+                e.keyCode == Keys.W) {
                 e.preventDefault();
                 State.fire('@{stage&move.table.focus}', {
-                    key: e.keyCode
+                    dir: KeysMap[e.keyCode]
                 });
             }
         }

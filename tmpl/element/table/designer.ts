@@ -35,17 +35,17 @@ export default Designer.extend({
                     tag: 'tr',
                     cells: [{
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
@@ -53,17 +53,17 @@ export default Designer.extend({
                     tag: 'tr',
                     cells: [{
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }, {
                         tag: 'td',
-                        hasBorder:true,
+                        hasBorder: true,
                         height: CNC.TABLE_ROWS_HEIGHT,
                         width: CNC.TABLE_CELLS_WIDTH
                     }]
@@ -109,7 +109,20 @@ export default Designer.extend({
             tip: '@{element.table.border}',
             key: 'hideBorder',
             type: PropsDesc.BOOLEAN,
-            refresh: true
+            refresh: true,
+            write(v, prop) {
+                let { rows } = prop;
+                for (let row of rows) {
+                    if (row.tag == 'tr') {
+                        for (let c of row.cells) {
+                            if (c.tag == 'td') {
+                                c.hasBorder = !v;
+                            }
+                        }
+                    }
+                }
+                return v;
+            }
         }, {
             tip: '@{element.table.paging}',
             key: 'splitable',
@@ -140,7 +153,7 @@ export default Designer.extend({
         }, {
             tip: '@{element.table.cellborder}',
             type: PropsDesc.CELLDROPDOWN,
-            ifShow: data => data.rowIndex > -1 && !data.hideBorder,
+            //ifShow: data => data.rowIndex > -1 && !data.hideBorder,
             items: [{
                 text: '@{element.table.cellborder.yes}',
                 value: true
