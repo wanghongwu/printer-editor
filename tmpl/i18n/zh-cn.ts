@@ -5,6 +5,7 @@ export default {
     '@{print.background.setting.auto}': '默认',
     '@{print.background.setting.page}': '背景适应纸张',
     '@{print.background.setting.bg}': '纸张适应背景',
+    '@{print.background.clear}': '清除',
     '@{property}': '属性',
     '@{property.component.tree}': '结构树',
     '@{property.type}': '类型',

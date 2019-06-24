@@ -5,6 +5,7 @@ export default {
     '@{print.background.setting.auto}': 'Auto',
     '@{print.background.setting.page}': 'Use Page',
     '@{print.background.setting.bg}': 'Use Background',
+    '@{print.background.clear}': 'Clear',
     '@{property}': 'Property',
     '@{property.component.tree}': 'Component Tree',
     '@{property.image.size}': 'Use Original Size',

@@ -59,7 +59,9 @@
                     <input class="file" accept="image/*" type="file" mx-change="@{set.bg.image}()"/>
                 </div>
                 {{if showBG}}
-                <button class="btn ml5" mx-click="@{clear.bg.image}()">clear</button>
+                <button class="btn ml5" mx-click="@{clear.bg.image}()">
+                    {{=i18n('@{print.background.clear}')}}
+                </button>
                 {{/if}}
             </div>
         </div>
