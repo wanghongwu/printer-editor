@@ -57,7 +57,7 @@ export default View.extend({
         let updater = this.updater;
         let data = updater.get('data');
         let eId = updater.get('eId');
-        let { rows, rowIndex, colIndex } = data;
+        let { rows, rowIndex, colIndex, hideBorder } = data;
         let row = rows[rowIndex];
         if (!row) {
             console.error(`can not find ${rowIndex} row,use first as default`);
@@ -69,6 +69,21 @@ export default View.extend({
             col = row.cells[0];
         }
         col.hasBorder = e.value;
+        let hd = true;
+        outer: for (let row of rows) {
+            if (row.tag == 'tr') {
+                for (let c of row.cells) {
+                    if (c.tag == 'td' && c.hasBorder) {
+                        hd = false;
+                        break outer;
+                    }
+                }
+            }
+        }
+        if (hd != hideBorder) {
+            data.hideBorder = hd;
+            this.render();
+        }
         State.fire('@{property&element.property.change}', {
             data,
             eId

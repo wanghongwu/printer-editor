@@ -185,7 +185,7 @@ let ToNum = f => {
 };
 let ToDeg = f => ToNum(f) % 360;
 let VariableReg = /^\s*<%[\s\S]*%>\s*$/;
-//let ToMM = Convert["@{pixel.to.millimeter}"];
+let ToMM = Convert["@{pixel.to.millimeter}"];
 let Types = {
     STRING: 1,
     NUMBER: 2,
@@ -323,9 +323,21 @@ let ValidKeys = {
             enums: ToMap(CNC.FONT_FAMILIES, 'value'),
             back: CNC.FONT_FAMILIES[1].value
         },
+        autoFontSize: {
+            type: Types.BOOLEAN,
+            parse: v => v == 'auto'
+        },
         fontSize: {
             type: Types.NUMBER,
-            min: 0
+            min: 0,
+            parse(v, host) {
+                if (v == 'auto') {
+                    host.autoFontSize = true;
+                    host.fontSizeLocked = true;
+                    v = 10;
+                }
+                return v;
+            }
         },
         lineHeight: {
             type: Types.STRING
@@ -471,7 +483,7 @@ let ReadByRule = (tag, rule, key, v, host) => {
     if (Has(rule, key)) {
         let i = rule[key];
         if (i.parse) {
-            v = i.parse(v);
+            v = i.parse(v, host);
         }
         if (i.type == Types.NUMBER) {
             v = ToNum(v);
@@ -805,12 +817,12 @@ let Decoders = {
                 }
             }
         }
-        let pprt = map[prt['@{~v#node.pId}']];
-        if (pprt && pprt['@{~v#node.tag}'] == 'layout') {
-            defaults.splitable = true;
-        } else {
-            defaults.splitable = false;
-        }
+        // let pprt = map[prt['@{~v#node.pId}']];
+        // if (pprt && pprt['@{~v#node.tag}'] == 'layout') {
+        //     defaults.splitable = true;
+        // } else {
+        //     defaults.splitable = false;
+        // }
         let keys = ValidKeys.table;
         DecodeNodeAttrs(prt, keys, defaults);
         DecodeNodeAttrs(node, keys, defaults);
@@ -818,6 +830,7 @@ let Decoders = {
         //     defaults.hideBorder = defaults.borderWidth === 0 && defaults.cellBorderWidth === 0;
         // }
         // let noBorderWidth = defaults.borderWidth === 0;
+        let hideBorder = true;
         let e = {
             id: Magix.guid('e_'),
             type,
@@ -848,6 +861,7 @@ let Decoders = {
                                 });
                             } else {
                                 let width = -1, height = -1;
+                                let autoHeight = false;
                                 let attrsMap = cell['@{~v#node.attrs.map}'];
                                 let xwidth = Number(attrsMap.width);
                                 //let rowspan = Number(attrsMap.rowspan) || 1;
@@ -869,6 +883,13 @@ let Decoders = {
                                 let cheight = Number(attrsMap.height);
                                 if (cheight >= 0) {
                                     height = cheight;
+                                    if (cheight == 0) {
+                                        height = ToMM(CNC.TABLE_ROWS_HEIGHT);
+                                        autoHeight = true;
+                                    }
+                                } else {
+                                    height = ToMM(CNC.TABLE_ROWS_HEIGHT);
+                                    autoHeight = true;
                                 }
                                 let hasBorder = true;
                                 width = ToPixel(width);
@@ -878,11 +899,16 @@ let Decoders = {
                                     let sd = StyleDecoder(attrsMap.style);
                                     if (sd.borderWidth) {
                                         hasBorder = parseInt(sd.borderWidth) > 0;
+                                        if (hasBorder) {
+                                            hideBorder = false;
+                                        }
                                     } else {
                                         hasBorder = true;
+                                        hideBorder = false;
                                     }
                                 } else {
                                     hasBorder = true;
+                                    hideBorder = false;
                                 }
                                 let children = [];
                                 let walk = (nodes) => {
@@ -907,6 +933,7 @@ let Decoders = {
                                     height,
                                     rowspan,
                                     colspan,
+                                    autoHeight,
                                     hasBorder,
                                     children
                                 });
@@ -920,6 +947,7 @@ let Decoders = {
                 }
                 defaults.rows.push(record);
             }
+            defaults.hideBorder = hideBorder;
             Table["@{update.cells.metas}"](defaults);
         }
         RecordScripts(e, node, prt);

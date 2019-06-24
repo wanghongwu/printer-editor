@@ -64,14 +64,14 @@ module.exports = Magix.View.extend({
         if (v || v === 0) {
             let max = me['@{max}'];
             let min = me['@{min}'];
-            let step = me['@{step}'];
+            //let step = me['@{step}'];
             if (v > max) {
                 v = max;
             } else if (v < min) {
                 v = min;
             }
             if (v !== me['@{value}']) {
-                v = step < 1 ? Math.round(v / step) * step : v;
+                //v = step < 1 ? Math.round(v / step) * step : v;
                 v = v.toFixed(me['@{tail.length}']);
                 if (!ignoreFill) {
                     me['@{ctrl.input}'].val(v);

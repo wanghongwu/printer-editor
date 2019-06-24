@@ -1,5 +1,5 @@
 import Convert from '../util/converter';
-import Consts from './const';
+//import CNC from './const';
 let ToMM = Convert["@{pixel.to.millimeter}"];
 let ToPT = Convert["@{pixel.to.pt}"];
 let VariableReg = /^\s*<%[\s\S]*%>\s*$/;
@@ -31,7 +31,9 @@ let TextEncode = ({ props }, space, vertical) => {
     if (props.alpha != 1) {
         textStyle += `alpha:${props.alpha};`;
     }
-    if (props.fontSize != 8) {
+    if (props.autoFontSize) {
+        textStyle += 'fontSize:auto;';
+    } else if (props.fontSize != 8) {
         textStyle += `fontSize:${props.fontSize};`;
     }
     if (props.lineHeight[0] !== '') {
@@ -269,8 +271,12 @@ let Encoder = {
                         table += `${s4}<td width="${ToMM(c.width)}"`;
                         // let rowspan = c.rowspan || 1;
                         // if ((props.__invalid && VariableReg.test(c.rowspan)) ||
-                        //     ((c.height / rowspan) != Consts.TABLE_ROWS_HEIGHT)) {
-                        table += ` height="${ToMM(c.height)}"`;
+                        //     ((c.height / rowspan) != CNC.TABLE_ROWS_HEIGHT)) {
+                        if (c.autoHeight) {
+                            table += ` height="0"`;
+                        } else {
+                            table += ` height="${ToMM(c.height)}"`;
+                        }
                         //}
                         if (c.rowspan &&
                             (c.rowspan > 1 ||
@@ -316,8 +322,9 @@ let Encoder = {
         if (props.splitable) {
             height = '';
         }
-        let layout = `${s1}<layout editor:_for_="${Date.now()}"${s2}width="${ToMM(props.width)}"${height}${s2}left="${ToMM(props.x)}"${s2}top="${ToMM(props.y)}"${s2}style="zIndex:${props.zIndex}">${content}${s1}</layout>`;
-        return props.splitable ? `${s0}<layout orientation="vertical">${layout}${s0}</layout>` : layout;
+        let layout = `${s1}<layout editor:_for_="${Date.now()}"${s2}width="${ToMM(props.width)}"${height}${s2}left="${ToMM(props.x)}"${s2}top="${ToMM(props.y)}"${s2}style="zIndex:${props.zIndex}" orientation="vertical">${content}${s1}</layout>`;
+        //return props.splitable ? `${s0}<layout orientation="vertical">${layout}${s0}</layout>` : layout;
+        return layout;
     },
     '#script'(e, space) {
         return `${GSpace(space + 1)}${e.text}`;

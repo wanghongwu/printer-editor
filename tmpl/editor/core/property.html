@@ -20,7 +20,7 @@
             {{else if prop.type==desc.TEXTAREA}}
                 <textarea class="textarea" mx-input="@{prop.change}({key:'{{=prop.key}}'})" @disabled="{{=data.locked&&!prop.role}}" style="height:100px;">{{=data[prop.key]}}</textarea>
             {{else if prop.type==desc.NUMBER}}
-                <mx-number value="{{@prop.read?prop.read(data[prop.key]):data[prop.key]}}" mx-input="@{prop.change}({key:'{{=prop.key}}',read:'value',write:{{@prop.write}},sync:{{@prop.sync}},refresh:{{@prop.refresh}}})" @min="{{=prop.min}}" @max="{{=prop.max}}" @step="{{=prop.step}}" @fixed="{{=prop.fixed}}" @#readonly="{{=data.locked||data[prop.key+'Locked'}}" @disabled="{{=data.locked||data.lockedX||data[prop.key+'Locked']}}" />
+                <mx-number value="{{@prop.read?prop.read(data[prop.key]):data[prop.key]}}" mx-input="@{prop.change}({key:'{{=prop.key}}',read:'value',write:{{@prop.write}},sync:{{@prop.sync}},refresh:{{@prop.refresh}}})" @min="{{=prop.min}}" @max="{{=prop.max}}" @step="{{=prop.step}}" @fixed="{{=prop.fixed}}" @#readonly="{{=data.locked||data[prop.key+'Locked'}}" @disabled="{{=data.locked||data[prop.key+'Locked']}}" />
             {{else if prop.type==desc.DROPDOWN}}
                 <mx-dropdown mx-change="@{prop.change}({key:'{{=prop.key}}',read:'value',refresh:{{@prop.refresh}}})" list="{{@prop.items}}" @text-key="{{=prop.textKey}}" @value-key="{{=prop.valueKey}}" selected="{{=data[prop.key]}}" @disabled="{{=data.locked}}"/>
             {{else if prop.type==desc.CELLDROPDOWN}}

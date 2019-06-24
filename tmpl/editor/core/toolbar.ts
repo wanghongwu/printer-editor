@@ -226,5 +226,66 @@ export default Magix.View.extend({
         } else {
             DesignerHistory["@{undo}"]();
         }
+    },
+    '@{set.bg.image}<change>'(e) {
+        let files = e.eventTarget.files;
+        let file = files[0];
+        let reader = new FileReader();
+        reader.onload = () => {
+            State.fire('@{stage&set.background}', {
+                show: true,
+                src: reader.result
+            });
+            this.updater.digest({
+                bgSize: 'auto',
+                showBG: true,
+                src: reader.result
+            });
+        };
+        reader.onerror = () => {
+            this.alert(I18n('@{property.load.img.error}'));
+        };
+        reader.readAsDataURL(file);
+    },
+    '@{update.bg.size}<change>'(e) {
+        let { size } = e.params;
+        let page = this.updater.get('page');
+        if (size == 'bg') {
+            let img = new Image();
+            img.onload = () => {
+                let w = img.width;
+                let h = img.height;
+                let c = 0;
+                if (page.width != w) {
+                    c = 1;
+                    page.width = w;
+                }
+                if (page.height != h) {
+                    c = 1;
+                    page.height = h;
+                }
+
+                if (c) {
+                    this.render();
+                    State.fire('@{stage&ui.change}');
+                    //State.fire('@{history&save.snapshot}');
+                }
+            };
+            img.src = this.updater.get('src');
+        }
+        State.fire('@{stage&update.background}', {
+            size
+        });
+        this.updater.set({
+            bgSize: size
+        });
+    },
+    '@{clear.bg.image}<click>'() {
+        State.fire('@{stage&set.background}', {
+            show: false
+        });
+        this.updater.digest({
+            showBG: false
+        });
     }
 });

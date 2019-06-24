@@ -188,24 +188,25 @@ export default View.extend<Editor.Dragdrop>({
                 let rowspan = cell.rowspan || 1;
                 let next = ref.rowHeights[cell.row + rowspan];
                 ndy = next - dy;
-                if (ndy < 0) {
-                    dy = next;
-                    ndy = 0;
-                } else if (ndy > next + startHeight) {
-                    ndy = next + startHeight - 1;
+                console.log(next, dy, ndy, next + startHeight);
+                if (ndy < CNC.TABLE_MIN_SIZE) {
+                    dy = next - CNC.TABLE_MIN_SIZE;
+                    ndy = CNC.TABLE_MIN_SIZE;
+                } else if (ndy > next + startHeight - CNC.TABLE_MIN_SIZE) {
+                    ndy = next + startHeight - CNC.TABLE_MIN_SIZE;
                 }
                 let colspan = cell.colspan || 1;
                 let nextCol = ref.colWidths[cell.col + colspan];
                 ndx = nextCol - dx;
-                if (ndx < 0) {
-                    dx = nextCol;
-                    ndx = 0;
-                } else if (ndx > nextCol + startWidth) {
-                    ndx = nextCol + startWidth;
+                if (ndx < CNC.TABLE_MIN_SIZE) {
+                    dx = nextCol - CNC.TABLE_MIN_SIZE;
+                    ndx = CNC.TABLE_MIN_SIZE;
+                } else if (ndx > nextCol + startWidth - CNC.TABLE_MIN_SIZE) {
+                    ndx = nextCol + startWidth - CNC.TABLE_MIN_SIZE;
                 }
             }
-            let h = Math.max(startHeight + dy, 0);
-            let w = Math.max(0, startWidth + dx);
+            let h = Math.max(startHeight + dy, CNC.TABLE_MIN_SIZE);
+            let w = Math.max(CNC.TABLE_MIN_SIZE, startWidth + dx);
             if (type == 'row') {
                 if (h != cell.height) {
                     moved = true;

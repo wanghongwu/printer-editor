@@ -185,6 +185,17 @@ export default View.extend<Editor.Dragdrop & Editor.Service>({
                 bar.hide();
             }
         });
+        State.on('@{stage&set.background}', e => {
+            me.updater.digest({
+                showPrintBG: e.show,
+                printBG: e.src
+            })
+        });
+        State.on('@{stage&update.background}', e => {
+            me.updater.digest({
+                bgSize: e.size
+            });
+        });
         me.updater.set({
             elements: State.get('@{stage&elements}')
         });

@@ -58,6 +58,7 @@ export default Designer.extend({
                 alpha: 1,
                 supportCNStyle: false,
                 useCNStyle: false,
+                autoFontSize: false,
                 fontFamily: 'SimHei',
                 fontSize: 8,
                 lineHeight: ['', 'mm'],
@@ -125,7 +126,7 @@ export default Designer.extend({
             type: PropsDesc.NUMBER,
             min: '0',
             max: 1,
-            fixed: 1,
+            fixed: 2,
             step: 0.1
         }, {
             tip: '@{element.text.ff}',
@@ -141,6 +142,14 @@ export default Designer.extend({
             min: '0',
             step: 1,
             fixed: 2
+        }, {
+            tip: '@{element.text.auto.fsize}',
+            key: 'autoFontSize',
+            type: PropsDesc.BOOLEAN,
+            write(v, prop) {
+                prop.fontSizeLocked = v;
+                return v;
+            }
         }, {
             tip: '@{element.text.lspacing}',
             key: 'letterSpacing',

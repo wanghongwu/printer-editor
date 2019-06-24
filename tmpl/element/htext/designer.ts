@@ -65,6 +65,7 @@ export default Designer.extend({
                 align: ['left', 'top'],
                 letterSpacing: 0,
                 fontWeight: 'normal',
+                autoFontSize: false,
                 text: '',
                 alias: '',
                 direction: 'ltr',
@@ -124,7 +125,7 @@ export default Designer.extend({
             type: PropsDesc.NUMBER,
             min: '0',
             max: 1,
-            fixed: 1,
+            fixed: 2,
             step: 0.1
         }, {
             tip: '@{element.text.ff}',
@@ -140,6 +141,14 @@ export default Designer.extend({
             min: '0',
             step: 1,
             fixed: 2
+        }, {
+            tip: '@{element.text.auto.fsize}',
+            key: 'autoFontSize',
+            type: PropsDesc.BOOLEAN,
+            write(v, prop) {
+                prop.fontSizeLocked = v;
+                return v;
+            }
         }, {
             tip: '@{element.text.lspacing}',
             key: 'letterSpacing',

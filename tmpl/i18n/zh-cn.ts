@@ -1,5 +1,10 @@
 export default {
     '@{site.title}': '打印设计器',
+    '@{print.background}': '套打背景',
+    '@{print.background.setting}': '套打尺寸',
+    '@{print.background.setting.auto}': '默认',
+    '@{print.background.setting.page}': '背景适应纸张',
+    '@{print.background.setting.bg}': '纸张适应背景',
     '@{property}': '属性',
     '@{property.component.tree}': '结构树',
     '@{property.type}': '类型',
@@ -133,6 +138,7 @@ export default {
     '@{element.text.lineheight}': '行高',
     '@{element.text.lspacing}': '字间距',
     '@{element.text.fsize}': '字号',
+    '@{element.text.auto.fsize}': '自动字号',
     '@{element.text.ff}': '字体',
     '@{element.text.width}': '文本长度',
     '@{element.text.height}': '文本高度',

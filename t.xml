@@ -4,55 +4,47 @@
     xsi:schemaLocation="http://cloudprint.cainiao.com/print http://cloudprint-docs-resource.oss-cn-shanghai.aliyuncs.com/lpml_schema.xsd"
     xmlns:editor="http://cloudprint.cainiao.com/schema/editor"
     width="210" height="110">
-	<layout orientation="vertical">
-		<layout editor:_for_="1560844756397"
-			width="158.76"
-			left="32.54"
-			top="26.46"
-			style="zIndex:1">
-			<table style="borderWidth:0;cellBorderWidth:0;" editor:tip="表格">
-				<tr>
-					<td width="52.92" height="7.94" style="borderWidth:0pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:0pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:0pt"></td>
-				</tr>
-				<tr>
-					<td width="52.92" height="7.94" style="borderWidth:0pt">
-						<layout editor:_for_="1560844756397"
-							width="25"
-							height="5"
-							left="11.38"
-							top="2.12"
-							style="zIndex:1">
-							<text style="fontFamily:SimHei;"
-								editor:tip="横向文本">
-								<![CDATA[123]]>
-							</text>
-						</layout>
-					</td>
-					<td width="52.92" height="7.94" style="borderWidth:0pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:1pt">
-						<layout editor:_for_="1560844756397"
-							width="26"
-							height="26"
-							left="6.88"
-							top="1.32"
-							style="zIndex:1">
-							<rect editor:tip="矩形"></rect>
-						</layout>
-					</td>
-				</tr>
-				<tr>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-				</tr>
-				<tr>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-					<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
-				</tr>
-			</table>
-		</layout>
+	<layout editor:_for_="1560912606736"
+		width="158.75"
+		height="15.87"
+		left="17.46"
+		top="33.87"
+		style="zIndex:1" orientation="vertical">
+		<table style="borderWidth:0;cellBorderWidth:0;" editor:tip="表格">
+			<tr>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+			</tr>
+			<tr>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+			</tr>
+		</table><text value="abc"/>
+		<table style="borderWidth:0;cellBorderWidth:0;" editor:tip="表格">
+			<tr>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+				<th width="52.92" height="7.94" style="borderWidth:1pt"></th>
+			</tr>
+			<tr>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+				<td width="52.92" height="7.94" style="borderWidth:1pt"></td>
+			</tr>
+		</table>
+	</layout>
+	<layout editor:_for_="1560912606736"
+		width="158.75"
+		height="15.87"
+		left="10.58"
+		top="10.85"
+		style="zIndex:2" orientation="vertical">
+
+		<text value="abc"/>
+		<text value="abc"/>
+		<text value="abc"/>
+		<text value="abc"/>
 	</layout>
 </page>

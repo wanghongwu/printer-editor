@@ -5,6 +5,7 @@ import $ from '$';
 import Magix from 'magix';
 import Convert from '../../util/converter';
 import Table from '../../util/table';
+import CNC from '../../cainiao/const';
 Magix.applyStyle('@size.less');
 export default Magix.View.extend({
     tmpl: '@size.html',
@@ -27,6 +28,7 @@ export default Magix.View.extend({
         this.updater.set({
             col,
             props: data.props,
+            mSize: CNC.TABLE_MIN_SIZE,
             read: Convert["@{pixel.to.millimeter}"],
             disabled: data.disabled
         });
@@ -35,10 +37,23 @@ export default Magix.View.extend({
     render() {
         this.updater.digest();
     },
-    '@{set}<input>'(e) {
-        let { type } = e.params;
-        let num = Convert["@{millimeter.to.pixel}"](e.value);
+    '@{set.auto}<change>'(e) {
         let { props, col } = this.updater.get();
+        let auto = e.eventTarget.checked;
+        col.autoHeight = auto;
+        if (auto) {
+            col.height = CNC.TABLE_ROWS_HEIGHT;
+        }
+        // if (!col.id) {
+        //     col.id = Magix.guid('td_');
+        // }
+        Table["@{update.cells.metas}"](props);
+        this['@{owner.node}'].trigger('change');
+    },
+    '@{set}<input,change>'(e) {
+        let { type } = e.params;
+        let { props, col } = this.updater.get();
+        let num = Convert["@{millimeter.to.pixel}"](e.value);
         if (type == 'row') {
             col.height = num;
         } else if (type == 'col') {

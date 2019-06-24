@@ -1,5 +1,10 @@
 export default {
     '@{site.title}': 'Printer Designer',
+    '@{print.background}': 'Background',
+    '@{print.background.setting}': 'Bg Size',
+    '@{print.background.setting.auto}': 'Auto',
+    '@{print.background.setting.page}': 'Use Page',
+    '@{print.background.setting.bg}': 'Use Background',
     '@{property}': 'Property',
     '@{property.component.tree}': 'Component Tree',
     '@{property.image.size}': 'Use Original Size',
@@ -133,6 +138,7 @@ export default {
     '@{element.text.lineheight}': 'Line Height',
     '@{element.text.lspacing}': 'Lt-Spacing',
     '@{element.text.fsize}': 'Font Size',
+    '@{element.text.auto.fsize}': 'Auto FS',
     '@{element.text.ff}': 'Font Family',
     '@{element.text.width}': 'Width',
     '@{element.text.height}': 'Height',

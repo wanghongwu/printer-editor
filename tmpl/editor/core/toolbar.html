@@ -44,7 +44,7 @@
         {{set header=page.header===''?'':toMM(page.header)}}
         {{set footer=page.footer===''?'':toMM(page.footer)}}
         <div class="form-item clearfix">
-            <label class="form-label">{{=i18n('@{page.header}')}}：</label>
+            <label class="form-label fl">{{=i18n('@{page.header}')}}：</label>
             <div class="form-content">
                 <mx-number class="input num-hf" value="{{=header}}" mx-input="@{set.value}({key:'header'})" min="0" fixed="2" max="{{=CNC.PAGE_WIDTH_MAX}}"/>
                 <span class="ib gap-hf">{{=i18n('@{page.footer}')}}：</span>
@@ -52,8 +52,36 @@
             </div>
         </div>
         <div class="form-item clearfix">
-            <label class="form-label">{{=i18n('@{paper.splitable}')}}：</label>
-            <div class="form-content">
+            <label class="form-label fl">{{=i18n('@{print.background}')}}：</label>
+            <div class="form-content fl">
+                <div class="ib btn btn-brand btn-bg">
+                    {{=i18n('@{element.image.choose}')}}
+                    <input class="file" accept="image/*" type="file" mx-change="@{set.bg.image}()"/>
+                </div>
+                {{if showBG}}
+                <button class="btn ml5" mx-click="@{clear.bg.image}()">clear</button>
+                {{/if}}
+            </div>
+        </div>
+        {{if showBG}}
+        <div class="form-item clearfix">
+            <label class="form-label fl">{{=i18n('@{print.background.setting}')}}：</label>
+            <div class="form-content fl">
+                <label class="center mr10">
+                    <input type="radio"{{if bgSize=='auto'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'auto'})"/>{{=i18n('@{print.background.setting.auto}')}}
+                </label>
+                <label class="center mr10">
+                    <input type="radio"{{if bgSize=='page'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'page'})"/>{{=i18n('@{print.background.setting.page}')}}
+                </label>
+                <label class="center">
+                    <input type="radio"{{if bgSize=='bg'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'bg'})"/>{{=i18n('@{print.background.setting.bg}')}}
+                </label>
+            </div>
+        </div>
+        {{/if}}
+        <div class="form-item clearfix">
+            <label class="form-label fl">{{=i18n('@{paper.splitable}')}}：</label>
+            <div class="form-content fl">
                 <input @checked="{{=page.splitable}}" class="switch" type="checkbox" mx-change="@{set.value}({key:'splitable'})"/>
             </div>
         </div>

@@ -193,9 +193,9 @@ export default Magix.View.extend({
                     }
                 }, (err, bag) => {
                     let end = Date.now();
-                    this['@{delay.task}'](start, end, 300, () => {
+                    me['@{delay.task}'](start, end, 300, () => {
                         if (err) {
-                            this.alert(err.msg);
+                            me.alert(err.msg);
                             callback(err);
                         } else {
                             callback(null, bag.get('data.url', ''));

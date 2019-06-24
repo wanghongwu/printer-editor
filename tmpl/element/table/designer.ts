@@ -28,7 +28,7 @@ export default Designer.extend({
                 height: 2 * CNC.TABLE_ROWS_HEIGHT,
                 rowIndex: -1,
                 colIndex: -1,
-                splitable: true,
+                //splitable: true,
                 hideBorder: false,
                 lockSize: false,
                 rows: [{
@@ -123,11 +123,11 @@ export default Designer.extend({
                 }
                 return v;
             }
-        }, {
+        }, /*{
             tip: '@{element.table.paging}',
             key: 'splitable',
             type: PropsDesc.BOOLEAN
-        }, {
+        },*/ {
             tip: '@{element.table.dwidth}',
             type: PropsDesc.CELLCOLSHARE
         }, {
