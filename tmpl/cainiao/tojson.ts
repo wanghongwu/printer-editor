@@ -817,12 +817,12 @@ let Decoders = {
                 }
             }
         }
-        // let pprt = map[prt['@{~v#node.pId}']];
-        // if (pprt && pprt['@{~v#node.tag}'] == 'layout') {
-        //     defaults.splitable = true;
-        // } else {
-        //     defaults.splitable = false;
-        // }
+        let pprt = map[prt['@{~v#node.pId}']];
+        if (pprt && pprt['@{~v#node.tag}'] == 'layout') {
+            defaults.splitable = true;
+        } else {
+            defaults.splitable = false;
+        }
         let keys = ValidKeys.table;
         DecodeNodeAttrs(prt, keys, defaults);
         DecodeNodeAttrs(node, keys, defaults);

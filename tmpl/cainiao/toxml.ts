@@ -323,8 +323,8 @@ let Encoder = {
             height = '';
         }
         let layout = `${s1}<layout editor:_for_="${Date.now()}"${s2}width="${ToMM(props.width)}"${height}${s2}left="${ToMM(props.x)}"${s2}top="${ToMM(props.y)}"${s2}style="zIndex:${props.zIndex}" orientation="vertical">${content}${s1}</layout>`;
-        //return props.splitable ? `${s0}<layout orientation="vertical">${layout}${s0}</layout>` : layout;
-        return layout;
+        return props.splitable ? `${s0}<layout orientation="vertical">${layout}${s0}</layout>` : layout;
+        //return layout;
     },
     '#script'(e, space) {
         return `${GSpace(space + 1)}${e.text}`;

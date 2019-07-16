@@ -123,11 +123,11 @@ export default Designer.extend({
                 }
                 return v;
             }
-        }, /*{
+        }, {
             tip: '@{element.table.paging}',
             key: 'splitable',
             type: PropsDesc.BOOLEAN
-        },*/ {
+        }, {
             tip: '@{element.table.dwidth}',
             type: PropsDesc.CELLCOLSHARE
         }, {
