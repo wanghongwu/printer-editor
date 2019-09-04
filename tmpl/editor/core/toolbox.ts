@@ -65,7 +65,8 @@ export default Magix.View.extend<Editor.Dragdrop>({
         if (pre) {
             if (!props) props = {};
             props.allowEdit = 0;
-            props.tip = props.alias || props.tip || name;
+            //|| props.alias
+            props.tip = props.tip || name;
         }
         State.set({
             '@{toolbox&drag.element}': element,

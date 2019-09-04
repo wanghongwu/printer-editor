@@ -25,8 +25,7 @@
             "type": "htext",
             "name": "水平文本",
             "props": {
-                "text": "<%=abc%>",
-                "alias": "测试"
+                "text": "<%=abc%>"
             }
         },
         {
