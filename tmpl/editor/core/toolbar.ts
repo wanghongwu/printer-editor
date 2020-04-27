@@ -253,8 +253,10 @@ export default Magix.View.extend({
         if (size == 'bg') {
             let img = new Image();
             img.onload = () => {
-                let w = img.width;
-                let h = img.height;
+                let scale = State.get('@{stage&scale}');
+                //console.log(scale);
+                let w = img.width * scale;
+                let h = img.height * scale;
                 let c = 0;
                 if (page.width != w) {
                     c = 1;

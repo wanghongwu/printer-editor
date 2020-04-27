@@ -7,9 +7,9 @@ import $ from '$';
 let State = Magix.State;
 let Has = Magix.has;
 let ToMap = Magix.toMap;
-let Decoder_OpenReg = /^<([a-z\d]+)((?:\s+[-A-Za-z\d_:]+(?:="[^"]*")?)*)\s*(\/?)>/,
+let Decoder_OpenReg = /^<([a-zA-Z\d]+)((?:\s+[-A-Za-z\d_:]+(?:="[^"]*")?)*)\s*(\/?)>/,
     Decoder_AttrReg = /([-A-Za-z\d_:]+)(?:="([^"]*)")?/g,
-    Decoder_CloseReg = /^<\/([a-z\d]+)>/;
+    Decoder_CloseReg = /^<\/([a-zA-Z\d]+)>/;
 let DecodeXML = xml => {
     let count = xml.length,
         current = 0,

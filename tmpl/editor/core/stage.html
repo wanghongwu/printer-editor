@@ -2,7 +2,7 @@
     <div class="canvas" id="cx_{{=vId}}">
         <div class="canvas-shadow">
             <div class="hf{{if header>0}} hf-top{{/if}}" style="height:{{if header>0}}{{=header}}{{else}}0{{/if}}px;width:{{=width}}px;"></div>
-            <div class="pr main" style="width:{{=width}}px;height:{{=height}}px;{{if showPrintBG}}background-image:url({{=printBG}});background-repeat:no-repeat;{{/if}}{{if bgSize=='page'}}background-size:100% 100%{{/if}}" id="stage_stage" mx-contextmenu="@{prevent}()">
+            <div class="pr main" style="width:{{=width}}px;height:{{=height}}px;{{if showPrintBG}}background-image:url({{=printBG}});background-repeat:no-repeat;{{/if}}{{if bgSize=='page'}}background-size:100% 100%{{else if bgSize=='bg'}}background-size:{{=width}}px {{=height}}px{{/if}}" id="stage_stage" mx-contextmenu="@{prevent}()">
                 {{each elements as element}}
                     {{set {ctor,props,id,type}=element}}
                     {{if type!='#script'}}

@@ -70,13 +70,13 @@
             <label class="form-label fl">{{=i18n('@{print.background.setting}')}}：</label>
             <div class="form-content fl">
                 <label class="center mr10">
-                    <input type="radio"{{if bgSize=='auto'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'auto'})"/>{{=i18n('@{print.background.setting.auto}')}}
+                    <input type="radio"{{if bgSize=='auto'}} checked{{/if}} name="bg.setting" class="mr5" mx-change="@{update.bg.size}({size:'auto'})"/>{{=i18n('@{print.background.setting.auto}')}}
                 </label>
                 <label class="center mr10">
-                    <input type="radio"{{if bgSize=='page'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'page'})"/>{{=i18n('@{print.background.setting.page}')}}
+                    <input type="radio"{{if bgSize=='page'}} checked{{/if}} name="bg.setting" class="mr5" mx-change="@{update.bg.size}({size:'page'})"/>{{=i18n('@{print.background.setting.page}')}}
                 </label>
                 <label class="center">
-                    <input type="radio"{{if bgSize=='bg'}} checked{{/if}} name="bg.setting" class="radio mr5" mx-change="@{update.bg.size}({size:'bg'})"/>{{=i18n('@{print.background.setting.bg}')}}
+                    <input type="radio"{{if bgSize=='bg'}} checked{{/if}} name="bg.setting" class="mr5" mx-change="@{update.bg.size}({size:'bg'})"/>{{=i18n('@{print.background.setting.bg}')}}
                 </label>
             </div>
         </div>

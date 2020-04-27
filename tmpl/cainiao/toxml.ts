@@ -351,7 +351,15 @@ export default stage => {
             }
         }
     }
-    if (page.footer > 0) {
+    let footerHeight = ToMM(page.footer);
+    if (footerHeight > 9) {
+        xml += `${GSpace(1)}<footer height="${ToMM(page.footer)}">
+        <layout left="10" top="0" width="60" height="10" style="zIndex:1;overflow:visible;">
+                <pageIndex format="第currentPageNumber页 共totalPageNumber页" style="fontSize:12;fontFamily:Arial">
+                </pageIndex>
+            </layout>
+        </footer>`;
+    } else if (footerHeight > 0) {
         xml += `${GSpace(1)}<footer height="${ToMM(page.footer)}"></footer>`;
     }
     xml += `\n</page>`;
