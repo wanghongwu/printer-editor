@@ -29,46 +29,6 @@
             }
         },
         {
-            "type": "vcode",
-            "name": "竖向条码"
-        },
-        {
-            "type": "vline",
-            "name": "竖线"
-        },
-        {
-            "type": "vtext",
-            "name": "垂直文本"
-        },
-        {
-            "type": "htext",
-            "name": "水平文本",
-            "props": {
-                "text": "<%=abc%>",
-                "alias": "测试"
-            }
-        },
-        {
-            "type": "vcode",
-            "name": "竖向条码"
-        },
-        {
-            "type": "vline",
-            "name": "竖线"
-        },
-        {
-            "type": "vtext",
-            "name": "垂直文本"
-        },
-        {
-            "type": "htext",
-            "name": "水平文本",
-            "props": {
-                "text": "<%=abc%>",
-                "alias": "测试"
-            }
-        },
-        {
             "type": "table",
             "name": "表格",
             "props": {
