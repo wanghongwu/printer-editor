@@ -1,5 +1,5 @@
 <mx-number class="num" fixed="2" min="{{=read(mSize)}}" value="{{=read(col.width)}}" @#readonly="{{=disabled}}" @disabled="{{=disabled}}" mx-input="@{set}({type:'col'})"/>
 <mx-number class="num" style="{{if col.autoHeight}}display:none{{/if}}" fixed="2" min="{{=read(mSize)}}" value="{{=read(col.height)}}" @#readonly="{{=disabled}}" @disabled="{{=disabled}}" mx-input="@{set}({type:'row'})"/>
 <div class="center">
-    自动高度:<input type="checkbox" @checked="{{=col.autoHeight}}" class="switch ml5" mx-change="@{set.auto}()"/>
+    {{=i18n('@{property.auto.height}')}}:<input type="checkbox" @checked="{{=col.autoHeight}}" class="switch ml5" mx-change="@{set.auto}()"/>
 </div>

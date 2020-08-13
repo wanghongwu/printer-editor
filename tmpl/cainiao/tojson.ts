@@ -667,6 +667,12 @@ let Decoders = {
                 if (pprt && pprt['@{~v#node.tag}'] == 'td') {
                     defaults.supportCNStyle = true;
                 }
+                if (!vertical &&
+                    defaults.height === 0) {
+                    defaults.autoHeight = true;
+                    defaults.heightLocked = true;
+                    defaults.height = 18.9;
+                }
             } else {
                 ctor.writeAdapter(true, defaults);
                 defaults.useCNStyle = true;

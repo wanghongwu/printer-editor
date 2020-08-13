@@ -99,7 +99,7 @@ let TextEncode = ({ props }, space, vertical) => {
     } else {
         content = text;
     }
-    return useCNStyle ? content : `${s1}<layout editor:_for_="${Date.now()}"${s2}width="${ToMM(props.width)}"${s2}height="${ToMM(props.height)}"${s2}left="${ToMM(props.x)}"${s2}top="${ToMM(props.y)}"${s2}style="zIndex:${props.zIndex}">${content}${s1}</layout>`;
+    return useCNStyle ? content : `${s1}<layout editor:_for_="${Date.now()}"${s2}width="${ToMM(props.width)}"${s2}height="${props.autoHeight ? 0 : ToMM(props.height)}"${s2}left="${ToMM(props.x)}"${s2}top="${ToMM(props.y)}"${s2}style="zIndex:${props.zIndex}">${content}${s1}</layout>`;
 };
 let CodeEncoder = ({ props }, space, type) => {
     let { _layouts, _children } = props;
@@ -147,7 +147,7 @@ let Encoder = {
     hline({ props }, space) {
         return LineEncode(props, space, false);
     },
-    vline({ props }, space, ) {
+    vline({ props }, space,) {
         return LineEncode(props, space, true);
     },
     rect({ props }, space) {

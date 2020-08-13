@@ -15,6 +15,7 @@ export default {
     '@{property.load.img.error}': '获取图片尺寸失败，请重试～～',
     '@{property.press.drag.sort}': '按下拖动排序z轴',
     '@{property.delete.element}': '删除元素',
+    '@{property.auto.height}': '自动高度',
     '@{xml.code}': '代码',
     '@{btn.save}': '保存',
     '@{btn.cancel}': '取消',

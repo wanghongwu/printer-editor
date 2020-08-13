@@ -15,6 +15,7 @@ export default {
     '@{property.load.img.error}': 'Get image size error. Try again~~',
     '@{property.press.drag.sort}': 'Press drag sort element z index',
     '@{property.delete.element}': 'Delete element',
+    '@{property.auto.height}': 'Auto height',
     '@{xml.code}': 'XML Code',
     '@{btn.save}': 'Save',
     '@{btn.cancel}': 'Cancel',

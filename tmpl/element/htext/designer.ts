@@ -4,6 +4,7 @@ import PropsDesc from '../../editor/const/props-desc';
 import Convert from '../../util/converter';
 import CNC from '../../cainiao/const';
 import I18n from '../../i18n/index';
+import propsDesc from '../../editor/const/props-desc';
 let WriteCNAdapter = (b, prop) => {
     if (b) {
         prop._x = prop.x;
@@ -14,6 +15,7 @@ let WriteCNAdapter = (b, prop) => {
         prop.y = 0.76;
         prop.width = -3.77;
         prop.height = -3.77;
+        prop.autoHeight = false;
     } else {
         prop.x = prop._x;
         prop.y = prop._y;
@@ -67,6 +69,7 @@ export default Designer.extend({
             letterSpacing: 0,
             fontWeight: 'normal',
             autoFontSize: false,
+            autoHeight: false,
             text: '',
             alias: '',
             direction: 'ltr',
@@ -106,7 +109,20 @@ export default Designer.extend({
         fixed: 2,
         max: 2800,
         read: Convert["@{pixel.to.millimeter}"],
-        write: Convert["@{millimeter.to.pixel}"]
+        write: Convert["@{millimeter.to.pixel}"],
+        ifShow(data) {
+            return !Magix.config('textAutoHeight') || !data.autoHeight;
+        }
+    }, {
+        tip: '@{property.auto.height}',
+        key: 'autoHeight',
+        type: PropsDesc.BOOLEAN,
+        refresh: true,
+        ifShow: data => Magix.config('textAutoHeight') && !data.useCNStyle,
+        write(v, props) {
+            props.heightLocked = v;
+            return v;
+        }
     }, {
         tip: '@{element.text.cnstyle}',
         key: 'useCNStyle',
