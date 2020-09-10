@@ -1,6 +1,8 @@
 # printer-editor
 打印编辑器
 
+基于可视化搭建通用框架：https://github.com/xinglie/report-designer 构建而来
+
 ### 操作说明
 ####  工具箱
 > 页面最左侧显示可编辑元素的区域即为工具箱
