@@ -1,7 +1,0 @@
-{{if draft}}
-    {{=i18n('@{unsaved}',after>0?after:'')}}
-{{else if saving}}
-    {{=i18n('@{saving}')}}
-{{else if error}}
-    {{=i18n('@{save.error}')}}{{=error.msg}}
-{{/if}}

@@ -1,9 +1,0 @@
-{{set tipBorder=width<=1||height<=1||alpha==0}}
-<div style="left:{{=x}}px;top:{{=y}}px;width:{{=width}}px;height:{{=height}}px;z-index:{{=zIndex}};{{if tipBorder}}border:dotted 1px #ff000030{{/if}}" class="pa">
-    {{set  url=codeMap[type+(showText?'_text':'')]}}
-    {{if url}}
-        <img style="width:100%;height:100%;opacity:{{=alpha}};" src="{{=url}}">
-    {{else}}
-        暂不支持{{=type}}的预览
-    {{/if}}
-</div>
