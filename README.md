@@ -1,7 +1,7 @@
 # printer-editor
 打印编辑器
 
-基于可视化搭建通用框架：https://github.com/xinglie/report-designer 构建而来
+该仓库存档不再更新，请查看功能更丰富的通用设计器：https://github.com/xinglie/report-designer 
 
 ### 操作说明
 ####  工具箱
